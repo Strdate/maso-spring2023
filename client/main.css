@@ -1,0 +1,27 @@
+html,
+body {
+  background-color: #ffd42d;
+  font-size: 1.2em;
+  margin: 0;
+}
+
+body {
+  padding: 10px;
+  font-family: sans-serif;
+}
+
+h1 {
+  font-size: 1.6rem;
+  font-family: "Vollkorn", "Times New Roman", serif;
+  font-weight: 400;
+  margin: 0;
+  padding: 0;
+}
+
+h2 {
+  font-size: 1.2rem;
+  font-family: "Vollkorn", "Times New Roman", serif;
+  font-weight: 400;
+  margin: 0;
+  padding: 0;
+}

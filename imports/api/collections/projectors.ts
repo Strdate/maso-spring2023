@@ -9,7 +9,7 @@ export interface Projector {
     code: string;
     startAt: Date;
     endAt: Date;
-    UpdatedAt: Date;
+    updatedAt: Date;
   }
 
 export const ProjectorCollection = new Mongo.Collection<Projector>('projectors');

@@ -1,7 +1,7 @@
 import { Mongo } from 'meteor/mongo';
 
 export interface Game {
-    _id?: string;
+    _id: string;
     name: string;
     code: string;
     startAt: Date;
@@ -16,7 +16,7 @@ export interface Game {
     userId: string;
     authorizedUsers: string[];
     createdAt: Date;
-    UpdatedAt: Date;
+    updatedAt: Date;
   }
 
 export const GameCollection = new Mongo.Collection<Game>('games');

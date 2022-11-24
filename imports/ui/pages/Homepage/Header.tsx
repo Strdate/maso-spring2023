@@ -21,9 +21,10 @@ export default function Header() {
       <Typography variant="subtitle1" gutterBottom>
         Hra pro 27. MaSo
       </Typography>
-      <Typography variant="subtitle1" gutterBottom>
+      <div style={{display: 'flex', "flex-direction": 'column', gap: '10px'}}>
         <A href='/login'>Přihlášení</A>
-      </Typography>
+        <A href='/create'>Vytvořit hru</A>
+      </div>
     </StyledHeader>
   )
 }

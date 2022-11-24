@@ -9,4 +9,11 @@ export default defineConfig({
   meteor: {
     clientEntry: 'imports/ui/main.jsx',
   },
+  optimizeDeps: {
+    exclude: [
+      'meteor/tracker',
+      'meteor/meteor',
+      'meteor/mongo'
+    ],
+  }
 });

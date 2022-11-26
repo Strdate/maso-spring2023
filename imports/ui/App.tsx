@@ -1,6 +1,6 @@
 import { Routes, Route } from "@solidjs/router"
 import Homepage from "./pages/Homepage";
-import CreateGame from "./pages/CreateGame";
+import CreateGame from "./pages/createGame";
 import LoginForm from "./pages/loginForm";
 
 export const App = () => {
@@ -12,5 +12,3 @@ export const App = () => {
     </Routes>
   )
 };
-
-

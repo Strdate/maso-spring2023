@@ -1,10 +1,12 @@
 import Header from "./Header"
 import Grid from "@suid/material/Grid"
 import TextField from "@suid/material/TextField"
+import Title from "../../utils/title"
 
 export default function Homepage() {
     return (
         <Grid container justifyContent="center">
+          <Title name="Maso 2023" />
           <Grid item xs={12}>
             <Header/>
           </Grid>

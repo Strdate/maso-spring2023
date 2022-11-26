@@ -1,14 +1,11 @@
 import { Show } from 'solid-js';
 import { createFindOne } from 'solid-meteor-data';
 import FromBase from "../components/formBase"
-import readFormData from "../utils/readFormData"
 
 export default function LoginForm() {
   const [loggedIn] = createFindOne(() => Meteor.user())
   return (
-      <FromBase title="Přihlášení" onSubmit={(e) => {
-          e.preventDefault()
-          const res = readFormData(e.target)
+      <FromBase title="Přihlášení" onConfirm={(res) => {
           Meteor.loginWithPassword(res.userName, res.accountPassword, (error) => {
             if(error) {
               alert(error.message)

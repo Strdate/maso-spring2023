@@ -1,6 +1,5 @@
 import CreateGameMethod from '../../../api/methods/games/create'
 import FromBase from "../../components/formBase"
-import readFormData from "../../utils/readFormData"
 
 export default function CreateGame() {
     const defStartDate = () => {
@@ -10,9 +9,7 @@ export default function CreateGame() {
         return new Date((new Date()).setSeconds(0,0) + 62*60*1000).toISOString().slice(0, -1)
     }
     return (
-        <FromBase title="Vytvořit hru" onSubmit={(e) => {
-            e.preventDefault()
-            const res = readFormData(e.target)
+        <FromBase title="Vytvořit hru" onConfirm={(res) => {
             const mapped = {
                 name: res.gameName,
                 code: res.gameCode,

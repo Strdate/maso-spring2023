@@ -10,3 +10,5 @@ const enum TaskStatus {
     Solved,
     Exchanged
 }
+
+export { GameStatus, TaskStatus }

@@ -4,6 +4,7 @@ import SimpleSchema from 'simpl-schema'
 import { Meteor } from 'meteor/meteor'
 import { GameCollection } from '../../collections/games'
 import { ProjectorCollection } from '../../collections/projectors'
+import { GameStatus } from '../../../core/enums'
 
 interface GameInput {
   name: string,

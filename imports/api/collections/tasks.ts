@@ -1,4 +1,5 @@
 import { Mongo } from 'meteor/mongo';
+import { TaskStatus } from '/imports/core/enums';
 
 interface TaskChangeLog {
     userId: string;

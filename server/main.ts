@@ -1,5 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import '../imports/api/methods'
+import './publish'
 import { Accounts } from 'meteor/accounts-base';
 
 const SEED_USERNAME = 'reznik';

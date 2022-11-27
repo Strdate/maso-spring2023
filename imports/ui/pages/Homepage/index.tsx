@@ -2,8 +2,10 @@ import Header from "./Header"
 import Grid from "@suid/material/Grid"
 import TextField from "@suid/material/TextField"
 import Title from "../../utils/title"
+import { useNavigate } from "@solidjs/router"
 
 export default function Homepage() {
+  const navigate = useNavigate()
     return (
         <Grid container justifyContent="center">
           <Title name="Maso 2023" />
@@ -18,10 +20,11 @@ export default function Homepage() {
                 label="Kód hry"
                 onKeyPress={(ev) => {
                   if (ev.key === 'Enter') {
-                    //this.onGameSelect(ev.target.value)
                     ev.preventDefault()
-                  } else {
-                    //this.setState({ showNewGamePopup: false })
+                    const code = (ev.target as HTMLTextAreaElement).value
+                    if(code) {
+                      navigate(`/${code}`)
+                    }
                   }
                 }}
                 margin="normal"

@@ -1,28 +1,13 @@
 /// <reference path="../../../../node_modules/@types/meteor-mdg-validated-method/index.d.ts" />
 import { ValidatedMethod } from 'meteor/mdg:validated-method'
-import SimpleSchema from 'simpl-schema'
 import { Meteor } from 'meteor/meteor'
-import { GameCollection } from '../../collections/games'
+import { GameCollection, GameInput, GameInputSchema } from '../../collections/games'
 import { ProjectorCollection } from '../../collections/projectors'
 import { GameStatus } from '../../../core/enums'
 
-interface GameInput {
-  name: string,
-  code: string,
-  startAt: Date,
-  endAt: Date,
-  freezeTimeMins: number
-}
-
 export default new ValidatedMethod({
   name: 'games.create',
-  validate: new SimpleSchema({
-    name: { type: String, min: 2, max: 50 },
-    code: { type: String, min: 4, max: 16 },
-    startAt: { type: Date },
-    endAt: { type: Date },
-    freezeTimeMins: { type: SimpleSchema.Integer, min: 1, defaultValue: 10 },
-  }).validator(),
+  validate: GameInputSchema.validator(),
   run(game: GameInput) {
     if(Meteor.isServer)
     {

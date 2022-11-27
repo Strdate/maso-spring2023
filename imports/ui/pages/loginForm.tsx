@@ -4,7 +4,7 @@ import FromBase from "../components/formBase"
 import Title from '../utils/title';
 
 export default function LoginForm() {
-  const [loggedIn] = createFindOne(() => Meteor.user())
+  const [loggedIn, user] = createFindOne(() => Meteor.user())
   return (
       <FromBase title="Přihlášení" onConfirm={(res) => {
           Meteor.loginWithPassword(res.userName, res.accountPassword, (error) => {
@@ -24,6 +24,7 @@ export default function LoginForm() {
           <input type="submit" value="Přihlásit" />
         </Show>
         <Show when={loggedIn()}>
+          <div style={{'text-align': 'center'}}>{(user as Meteor.User).username}</div>
           <input type="button" id="logoutButton" name="logoutButton" value="Odhlásit" onClick={() => Meteor.logout()} />
         </Show>
       </FromBase>

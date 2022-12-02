@@ -23,7 +23,7 @@ function GameInfo(props: Props) {
   /*const isOwner = props.user && isGameOwner(props.user._id, props.game)
   const showFinishButton = game.statusId === enums.GAME_STATUS.OUT_OF_TIME.id*/
   return (
-    <Paper /*style={{ marginBottom: '8px' }}*/>
+    <Paper style={{ "margin-bottom": '8px' }}>
       <List>
         {/*isOwner &&
         <ListItem>

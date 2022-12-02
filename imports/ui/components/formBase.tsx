@@ -17,8 +17,8 @@ export default function FromBase(props: Props) {
         "border-radius": '5px',
         "align-items": 'center',
         width: 'fit-content',
-        padding: '5px',
-        margin: '0 auto'
+        padding: '10px',
+        margin: '0 auto',
     }}>
         <form onSubmit={(e) => {
             e.preventDefault()
@@ -27,7 +27,13 @@ export default function FromBase(props: Props) {
             data.forEach((value, key) => res[key] = value)
             props.onConfirm(res)
         }}>
-            <div style={{display: 'flex', "flex-direction": 'column', gap: '8px', padding: '5px'}}>
+            <div style={{display:
+                    'flex',
+                    "flex-direction": 'column',
+                    gap: '10px',
+                    padding: '5px',
+                    }}
+                class='formbase'>
                 <h1>{props.title}</h1>
                 {props.children}
                 <input type="button" value="Zpět" onClick={() => navigate('/')}></input>

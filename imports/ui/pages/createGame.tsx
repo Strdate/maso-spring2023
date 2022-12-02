@@ -1,8 +1,9 @@
 import CreateGameMethod from '../../api/methods/games/create'
 import FromBase from "../components/formBase"
-import Title from '../utils/title'
+import useTitle from '../utils/useTitle'
 
 export default function CreateGame() {
+    useTitle('Vytvořit hru | Maso 2023')
     const defStartDate = () => {
         return new Date((new Date()).setSeconds(0,0) + 120000).toISOString().slice(0, -1)
     }
@@ -27,7 +28,6 @@ export default function CreateGame() {
                 }*/
               })
         }}>
-            <Title name="Vytvořit hru | Maso 2023" />
             <label for="gameName">Název</label>
             <input type="text" id="gameName" name="gameName" value="Test" />
             <label for="gameCode">Kód</label>

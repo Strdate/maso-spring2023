@@ -1,9 +1,10 @@
 import { Show } from 'solid-js';
 import { createFindOne } from 'solid-meteor-data';
 import FromBase from "../components/formBase"
-import Title from '../utils/title';
+import useTitle from '../utils/useTitle';
 
 export default function LoginForm() {
+  useTitle("Přihlášení | Maso 2023")
   const [loggedIn, user] = createFindOne(() => Meteor.user())
   return (
       <FromBase title="Přihlášení" onConfirm={(res) => {
@@ -15,7 +16,6 @@ export default function LoginForm() {
             }
           })
       }}>
-        <Title name="Přihlášení | Maso 2023" />
         <Show when={!loggedIn()}>
           <label for="userName">Uživatelské jméno</label>
           <input type="text" id="userName" name="userName" />

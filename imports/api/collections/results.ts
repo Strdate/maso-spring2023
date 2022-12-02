@@ -3,7 +3,7 @@ import { TeamScore } from '/imports/core/interfaces';
 
 /* Cache */
 
-interface TeamResults {
+export interface TeamResults {
     _id: string;
     name: string;
     number: number;

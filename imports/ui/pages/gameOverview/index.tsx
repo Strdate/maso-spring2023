@@ -3,22 +3,27 @@ import { Grid, List, Paper, Typography } from "@suid/material";
 import { createEffect, createMemo, Show } from "solid-js";
 import { createFind, createFindOne, createSubscribe } from "solid-meteor-data";
 import ManagedSuspense from "../../components/managedSuspense";
+import useTitle from "../../utils/useTitle";
 import GameInfo from "./gameInfo";
 import SectionLink from "./sectionLink";
+import TeamList from "./teamList";
 import { Game, GameCollection } from "/imports/api/collections/games";
-import { ResultsCollection } from "/imports/api/collections/results";
-import { isAuthorized } from "/imports/core/authorization";
+import { Results, ResultsCollection } from "/imports/api/collections/results";
+import { isAuthorized, isGameOwner } from "/imports/core/authorization";
 
 export default function GameOverview() {
     const params = useParams()
+    useTitle(`${params.code} | MaSo 2023`)
     const loading = createSubscribe('game', () => params.code)
     const [found, gameFound] = createFindOne(() => loading() ? null : GameCollection.findOne({code: params.code}))
     const game = gameFound as Game
-    const teams = createFind(() => loading() ? null : ResultsCollection.find(params.code))
+    const [, resultsFound] = createFindOne(() => loading() ? null : ResultsCollection.findOne(params.code))
+    const results = resultsFound as Results
     const authorizedUsers = createFind(() => loading() ? null : Meteor.users.find(params.code))
     const [loggedIn, userFound] = createFindOne(() => Meteor.user())
     const user = userFound as Meteor.User
     const isUserAuthorized = createMemo(() => loggedIn() && isAuthorized(user,game))
+    const isUserOwner = createMemo(() => isGameOwner(user,game))
     createEffect(() => {
         console.log(`Loading: ${loading()}, found: ${found()}, code: ${params.code}`)
     })
@@ -61,10 +66,11 @@ export default function GameOverview() {
                     </Paper>
                         {/*isOwner && (<UserList userId={user._id} game={game} gameAuthorizedUsers={gameAuthorizedUsers} />)}*/}
                 </Grid>
-                {/*{isOwner &&<Grid item xs={11} sm={6}>
-                    <TeamList game={game} teams={game.teams} />
-                </Grid>}
-                <GlobalStyle />*/}
+                <Show when={isUserOwner()}>
+                    <TeamList game={game} results={results} />
+                </Show>
+                {/*<GlobalStyle />
+                </Grid>*/}
             </Grid>
         </ManagedSuspense>
     )

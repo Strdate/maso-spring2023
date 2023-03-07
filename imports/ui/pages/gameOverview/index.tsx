@@ -10,6 +10,7 @@ import TeamList from "./teamList";
 import { Game, GameCollection } from "/imports/api/collections/games";
 import { Results, ResultsCollection } from "/imports/api/collections/results";
 import { isAuthorized, isGameOwner } from "/imports/core/authorization";
+import {Team, TeamsCollection} from "/imports/api/collections/teams";
 
 export default function GameOverview() {
     const params = useParams()
@@ -19,6 +20,7 @@ export default function GameOverview() {
     const game = gameFound as Game
     const [, resultsFound] = createFindOne(() => loading() ? null : ResultsCollection.findOne(params.code))
     const results = resultsFound as Results
+    const teamsList = createFind(() => loading() ? null : TeamsCollection.find({gameId: game._id}))
     const authorizedUsers = createFind(() => loading() ? null : Meteor.users.find(params.code))
     const [loggedIn, userFound] = createFindOne(() => Meteor.user())
     const user = userFound as Meteor.User
@@ -26,6 +28,8 @@ export default function GameOverview() {
     const isUserOwner = createMemo(() => isGameOwner(user,game))
     createEffect(() => {
         console.log(`Loading: ${loading()}, found: ${found()}, code: ${params.code}`)
+        console.log("teamsList: ", teamsList());
+        console.log("authorizedUsers: ", authorizedUsers());
     })
 
     return (
@@ -67,7 +71,7 @@ export default function GameOverview() {
                         {/*isOwner && (<UserList userId={user._id} game={game} gameAuthorizedUsers={gameAuthorizedUsers} />)}*/}
                 </Grid>
                 <Show when={isUserOwner()}>
-                    <TeamList game={game} results={results} />
+                    <TeamList game={game} teams={teamsList()} />
                 </Show>
                 {/*<GlobalStyle />
                 </Grid>*/}

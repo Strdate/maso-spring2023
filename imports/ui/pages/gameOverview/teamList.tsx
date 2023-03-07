@@ -1,21 +1,23 @@
 import { Button, Grid, Paper, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@suid/material"
 import { For, Show } from "solid-js"
 import { Game } from "/imports/api/collections/games"
-import { Results } from "/imports/api/collections/results"
 import { GameStatus } from "/imports/core/enums"
+import FromBase from "/imports/ui/components/formBase";
+import CreateTeamMethod from '../../../api/methods/teams/create'
+import {Team, TeamInput} from "/imports/api/collections/teams";
 
 interface Props {
     game: Game,
-    results: Results
+    teams: Team[]
 }
 
 function TeamList(props: Props) {
-  const teams = () => props.results.teams
-  const hasTeams = () => Boolean(teams() && teams().length > 0)
+  console.log("props: ", props);
+  const hasTeams = () => Boolean(props.teams && props.teams.length > 0)
   const addingTeamsAllowed = () => props.game.statusId === GameStatus.Created
-  const sortedTeams = () => teams().sort((t1, t2) => t1.number - t2.number)
+  const sortedTeams = () => props.teams.sort((t1, t2) => parseInt(t1.number) - parseInt(t2.number))
   return (
-    <Grid item xs={11} sm={6}>     
+    <Grid item xs={11} sm={6}>
     <Paper style={{ padding: '15px' }}>
       <Typography variant="h5" align="center" gutterBottom>
         Týmy
@@ -46,7 +48,7 @@ function TeamList(props: Props) {
             </TableRow>
           </TableHead>
           <TableBody>
-            <For each={teams()}>{(team) => 
+            <For each={sortedTeams()}>{(team) =>
                 <TableRow>
                     <TableCell component="th" scope="row">
                     {team.number}
@@ -68,17 +70,41 @@ function TeamList(props: Props) {
                         </TableCell>
                     </Show>
                 </TableRow>
-            }         
+            }
             </For>
           </TableBody>
         </Table>
       </Show>
       <br />
       <Show when={addingTeamsAllowed()}>
-        <Typography variant="h6" align="center">
-            Přidat nový tým
-        </Typography>
-        
+        {/*<Typography variant="h6" align="center">*/}
+        {/*    Přidat nový tým*/}
+        {/*</Typography>*/}
+        <FromBase title="Přidat nový tým" onConfirm={(res) => {
+          const mapped: TeamInput = {
+            name: res.teamName,
+            number: res.teamNumber,
+            gameId: props.game._id,
+            isBot: !!res.isBot,
+          };
+          console.log(mapped);
+          CreateTeamMethod.call(mapped, err => {
+            if (err) alert(err)
+            if (!err) {
+              // TODO clear form
+              // TODO auto increment id
+            }
+          });
+        }}>
+          {/* TODO autoset id to the next available */}
+          <input type="number" id="teamNumber" name="teamNumber" placeholder={"Číslo týmu *"} />
+          <input type="text" id="teamName" name="teamName" placeholder={"Jméno týmu *"} />
+          <span>
+            <input type="checkbox" id="isBot" name="isBot" style={{"min-width": "min-content"}} />
+            <label for="isBot">Je to bot?</label>
+          </span>
+          <input type="submit" value="Vytvořit" />
+        </FromBase>
       </Show>
       {/*addingTeamsAllowed &&
         <Fragment>
@@ -94,7 +120,7 @@ function TeamList(props: Props) {
   )
 }
 
-function deleteTeam(teamId) {
+function deleteTeam(teamId: string) {
   if( confirm('Opravdu si přejete odebrat tým?') )
   {
     Meteor.call('teams.delete',{teamId}/*, function(error,result){}*/) 

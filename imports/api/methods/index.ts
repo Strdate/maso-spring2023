@@ -1,5 +1,6 @@
 import games from './games'
+import teams from './teams'
 
 export default {
-  games
+  games, teams
 }

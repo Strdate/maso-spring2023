@@ -16,6 +16,17 @@ function TeamList(props: Props) {
   const hasTeams = () => Boolean(props.teams && props.teams.length > 0)
   const addingTeamsAllowed = () => props.game.statusId === GameStatus.Created
   const sortedTeams = () => props.teams.sort((t1, t2) => parseInt(t1.number) - parseInt(t2.number))
+  // @ts-ignore
+  const highestTeamIdPlus1: () => number | undefined = () => props.teams.reduce((prevVal, curTeam) => {
+    if (prevVal === undefined) return undefined;  // If there is some non numeric value, ignore.
+    try {
+      const curVal = Number(curTeam.number);
+      if (isNaN(curVal)) return undefined;
+      return (curVal >= prevVal ? curVal : prevVal) + 1;
+    } catch (e) {
+      return undefined;
+    }
+  }, 1);
   return (
     <Grid item xs={11} sm={6}>
     <Paper style={{ padding: '15px' }}>
@@ -90,14 +101,10 @@ function TeamList(props: Props) {
           console.log(mapped);
           CreateTeamMethod.call(mapped, err => {
             if (err) alert(err)
-            if (!err) {
-              // TODO clear form
-              // TODO auto increment id
-            }
+            if (!err) { }
           });
         }}>
-          {/* TODO autoset id to the next available */}
-          <input type="number" id="teamNumber" name="teamNumber" placeholder={"Číslo týmu *"} />
+          <input type="number" id="teamNumber" name="teamNumber" value={highestTeamIdPlus1()} placeholder={"Číslo týmu *"} />
           <input type="text" id="teamName" name="teamName" placeholder={"Jméno týmu *"} />
           <span>
             <input type="checkbox" id="isBot" name="isBot" style={{"min-width": "min-content"}} />

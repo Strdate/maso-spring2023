@@ -28,9 +28,9 @@ if (Meteor.isServer) {
     TeamsCollection.createIndex({ gameId: 1 });
 }
 
-export const TeamInputSchema = new SimpleSchema(({
+export const TeamInputSchema = new SimpleSchema({
     gameId: { type: String },
     number: { type: String },
-    name: { type: String },
+    name: { type: String, min: 2, max: 50 },
     isBot: { type: Boolean },
-}))
+})

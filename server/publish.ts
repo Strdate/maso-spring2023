@@ -1,8 +1,11 @@
 import { Meteor } from 'meteor/meteor'
 import { Game, GameCollection, GameInputSchema } from '/imports/api/collections/games'
 import { ResultsCollection } from '/imports/api/collections/results'
+import {TeamInputSchema, TeamsCollection} from "/imports/api/collections/teams";
+import * as enums from "../imports/core/enums";
 
 Meteor.publish('game', function (code) {
+    console.log("game code: ", code)
     try {
         GameInputSchema.pick('code').validate({ code })
         const game = GameCollection.findOne({ code })
@@ -34,6 +37,31 @@ Meteor.publish('game', function (code) {
     }
 })
 
+Meteor.publish('teams', function (gameCode) {
+    console.log("teams for game code ", gameCode)
+    try {
+        GameInputSchema.pick('code').validate({ code: gameCode });
+        const game = GameCollection.findOne({ code: gameCode });
+        if(!game) {
+            return [];
+        }
+        TeamInputSchema.pick('gameId').validate({ gameId: game._id });
+        if(!this.userId || !checkGameAccess(game, this.userId)) {
+            return [];
+        }
+        return [
+            TeamsCollection.find({ gameId: game._id }),
+        ];
+    } catch(er) {
+        console.log(er)
+        return []
+    }
+})
+
 function isSubAuthorized(game: Game, userId: string) {
     return game.authorizedUsers.includes(userId)
+}
+
+function checkGameAccess(game: Game, userId: string) {
+    return game.authorizedUsers.includes(userId) || game.statusId === enums.GameStatus.Finished;
 }

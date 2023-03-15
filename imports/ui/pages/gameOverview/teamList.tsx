@@ -1,23 +1,23 @@
 import { Button, Grid, Paper, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@suid/material"
-import { For, Show } from "solid-js"
+import { createEffect, For, Show } from "solid-js"
 import { Game } from "/imports/api/collections/games"
 import { GameStatus } from "/imports/core/enums"
 import FromBase from "/imports/ui/components/formBase";
 import CreateTeamMethod from '../../../api/methods/teams/create'
-import {Team, TeamInput} from "/imports/api/collections/teams";
+import {TeamInput, TeamsCollection} from "/imports/api/collections/teams";
+import { createFind, createSubscribe } from "solid-meteor-data";
 
 interface Props {
-    game: Game,
-    teams: Team[]
+    game: Game
 }
 
 function TeamList(props: Props) {
-  console.log("props: ", props);
-  const hasTeams = () => Boolean(props.teams && props.teams.length > 0)
+  const loadingTeams = createSubscribe('teams', () => props.game.code)
+  const teams = createFind(() => loadingTeams() ? null : TeamsCollection.find({gameId: props.game._id}))
+  const hasTeams = () => Boolean(teams() && teams().length > 0)
   const addingTeamsAllowed = () => props.game.statusId === GameStatus.Created
-  const sortedTeams = () => props.teams.sort((t1, t2) => parseInt(t1.number) - parseInt(t2.number))
-  // @ts-ignore
-  const highestTeamIdPlus1: () => number | undefined = () => props.teams.reduce((prevVal, curTeam) => {
+  const sortedTeams = () => teams().sort((t1, t2) => parseInt(t1.number) - parseInt(t2.number))
+  const highestTeamIdPlus1: () => number | undefined = () => teams().reduce((prevVal: number | undefined, curTeam) => {
     if (prevVal === undefined) return undefined;  // If there is some non numeric value, ignore.
     try {
       const curVal = Number(curTeam.number);

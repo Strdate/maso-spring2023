@@ -38,14 +38,12 @@ Meteor.publish('game', function (code) {
 })
 
 Meteor.publish('teams', function (gameCode) {
-    console.log("teams for game code ", gameCode)
     try {
         GameInputSchema.pick('code').validate({ code: gameCode });
         const game = GameCollection.findOne({ code: gameCode });
         if(!game) {
             return [];
         }
-        TeamInputSchema.pick('gameId').validate({ gameId: game._id });
         if(!this.userId || !checkGameAccess(game, this.userId)) {
             return [];
         }

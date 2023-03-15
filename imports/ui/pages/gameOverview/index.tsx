@@ -1,7 +1,7 @@
 import { useParams } from "@solidjs/router";
 import { Grid, List, Paper, Typography } from "@suid/material";
 import { createEffect, createMemo, Show } from "solid-js";
-import { createFind, createFindOne, createSubscribe } from "solid-meteor-data";
+import { createFindOne, createSubscribe } from "solid-meteor-data";
 import ManagedSuspense from "../../components/managedSuspense";
 import useTitle from "../../utils/useTitle";
 import GameInfo from "./gameInfo";
@@ -9,7 +9,6 @@ import SectionLink from "./sectionLink";
 import TeamList from "./teamList";
 import { Game, GameCollection } from "/imports/api/collections/games";
 import { isAuthorized, isGameOwner } from "/imports/core/authorization";
-import {TeamsCollection} from "/imports/api/collections/teams";
 
 export default function GameOverview() {
     const params = useParams()
@@ -17,18 +16,16 @@ export default function GameOverview() {
     const loading = createSubscribe('game', () => params.code)
     const [found, gameFound] = createFindOne(() => loading() ? null : GameCollection.findOne({code: params.code}))
     const game = gameFound as Game
-    const loadingTeams = createSubscribe('teams', () => params.code)
-    // const [, resultsFound] = createFindOne(() => loading() ? null : ResultsCollection.findOne(params.code))
-    // const results = resultsFound as Results
-    const teamsList = createFind(() => loadingTeams() ? null : TeamsCollection.find({gameId: game._id}))
-    // const authorizedUsers = createFind(() => loading() ? null : Meteor.users.find(params.code))
+
     const [loggedIn, userFound] = createFindOne(() => Meteor.user())
     const user = userFound as Meteor.User
     const isUserAuthorized = createMemo(() => loggedIn() && isAuthorized(user,game))
     const isUserOwner = createMemo(() => isGameOwner(user,game))
+    
+    // const authorizedUsers = createFind(() => loading() ? null : Meteor.users.find(params.code))
+
     createEffect(() => {
         console.log(`Loading: ${loading()}, found: ${found()}, code: ${params.code}`)
-        console.log("teamsList: ", teamsList());
     })
 
     return (
@@ -70,7 +67,7 @@ export default function GameOverview() {
                         {/*isOwner && (<UserList userId={user._id} game={game} gameAuthorizedUsers={gameAuthorizedUsers} />)}*/}
                 </Grid>
                 <Show when={isUserOwner()}>
-                    <TeamList game={game} teams={teamsList()} />
+                    <TeamList game={game} />
                 </Show>
                 {/*<GlobalStyle />
                 </Grid>*/}

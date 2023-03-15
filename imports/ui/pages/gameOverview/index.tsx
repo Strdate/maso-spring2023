@@ -8,8 +8,8 @@ import GameInfo from "./gameInfo";
 import SectionLink from "./sectionLink";
 import TeamList from "./teamList";
 import { Game, GameCollection } from "/imports/api/collections/games";
-import { Results, ResultsCollection } from "/imports/api/collections/results";
 import { isAuthorized, isGameOwner } from "/imports/core/authorization";
+import {TeamsCollection} from "/imports/api/collections/teams";
 
 export default function GameOverview() {
     const params = useParams()
@@ -17,15 +17,18 @@ export default function GameOverview() {
     const loading = createSubscribe('game', () => params.code)
     const [found, gameFound] = createFindOne(() => loading() ? null : GameCollection.findOne({code: params.code}))
     const game = gameFound as Game
-    const [, resultsFound] = createFindOne(() => loading() ? null : ResultsCollection.findOne(params.code))
-    const results = resultsFound as Results
-    const authorizedUsers = createFind(() => loading() ? null : Meteor.users.find(params.code))
+    const loadingTeams = createSubscribe('teams', () => params.code)
+    // const [, resultsFound] = createFindOne(() => loading() ? null : ResultsCollection.findOne(params.code))
+    // const results = resultsFound as Results
+    const teamsList = createFind(() => loadingTeams() ? null : TeamsCollection.find({gameId: game._id}))
+    // const authorizedUsers = createFind(() => loading() ? null : Meteor.users.find(params.code))
     const [loggedIn, userFound] = createFindOne(() => Meteor.user())
     const user = userFound as Meteor.User
     const isUserAuthorized = createMemo(() => loggedIn() && isAuthorized(user,game))
     const isUserOwner = createMemo(() => isGameOwner(user,game))
     createEffect(() => {
         console.log(`Loading: ${loading()}, found: ${found()}, code: ${params.code}`)
+        console.log("teamsList: ", teamsList());
     })
 
     return (
@@ -67,7 +70,7 @@ export default function GameOverview() {
                         {/*isOwner && (<UserList userId={user._id} game={game} gameAuthorizedUsers={gameAuthorizedUsers} />)}*/}
                 </Grid>
                 <Show when={isUserOwner()}>
-                    <TeamList game={game} results={results} />
+                    <TeamList game={game} teams={teamsList()} />
                 </Show>
                 {/*<GlobalStyle />
                 </Grid>*/}

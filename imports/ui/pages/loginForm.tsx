@@ -7,7 +7,7 @@ export default function LoginForm() {
   useTitle("Přihlášení | Maso 2023")
   const [loggedIn, user] = createFindOne(() => Meteor.user())
   return (
-      <FromBase title="Přihlášení" onConfirm={(res) => {
+      <FromBase title="Přihlášení" showBackButton onConfirm={(res) => {
           Meteor.loginWithPassword(res.userName, res.accountPassword, (error) => {
             if(error) {
               alert(error.message)

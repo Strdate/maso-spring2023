@@ -11,7 +11,7 @@ export default function CreateGame() {
         return new Date((new Date()).setSeconds(0,0) + 62*60*1000).toISOString().slice(0, -1)
     }
     return (
-        <FromBase title="Vytvořit hru" onConfirm={(res) => {
+        <FromBase title="Vytvořit hru" showBackButton onConfirm={(res) => {
             const mapped = {
                 name: res.gameName,
                 code: res.gameCode,

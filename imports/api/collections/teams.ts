@@ -10,7 +10,7 @@ export interface TeamInput {
 }
 
 export interface Team extends TeamInput {
-    _id?: string;
+    _id: string;
     externalId?: string;
     userId: string;
     CreatedAt: Date;

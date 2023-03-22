@@ -17,7 +17,7 @@ function TeamList(props: Props) {
   const hasTeams = () => Boolean(teams() && teams().length > 0)
   const addingTeamsAllowed = () => props.game.statusId === GameStatus.Created
   const sortedTeams = () => teams().sort((t1, t2) => parseInt(t1.number) - parseInt(t2.number))
-  const highestTeamIdPlus1: () => number | undefined = () => teams().reduce((prevVal: number | undefined, curTeam) => {
+  const highestTeamIdPlus1 = () => teams().reduce((prevVal: number | undefined, curTeam) => {
     if (prevVal === undefined) return undefined;  // If there is some non numeric value, ignore.
     try {
       const curVal = Number(curTeam.number);

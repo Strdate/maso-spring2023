@@ -8,15 +8,15 @@ interface TaskChangeLog {
 }
 
 export interface Task {
-    _id?: string;
+    _id: string;
     statusId: TaskStatus;
     number: number;
     teamId: string;
     gameId: string;
     isRevoked: boolean;
     changeLog: TaskChangeLog[];
-    CreatedAt: Date;
-    UpdatedAt: Date;
+    createdAt: Date;
+    updatedAt: Date;
   }
 
 export const TasksCollection = new Mongo.Collection<Task>('tasks');

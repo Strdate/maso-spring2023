@@ -22,3 +22,4 @@ vite:bundler
 mdg:validated-method
 accounts-base
 accounts-password
+nimble:restivus

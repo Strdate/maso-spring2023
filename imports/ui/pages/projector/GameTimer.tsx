@@ -1,6 +1,6 @@
 import { Tracker } from 'meteor/tracker'
 import { TimeSync } from 'meteor/mizzao:timesync'
-import { createMemo, createSignal, Switch, Match, onCleanup, createEffect } from 'solid-js'
+import { createMemo, createSignal, Switch, Match, onCleanup } from 'solid-js'
 
 type Props = {
     startAt: Date,

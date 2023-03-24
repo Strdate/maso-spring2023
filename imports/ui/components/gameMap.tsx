@@ -1,6 +1,5 @@
-import { onCleanup, onMount, untrack } from "solid-js";
+import { onCleanup, onMount } from "solid-js";
 import RenderingEngine from "./RenderingEngine";
-import { vertices, connections } from "/imports/data/map";
 
 export default function GameMap() {
     let re: RenderingEngine;
@@ -16,6 +15,6 @@ export default function GameMap() {
         re.render()
     })
 
-  return <canvas id="game-map" width='300px' height='300px' /*style={{position:'absolute', top: '0', left: '0'}}*/></canvas>
+  return <canvas id="game-map" width='300px' height='300px' ></canvas>
 }
 

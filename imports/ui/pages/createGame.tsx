@@ -3,7 +3,7 @@ import FromBase from "../components/formBase"
 import useTitle from '../utils/useTitle'
 
 export default function CreateGame() {
-    useTitle('Vytvořit hru | Maso 2023')
+    useTitle('Vytvořit hru | MaSo 2023')
     const defStartDate = () => {
         return new Date((new Date()).setSeconds(0,0) + 120000).toISOString().slice(0, -1)
     }

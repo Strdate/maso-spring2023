@@ -1,4 +1,8 @@
-html,
+@font-face {
+  font-family: publicPixel; 
+  src: url("/fonts/PublicPixel.ttf");
+}
+
 body {
   background-color: #ffd42d;
   font-size: 1.2em;
@@ -7,6 +11,11 @@ body {
 body {
   padding: 10px;
   font-family: sans-serif;
+}
+
+body.projector {
+  background-color: #000000;
+  padding: 0px;
 }
 
 h1 {
@@ -32,4 +41,14 @@ div.formbase * {
 div.formbase :is(input[type=button], input[type=submit]) {
   min-height: 40px;
   font-size: 1.1rem;
+}
+
+div.timerDiv {
+  font-family: publicPixel, Arial, sans-serif;
+  font-size: 6vh;
+  border-radius: 6px;
+  background-color: white;
+  padding: 0.8vh 0.8vh 0.8vh 0.8vh;
+  margin-top: 0.4vh;
+  align-self: stretch;
 }

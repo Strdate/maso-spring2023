@@ -21,7 +21,8 @@
     "simpl-schema": "^3.0.1",
     "solid-js": "^1.5.4",
     "solid-meteor-data": "^0.6.2",
-    "solid-styled-components": "^0.28.5"
+    "solid-styled-components": "^0.28.5",
+    "qr-scanner": "^1.4.2"
   },
   "meteor": {
     "mainModule": {

@@ -1,4 +1,5 @@
 import { createEffect, onCleanup, onMount } from "solid-js";
+import useResize from "../utils/useResize";
 import RenderingEngine from "./RenderingEngine";
 import { IProjector } from "/imports/api/collections/projectors";
 
@@ -9,6 +10,7 @@ type Props = {
 export default function GameMap(props: Props) {
     let re: RenderingEngine;
     console.log('GameMap mounted!')
+    const innerSize = useResize()
     onCleanup(() => {
         console.log('GameMap dismounted!')
     });
@@ -17,6 +19,7 @@ export default function GameMap(props: Props) {
         re = new RenderingEngine(canvas)
     })
     createEffect(() => {
+        innerSize() // trigger dependency
         re.render(props.projector.entities)
     })
 

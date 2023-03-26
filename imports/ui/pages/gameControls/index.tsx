@@ -3,6 +3,7 @@ import Menu from "@suid/icons-material/Menu"
 import VisibilityOff from "@suid/icons-material/VisibilityOff"
 import { TextField } from "@suid/material"
 import { createEffect, createSignal, Show } from "solid-js"
+import { createStore } from "solid-js/store"
 import { createFindOne, createSubscribe } from "solid-meteor-data"
 import ManagedSuspense from "../../components/managedSuspense"
 import useClass from "../../utils/useClass"
@@ -19,6 +20,7 @@ export default function GameControls() {
   const params = useParams()
   const [searchParams, setSearchParams] = useSearchParams()
   const navigate = useNavigate()
+  const [tabList, setTablist] = createStore([])
 
   const loading = createSubscribe('projector', () => params.code)
   const [found, projectorFound] = createFindOne(() => loading() ? null : ProjectorCollection.findOne({code: params.code}))
@@ -40,9 +42,11 @@ export default function GameControls() {
   const [tFound, teamFound] = createFindOne(() => valid() ? TeamsCollection.findOne() : null)
   const team = teamFound as IProjector
 
-  createEffect(() => {
-    console.log('team loading, found',teamLoading(),tFound(),team?.name,'validproj:',valid())
-  })
+  /*createEffect(() => {
+    if(tFound()) {
+      if(tabList.in)
+    }
+  })*/
 
   return <ManagedSuspense loading={loading()} found={found()}>
     <div class='app-bar'>

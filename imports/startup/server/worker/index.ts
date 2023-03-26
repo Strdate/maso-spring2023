@@ -23,8 +23,9 @@ function init() {
   }
 
   schedule.scheduleJob(`0 * * * * *`, updateGames)
-  //schedule.scheduleJob(`20 * * * * *`, moveMonstersLoc)
-  schedule.scheduleJob(`* * * * * *`, moveMonstersLoc)
+  schedule.scheduleJob(`20 * * * * *`, moveMonstersLoc)
+  schedule.scheduleJob(`40 * * * * *`, moveMonstersLoc)
+  //schedule.scheduleJob(`* * * * * *`, moveMonstersLoc)
 }
 
 export default init

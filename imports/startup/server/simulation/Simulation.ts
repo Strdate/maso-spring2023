@@ -3,7 +3,7 @@ import { IProjector, ProjectorCollection } from "/imports/api/collections/projec
 import { FacingDir } from "/imports/core/interfaces";
 import { entities, pacmanMap } from "/imports/data/map";
 
-const MONSTER_TICK_DIST = 1
+const MONSTER_TICK_DIST = 20
 
 export class Simulation {
     game: Game

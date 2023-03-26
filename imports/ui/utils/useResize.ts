@@ -17,6 +17,6 @@ export default function useResize() {
     onCleanup(() => {
         window.removeEventListener('resize', handleResize)
     })
-    resize()
+    handleResize()
     return newSize
 }

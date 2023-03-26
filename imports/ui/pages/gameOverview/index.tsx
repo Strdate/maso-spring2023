@@ -49,7 +49,7 @@ export default function GameOverview() {
                             <SectionLink
                                 header="Zadávátko"
                                 content="Aplikace na zadávání tahů hrajících týmů"
-                                link={`/${game.code}/zadavatko`}
+                                link={`/${game.code}/input`}
                             />
                             <SectionLink
                                 header="Scanner příkladů"

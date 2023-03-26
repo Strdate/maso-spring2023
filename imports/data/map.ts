@@ -32,6 +32,10 @@ const entityTypes: EntityType[] = [{
     typeId: 1,
     category: 'MONSTER',
     spriteMapOffset: [0, 1]
+},{
+    typeId: 2,
+    category: 'MONSTER',
+    spriteMapOffset: [4, 1]
 }]
 
 const entities: EntityData[] = [{
@@ -43,6 +47,14 @@ const entities: EntityData[] = [{
         'LEFT','LEFT','LEFT','LEFT','LEFT','LEFT','DOWN','DOWN','RIGHT','RIGHT',
         'DOWN','DOWN','DOWN','DOWN','DOWN','LEFT','LEFT','DOWN','DOWN','RIGHT',
         'RIGHT','LEFT','LEFT','DOWN','DOWN','RIGHT','RIGHT']
+},{
+    id: 2,
+    type: 2,
+    startPos: [13, 3],
+    program: ['RIGHT','DOWN','LEFT','LEFT','DOWN','DOWN','RIGHT','RIGHT','RIGHT',
+        'RIGHT','RIGHT','RIGHT','RIGHT','RIGHT','RIGHT','RIGHT','RIGHT','RIGHT',
+        'RIGHT','RIGHT','RIGHT','UP','UP','RIGHT','RIGHT','UP','UP','RIGHT',
+        'RIGHT','DOWN','RIGHT']
 }]
 
 export { pacmanMap, entityTypes, entities }

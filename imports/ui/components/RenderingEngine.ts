@@ -42,8 +42,6 @@ class RenderingEngine
             const offsetY = ent.spriteMapOffset[1]
             this.drawSprite(offsetX, offsetY, ent.position[0], ent.position[1])
         })
-
-        this.drawSprite(0, 1, 2, 3)
     }
 
     loadImage = () => {

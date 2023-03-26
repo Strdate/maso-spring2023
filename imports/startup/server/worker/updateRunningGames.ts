@@ -3,6 +3,7 @@ import { GameStatus, TaskStatus } from "/imports/core/enums"
 import { getTeams } from "./updateRunningGamesUtils"
 import { TasksCollection } from "/imports/api/collections/tasks"
 import { Random } from 'meteor/random'
+import { Simulation } from "../simulation/Simulation"
 
 function getRunningGames(now: Date) {
   return GameCollection.find({
@@ -14,14 +15,31 @@ function getRunningGames(now: Date) {
   }).fetch()
 }
 
-export default async function updateRunningGames() {
+async function updateRunningGames() {
   const now = new Date(new Date().setSeconds(0,0))
   const runningGames = getRunningGames(now)
   console.log('Running games:', runningGames.map(game => game.code))
   await Promise.all(runningGames.map(async game => {
     if( checkGameStatus(game, now) ) {
-      //logger.info(`Game ${game.code}: ${finishedCount} evaluated rolls`)
-      //await cacheResults({ gameId: game._id, gameCode: game.code })
+      const simulation = new Simulation({ game, now })
+      simulation.moveMonsters()
+      simulation.saveEntities()
+    }
+  }))
+}
+
+async function moveMonsters() {
+  const now = new Date(new Date().setMilliseconds(0))
+  if(now.getSeconds() === 0) {
+    return
+  }
+  const runningGames = getRunningGames(now)
+  console.log('Running games:', runningGames.map(game => game.code))
+  await Promise.all(runningGames.map(async game => {
+    if( game.statusId === GameStatus.Running || game.statusId === GameStatus.OutOfTime ) {
+      const simulation = new Simulation({ game, now })
+      simulation.moveMonsters()
+      simulation.saveEntities()
     }
   }))
 }
@@ -66,3 +84,5 @@ function checkGameStatus(game: Game, now: Date)
 
   return true
 }
+
+export {updateRunningGames, moveMonsters}

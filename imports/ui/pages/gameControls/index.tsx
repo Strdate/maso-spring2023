@@ -11,6 +11,7 @@ import GameDisplayBox from "../projector/gameDisplayBox"
 import Guide from "./guide"
 import Tabs from "./tabs"
 import { IProjector, ProjectorCollection } from "/imports/api/collections/projectors"
+import { TeamsCollection } from "/imports/api/collections/teams"
 
 export default function GameControls() {
   useClass('input-page')
@@ -24,8 +25,23 @@ export default function GameControls() {
   const projector = projectorFound as IProjector
 
   const [teamNum, setTeamNum] = createSignal<number>()
+
   createEffect(() => {
     setTeamNum(parseInt(searchParams.team))
+  })
+
+  const selectTeam = (newTeam: number) => {
+    setSearchParams({ team: newTeam.toString() })
+  }
+
+  const valid = () => Boolean(!loading() && found() && teamNum())
+
+  const teamLoading = createSubscribe(() => valid() ? 'team' : '', () => params.code, () => teamNum()?.toString())
+  const [tFound, teamFound] = createFindOne(() => valid() ? TeamsCollection.findOne() : null)
+  const team = teamFound as IProjector
+
+  createEffect(() => {
+    console.log('team loading, found',teamLoading(),tFound(),team?.name,'validproj:',valid())
   })
 
   return <ManagedSuspense loading={loading()} found={found()}>
@@ -41,13 +57,18 @@ export default function GameControls() {
             id: 'teamInput'}}
           InputLabelProps={{ style: { color: 'white' } }}
           style={{ 'margin-top': '2px' }}
-          /*onKeyPress={(ev) => {
+          onKeyPress={(ev) => {
             if (ev.key === 'Enter') {
-              selectTeam(ev.target.value)
-              ev.target.value = ''
+              // @ts-ignore
+              const parsedTeam = parseInt(ev.target.value)
+              if(parsedTeam) {
+                selectTeam(parsedTeam)
+                // @ts-ignore
+                ev.target.value = ''
+              }
               ev.preventDefault()
             }
-          }}*/
+          }}
         />
       <Tabs tabList={[ {name: 'Ahoj', active: false}, {name: 'Bahoj', active: true} ]} />
       <div class='app-bar-button' onClick={() => setSearchParams({team: undefined})}>NÁPOVĚDA</div>
@@ -56,6 +77,7 @@ export default function GameControls() {
     </div>
     <Show when={teamNum()}>
       <GameDisplayBox projector={projector} />
+      
     </Show>
     <Show when={!teamNum()}>
       <Guide />

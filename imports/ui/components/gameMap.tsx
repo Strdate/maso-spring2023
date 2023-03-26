@@ -1,18 +1,23 @@
-import { onCleanup, onMount } from "solid-js";
+import { createEffect, onCleanup, onMount } from "solid-js";
 import RenderingEngine from "./RenderingEngine";
+import { IProjector } from "/imports/api/collections/projectors";
 
-export default function GameMap() {
+type Props = {
+    projector: IProjector
+}
+
+export default function GameMap(props: Props) {
     let re: RenderingEngine;
     console.log('GameMap mounted!')
-    const timer = setInterval(() => re?.render(), 1000);
     onCleanup(() => {
-        clearInterval(timer)
         console.log('GameMap dismounted!')
     });
     onMount(() => {
         const canvas = document.getElementById("game-map") as HTMLCanvasElement
         re = new RenderingEngine(canvas)
-        re.render()
+    })
+    createEffect(() => {
+        re.render(props.projector.entities)
     })
 
   return <canvas id="game-map" width='300px' height='300px' ></canvas>

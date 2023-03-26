@@ -3,9 +3,9 @@ import { Game, GameCollection, GameInputSchema } from '/imports/api/collections/
 import { ResultsCollection } from '/imports/api/collections/results'
 import {TeamInputSchema, TeamsCollection} from "/imports/api/collections/teams";
 import * as enums from "../imports/core/enums";
+import { ProjectorCollection } from '/imports/api/collections/projectors';
 
 Meteor.publish('game', function (code) {
-    console.log("game code: ", code)
     try {
         GameInputSchema.pick('code').validate({ code })
         const game = GameCollection.findOne({ code })
@@ -35,6 +35,11 @@ Meteor.publish('game', function (code) {
         console.log(er)
         return []
     }
+})
+
+Meteor.publish('projector', function(code) {
+    GameInputSchema.pick('code').validate({ code })
+    return ProjectorCollection.find({ code })
 })
 
 Meteor.publish('teams', function (gameCode) {

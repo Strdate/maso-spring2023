@@ -4,6 +4,8 @@ import { Meteor } from 'meteor/meteor'
 import { GameCollection, GameInput, GameInputSchema } from '../../collections/games'
 import { ProjectorCollection } from '../../collections/projectors'
 import { GameStatus } from '../../../core/enums'
+import { entities, entityTypes } from '/imports/data/map'
+import { EntityInstance } from '/imports/core/interfaces'
 
 export default new ValidatedMethod({
   name: 'games.create',
@@ -37,10 +39,29 @@ export default new ValidatedMethod({
         code: game.code,
         startAt: game.startAt,
         endAt: game.endAt,
-        updatedAt: new Date()
+        updatedAt: new Date(),
+        entities: initEntities()
       })
       // TODO cache projector
       return _id
     }
   }
 })
+
+function initEntities(): EntityInstance[] {
+  return entities.map(ent => {
+    const type = entityTypes.find(type => type.typeId === ent.type)!
+    return {
+      ...ent,
+      ...type
+    }
+  }).filter(ent => ent.category === 'MONSTER').map(ent => {
+    return {
+      id: ent.id,
+      category: ent.category,
+      spriteMapOffset: ent.spriteMapOffset,
+      position: ent.startPos,
+      facingDir: ent.program?.[0]
+    }
+  })
+}

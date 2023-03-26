@@ -34,7 +34,7 @@ export default function GameTimer(props: Props) {
                 Hra skončila
             </Match>
             <Match when={phase() === 'COMMENCING'}>
-                Čas do začátku soutěže:&nbsp;{formattedMS(start() - current())}
+                Čas do začátku:&nbsp;{formattedMS(start() - current())}
             </Match>
             <Match when={phase() === 'RUNNING'}>
                 Čas do konce:&nbsp;{formattedMS(end() - current())}

@@ -5,10 +5,10 @@ import useTitle from '../utils/useTitle'
 export default function CreateGame() {
     useTitle('Vytvořit hru | MaSo 2023')
     const defStartDate = () => {
-        return new Date((new Date()).setSeconds(0,0) + 120000).toISOString().slice(0, -1)
+        return convertUTCDateToLocalDate(new Date((new Date()).setSeconds(0,0) + 120000)).toISOString().slice(0, -1)
     }
     const defEndDate = () => {
-        return new Date((new Date()).setSeconds(0,0) + 62*60*1000).toISOString().slice(0, -1)
+        return convertUTCDateToLocalDate(new Date((new Date()).setSeconds(0,0) + 62*60*1000)).toISOString().slice(0, -1)
     }
     return (
         <FromBase title="Vytvořit hru" showBackButton onConfirm={(res) => {
@@ -42,4 +42,15 @@ export default function CreateGame() {
         </FromBase>
 
       )
+}
+
+function convertUTCDateToLocalDate(date: Date) {
+  var newDate = new Date(date.getTime()+date.getTimezoneOffset()*60*1000);
+
+  var offset = date.getTimezoneOffset() / 60;
+  var hours = date.getHours();
+
+  newDate.setHours(hours - offset);
+
+  return newDate;   
 }

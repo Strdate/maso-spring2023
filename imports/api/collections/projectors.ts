@@ -1,8 +1,9 @@
 import { Mongo } from 'meteor/mongo';
+import { EntityInstance } from '/imports/core/interfaces';
 
 /* Cache */
 
-export interface Projector {
+export interface IProjector {
     _id?: string;
     gameId: string;
     name: string;
@@ -10,6 +11,7 @@ export interface Projector {
     startAt: Date;
     endAt: Date;
     updatedAt: Date;
+    entities: EntityInstance[];
   }
 
-export const ProjectorCollection = new Mongo.Collection<Projector>('projectors');
+export const ProjectorCollection = new Mongo.Collection<IProjector>('projectors');

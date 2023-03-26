@@ -14,7 +14,7 @@ export default function GameOverview() {
     const params = useParams()
     useTitle(`${params.code} | MaSo 2023`)
     const loading = createSubscribe('game', () => params.code)
-    const [found, gameFound] = createFindOne(() => loading() ? null : GameCollection.findOne({code: params.code}))
+    const [found, gameFound] = createFindOne(() => loading() ? undefined : GameCollection.findOne({code: params.code}))
     const game = gameFound as Game
 
     const [loggedIn, userFound] = createFindOne(() => Meteor.user())

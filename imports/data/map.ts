@@ -1,3 +1,5 @@
+import { EntityCategory, FacingDir } from "../core/interfaces"
+
 const pacmanMap = [
     [5,1,11,1,1,1,1,4,0,0,0,5,1,1,1,1,11,1,4],
     [2,0,2,0,0,0,0,9,1,11,1,8,0,0,0,0,2,0,2],
@@ -13,4 +15,34 @@ const pacmanMap = [
     [7,1,1,1,6,0,0,0,0,0,0,0,0,0,7,1,1,1,6]
 ]
 
-export {pacmanMap}
+interface EntityType {
+    typeId: number
+    category: EntityCategory
+    spriteMapOffset: [number, number]
+}
+
+interface EntityData {
+    id: number
+    type: number
+    startPos: [number, number]
+    program?: FacingDir[]
+}
+
+const entityTypes: EntityType[] = [{
+    typeId: 1,
+    category: 'MONSTER',
+    spriteMapOffset: [0, 1]
+}]
+
+const entities: EntityData[] = [{
+    id: 1,
+    type: 1,
+    startPos: [3, 12],
+    program: ['RIGHT','RIGHT','UP','UP','UP','UP','LEFT','LEFT','UP','UP',
+        'UP','UP','UP','RIGHT','RIGHT','RIGHT','RIGHT','RIGHT','UP','UP','LEFT',
+        'LEFT','LEFT','LEFT','LEFT','LEFT','LEFT','DOWN','DOWN','RIGHT','RIGHT',
+        'DOWN','DOWN','DOWN','DOWN','DOWN','LEFT','LEFT','DOWN','DOWN','RIGHT',
+        'RIGHT','LEFT','LEFT','DOWN','DOWN','RIGHT','RIGHT']
+}]
+
+export { pacmanMap, entityTypes, entities }

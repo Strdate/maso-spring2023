@@ -3,6 +3,10 @@
   src: url("/fonts/PublicPixel.ttf");
 }
 
+@-ms-viewport{
+  width: device-width;
+}
+
 body {
   background-color: #ffd42d;
   font-size: 1.2em;

@@ -43,22 +43,28 @@ Meteor.publish('projector', function(code) {
 })
 
 Meteor.publish('teams', function (gameCode) {
-    try {
-        GameInputSchema.pick('code').validate({ code: gameCode });
-        const game = GameCollection.findOne({ code: gameCode });
-        if(!game) {
-            return [];
-        }
-        if(!this.userId || !checkGameAccess(game, this.userId)) {
-            return [];
-        }
-        return [
-            TeamsCollection.find({ gameId: game._id }),
-        ];
-    } catch(er) {
-        console.log(er)
+    GameInputSchema.pick('code').validate({ code: gameCode })
+    const game = GameCollection.findOne({ code: gameCode })
+    if(!game) {
         return []
     }
+    if(!this.userId || !checkGameAccess(game, this.userId)) {
+        return []
+    }
+    return TeamsCollection.find({ gameId: game._id })
+})
+
+Meteor.publish('team', function (gameCode, teamNum) {
+    GameInputSchema.pick('code').validate({ code: gameCode })
+    TeamInputSchema.pick('number').validate({ number: teamNum })
+    const game = GameCollection.findOne({ code: gameCode });
+    if(!game) {
+        return []
+    }
+    if(!this.userId || !checkGameAccess(game, this.userId)) {
+        return []
+    }
+    return TeamsCollection.find({ gameId: game._id, number: teamNum })
 })
 
 function isSubAuthorized(game: Game, userId: string) {

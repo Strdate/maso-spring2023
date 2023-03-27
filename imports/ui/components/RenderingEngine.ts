@@ -65,7 +65,8 @@ class RenderingEngine
     }
 
     resize = () => {
-        this.scale = /*Math.floor(*/(window.innerHeight * 0.88) / SPRITE_SIZE / pacmanMap.length/*)*/
+        const rect = this.canvas.getBoundingClientRect()
+        this.scale = (window.innerHeight - rect.top) * 0.95 / SPRITE_SIZE / pacmanMap.length
         this.canvas.height = this.scale * SPRITE_SIZE * pacmanMap.length
         this.canvas.width = this.scale * SPRITE_SIZE * pacmanMap[0].length
         this.ctx.imageSmoothingEnabled = false

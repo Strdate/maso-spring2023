@@ -1,9 +1,11 @@
+import { useNavigate } from '@solidjs/router'
 import CreateGameMethod from '../../api/methods/games/create'
 import FromBase from "../components/formBase"
 import useTitle from '../utils/useTitle'
 
 export default function CreateGame() {
     useTitle('Vytvořit hru | MaSo 2023')
+    const navigate = useNavigate()
     const defStartDate = () => {
         return convertUTCDateToLocalDate(new Date((new Date()).setSeconds(0,0) + 120000)).toISOString().slice(0, -1)
     }
@@ -23,9 +25,8 @@ export default function CreateGame() {
             CreateGameMethod.call(mapped, err => {
                 if(err)
                   alert(err)
-                /*if (!err) {
-                  this.props.history.push(`/${data.code}`)
-                }*/
+                else
+                  navigate(`/${res.gameCode}`)
               })
         }}>
             <label for="gameName">Název</label>

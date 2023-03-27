@@ -5,6 +5,6 @@ export default function useClass(className: string) {
         document.body.classList.add(className);
     })
     onCleanup(() => {
-        document.body.classList.add(className);
+        document.body.classList.remove(className);
     })
 }

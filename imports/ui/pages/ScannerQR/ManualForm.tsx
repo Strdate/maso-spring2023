@@ -38,13 +38,12 @@ export default function ManualForm(props: { onTaskSubmit: (data: { teamNumber: n
             />
           </Grid>
           <Grid item>
-            {/* @ts-ignore - These suid elements does not have normal html attributes in its types. :/ */}
             <Button
               variant="contained"
               color="primary"
               type="submit"
-              className="button-block"
-              style={{backgroundColor: '#ffd42d', color: '#000000', width: "100%", height: "2wh"}}
+              class="button-block"
+              style={{'background-color': '#ffd42d', color: '#000000', width: "100%", height: "2wh"}}
             >
               Potvrdit
             </Button>

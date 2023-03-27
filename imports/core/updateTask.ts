@@ -5,18 +5,7 @@ import { Game, GameCollection } from '../api/collections/games';
 import { isAuthorized } from './authorization';
 import { Team, TeamsCollection } from '../api/collections/teams';
 import { Task, TasksCollection } from '../api/collections/tasks';
-
-const TaskActionsArr = ['solve', 'exchange', 'cancel'] as const
-type TaskTuple = typeof TaskActionsArr;
-type TaskActionString = TaskTuple[number];
-
-interface TaskInput {
-  gameCode: string,
-  teamNumber: number,
-  userId: string,
-  taskNumber: number,
-  action: TaskActionString
-}
+import { TaskInputWithUser, TaskActionsArr, TaskReturnData } from './interfaces';
 
 const InputSchema = new SimpleSchema({
   gameCode: { type: String, min: 2, max: 32 },
@@ -27,7 +16,7 @@ const InputSchema = new SimpleSchema({
   action: { type: String, allowedValues: TaskActionsArr },
 })
 
-export default function updateTask(data: TaskInput) {
+export default function updateTask(data: TaskInputWithUser) {
   const validator = InputSchema.newContext()
   //@ts-ignore
   validator.validate(data)
@@ -171,7 +160,7 @@ function revokeLastIssuedTask(game: Game, team: Team, userId: string) {
   return true
 }
 
-function returnData(team: Team, task: {number: number, statusId: TaskStatus}, nextTaskNumber: number | null) {
+function returnData(team: Team, task: {number: number, statusId: TaskStatus}, nextTaskNumber: number | null): TaskReturnData {
   return {
     teamNumber: team.number,
     teamName: team.name,

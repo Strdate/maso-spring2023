@@ -1,3 +1,5 @@
+import { TaskStatus } from "./enums";
+
 interface TeamScore {
     tasks: number;
     total: number;
@@ -15,4 +17,42 @@ type EntityCategory = 'MONSTER'
 
 type FacingDir = 'UP' | 'DOWN' | 'RIGHT' | 'LEFT'
 
-export { TeamScore, EntityInstance, EntityCategory, FacingDir }
+const TaskActionsArr = ['solve', 'exchange', 'cancel'] as const
+type TaskTuple = typeof TaskActionsArr;
+type TaskActionString = TaskTuple[number];
+
+interface TaskBase {
+  teamNumber: number,
+  taskNumber: number,
+  action: TaskActionString
+}
+
+interface TaskInput extends TaskBase {
+  gameCode: string
+}
+
+interface TaskInputWithUser extends TaskInput {
+  userId: string
+}
+
+interface TaskReturnData {
+  teamNumber: string
+  teamName: string
+  taskNumber: number,
+  taskStatusId: TaskStatus,
+  print: boolean,
+  printNumber: number | null,
+}
+
+export {
+  TeamScore,
+  EntityInstance,
+  EntityCategory,
+  FacingDir,
+  TaskBase,
+  TaskInput,
+  TaskInputWithUser,
+  TaskActionString,
+  TaskReturnData,
+  TaskActionsArr
+}

@@ -1,10 +1,10 @@
-import {Button, Grid, TextField} from "@suid/material";
+import { Button, Grid, TextField } from "@suid/material";
 import FromBase from "/imports/ui/components/formBase";
 
 
 export default function ManualForm(props: { onTaskSubmit: (data: { teamNumber: number, taskNumber: number }) => void }) {
   return (
-    <div style={{margin: '80px 10px 10px 10px', padding: '10px', border: '1px solid #000000'}}>
+    <div style={{margin: '10px 10px 10px 10px', padding: '10px', border: '1px solid #000000'}}>
       <FromBase title="" onConfirm={(res) => {
         console.log(res);
         const mapped = {

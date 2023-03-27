@@ -16,13 +16,14 @@
     "@types/meteor-mdg-validated-method": "^1.2.5",
     "@types/node-schedule": "^2.1.0",
     "@types/simpl-schema": "^1.12.3",
+    "alertifyjs": "^1.13.1",
     "meteor-node-stubs": "^1.2.1",
     "node-schedule": "^2.1.1",
+    "qr-scanner": "^1.4.2",
     "simpl-schema": "^3.0.1",
     "solid-js": "^1.5.4",
     "solid-meteor-data": "^0.6.2",
-    "solid-styled-components": "^0.28.5",
-    "qr-scanner": "^1.4.2"
+    "solid-styled-components": "^0.28.5"
   },
   "meteor": {
     "mainModule": {

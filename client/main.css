@@ -9,6 +9,11 @@ body {
   font-family: sans-serif;
 }
 
+body.task-scanner {
+  background-color: #ffffff;
+  margin: 0;
+}
+
 body.projector {
   background-color: #000000;
 }
@@ -84,4 +89,27 @@ div.timerDiv {
 .tab-button-selected, .tab-button-selected:hover {
   opacity: 1;
   border-bottom: 2px solid #f50057;
+}
+
+.task-mode-group {
+  z-index: 99;
+  height: '40px';
+}
+
+.tmg-inner {
+  background-color: #ffd42d;
+}
+
+.floating-tmg {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translate(-50%, 0);
+}
+
+.inline-tmg {
+  position: static;
+  margin: 20px 0px 20px 0px;
+  display: flex;
+  justify-content: center;
 }

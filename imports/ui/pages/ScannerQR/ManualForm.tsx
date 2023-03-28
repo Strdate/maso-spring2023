@@ -13,7 +13,7 @@ export default function ManualForm(props: { onTaskSubmit: (data: { teamNumber: n
         props.onTaskSubmit(mapped)
         // @ts-ignore
         document.getElementById('inputform').reset()
-        document.getElementById('team')?.focus()
+        //document.getElementById('team')?.focus()
       }}>
         <Grid container direction="column" spacing={2}>
           <Grid item>

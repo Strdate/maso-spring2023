@@ -50,8 +50,10 @@ export default function GameControls() {
     }
     console.log('Runnig effect!',tFound(),teamLoading(),teamNum(),team.number)
     // It REALLY can happen that teamNum() !== team.number :O
-    if(tFound() && !tabList().includes(teamNum()!) && teamNum() === team?.number) {
-      setTabList([...tabList(), teamNum()!]).sort((a,b) => parseInt(a) - parseInt(b))
+    if(tFound() && teamNum() === team?.number) {
+      if(!tabList().includes(teamNum()!)) {
+        setTabList([...tabList(), teamNum()!]).sort((a,b) => parseInt(a) - parseInt(b))
+      }
       prevTeamNum = teamNum()!
     }
     if(!tFound() && tabList().includes(teamNum()!)) {

@@ -2,8 +2,7 @@ import { useNavigate, useParams, useSearchParams } from "@solidjs/router"
 import Menu from "@suid/icons-material/Menu"
 import VisibilityOff from "@suid/icons-material/VisibilityOff"
 import { TextField } from "@suid/material"
-import { createEffect, createSignal, Show } from "solid-js"
-import { createStore } from "solid-js/store"
+import { createEffect, createMemo, createSignal, Show } from "solid-js"
 import { createFindOne, createSubscribe } from "solid-meteor-data"
 import ManagedSuspense from "../../components/managedSuspense"
 import useClass from "../../utils/useClass"
@@ -12,7 +11,7 @@ import GameDisplayBox from "../projector/gameDisplayBox"
 import Guide from "./guide"
 import Tabs from "./tabs"
 import { IProjector, ProjectorCollection } from "/imports/api/collections/projectors"
-import { TeamsCollection } from "/imports/api/collections/teams"
+import { TeamsCollection, Team } from "/imports/api/collections/teams"
 
 export default function GameControls() {
   useClass('input-page')
@@ -20,33 +19,68 @@ export default function GameControls() {
   const params = useParams()
   const [searchParams, setSearchParams] = useSearchParams()
   const navigate = useNavigate()
-  const [tabList, setTablist] = createStore([])
+  const [tabList, setTabList] = createSignal<string[]>([])
+  let prevTeamNum: string | undefined
 
   const loading = createSubscribe('projector', () => params.code)
   const [found, projectorFound] = createFindOne(() => loading() ? null : ProjectorCollection.findOne({code: params.code}))
   const projector = projectorFound as IProjector
 
-  const [teamNum, setTeamNum] = createSignal<number>()
-
+  /*const [teamNum, setTeamNum] = [
+    createMemo(() => (parseInt(searchParams.team) || undefined)?.toString()),
+    (team: string | undefined) => setSearchParams({team: team})
+  ]*/
+  const [teamNum, setTeamNum] = createSignal<string | undefined>(undefined)
   createEffect(() => {
-    setTeamNum(parseInt(searchParams.team))
+    setTeamNum((parseInt(searchParams.team) || undefined)?.toString())
+  })
+  createEffect(() => {
+    setSearchParams({team: teamNum()})
   })
 
   const selectTeam = (newTeam: number) => {
-    setSearchParams({ team: newTeam.toString() })
+    setTeamNum(newTeam.toString())
   }
 
   const valid = () => Boolean(!loading() && found() && teamNum())
 
-  const teamLoading = createSubscribe(() => valid() ? 'team' : '', () => params.code, () => teamNum()?.toString())
+  const teamLoading = createSubscribe(() => valid() ? 'team' : '', () => params.code, () => teamNum())
   const [tFound, teamFound] = createFindOne(() => valid() ? TeamsCollection.findOne() : null)
-  const team = teamFound as IProjector
+  const team = teamFound as Team
 
-  /*createEffect(() => {
-    if(tFound()) {
-      if(tabList.in)
+  createEffect(() => {
+    if(teamLoading()) {
+      return
     }
-  })*/
+    console.log('Runnig effect!',tFound(),teamLoading(),teamNum(),team.number)
+    // It REALLY can happen that teamNum() !== team.number :O
+    if(tFound() && !tabList().includes(teamNum()!) && teamNum() === team?.number) {
+      setTabList([...tabList(), teamNum()!]).sort((a,b) => parseInt(a) - parseInt(b))
+      prevTeamNum = teamNum()!
+    }
+    if(!tFound() && tabList().includes(teamNum()!)) {
+      setTabList((tabl) => tabl.filter(t => t !== teamNum()))
+    }
+    if(!tFound() && teamNum()) {
+      alert(`Tým s číslem ${teamNum()} jsme nenašli!`)
+      if(prevTeamNum && teamNum() !== prevTeamNum) {
+        setTeamNum(prevTeamNum)
+      } else {
+        setTeamNum(undefined)
+      }
+    }
+  })
+
+  const removeCurTeam = () => {
+    const index = tabList().findIndex(x => x === teamNum())
+    if(index >= 0) {
+      const newTabs = tabList().filter(t => t !== teamNum())
+      const newTeamNum = newTabs.length > 0 ? newTabs[Math.min(index, newTabs.length - 1)] : undefined
+      prevTeamNum = undefined
+      setTeamNum(newTeamNum)
+      setTabList(newTabs)
+    }
+  }
 
   return <ManagedSuspense loading={loading()} found={found()}>
     <div class='app-bar'>
@@ -74,10 +108,10 @@ export default function GameControls() {
             }
           }}
         />
-      <Tabs tabList={[ {name: 'Ahoj', active: false}, {name: 'Bahoj', active: true} ]} />
-      <div class='app-bar-button' onClick={() => setSearchParams({team: undefined})}>NÁPOVĚDA</div>
-      <div class='app-bar-button'><VisibilityOff /></div>
+      <Tabs tabList={tabList()} activeTab={teamNum()} callback={setTeamNum}/>
+      <div class='app-bar-button' onClick={removeCurTeam}><VisibilityOff /></div>
       <div class='app-bar-button' onClick={() => navigate(`/${params.code}`)}><Menu /></div>
+      <div class='app-bar-button' onClick={() => setTeamNum(undefined)}>NÁPOVĚDA</div>
     </div>
     <Show when={teamNum()}>
       <GameDisplayBox projector={projector} />

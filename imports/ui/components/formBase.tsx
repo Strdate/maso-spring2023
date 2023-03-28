@@ -24,7 +24,7 @@ export default function FromBase(props: Props) {
         padding: '10px',
         margin: '0 auto',
     }}>
-        <form onSubmit={(e) => {
+        <form id='inputform' onSubmit={(e) => {
             e.preventDefault()
             const data = new FormData(e.target as HTMLFormElement)
             const res = {} as any

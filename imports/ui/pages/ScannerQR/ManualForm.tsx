@@ -6,12 +6,14 @@ export default function ManualForm(props: { onTaskSubmit: (data: { teamNumber: n
   return (
     <div style={{margin: '10px 10px 10px 10px', padding: '10px', border: '1px solid #000000'}}>
       <FromBase title="" onConfirm={(res) => {
-        console.log(res);
         const mapped = {
           teamNumber: parseInt(res.teamId),
           taskNumber: parseInt(res.taskId),
         };
-        props.onTaskSubmit(mapped);
+        props.onTaskSubmit(mapped)
+        // @ts-ignore
+        document.getElementById('inputform').reset()
+        document.getElementById('team')?.focus()
       }}>
         <Grid container direction="column" spacing={2}>
           <Grid item>

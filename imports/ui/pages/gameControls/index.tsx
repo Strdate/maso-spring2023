@@ -2,7 +2,7 @@ import { useNavigate, useParams, useSearchParams } from "@solidjs/router"
 import Menu from "@suid/icons-material/Menu"
 import VisibilityOff from "@suid/icons-material/VisibilityOff"
 import { TextField } from "@suid/material"
-import { createEffect, createMemo, createSignal, Show } from "solid-js"
+import { createEffect, createSignal, Show } from "solid-js"
 import { createFindOne, createSubscribe } from "solid-meteor-data"
 import ManagedSuspense from "../../components/managedSuspense"
 import useClass from "../../utils/useClass"
@@ -26,10 +26,6 @@ export default function GameControls() {
   const [found, projectorFound] = createFindOne(() => loading() ? null : ProjectorCollection.findOne({code: params.code}))
   const projector = projectorFound as IProjector
 
-  /*const [teamNum, setTeamNum] = [
-    createMemo(() => (parseInt(searchParams.team) || undefined)?.toString()),
-    (team: string | undefined) => setSearchParams({team: team})
-  ]*/
   const [teamNum, setTeamNum] = createSignal<string | undefined>(undefined)
   createEffect(() => {
     setTeamNum((parseInt(searchParams.team) || undefined)?.toString())

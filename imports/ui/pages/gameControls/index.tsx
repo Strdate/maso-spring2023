@@ -85,7 +85,7 @@ export default function GameControls() {
   return <ManagedSuspense loading={loading()} found={found()}>
     <div class='app-bar'>
       <TextField
-          //autoFocus={valid ? null : true}
+          autoFocus//={valid() ? null : true}
           label="Číslo týmu"
           type="number"
           margin="dense"
@@ -109,13 +109,12 @@ export default function GameControls() {
           }}
         />
       <Tabs tabList={tabList()} activeTab={teamNum()} callback={setTeamNum}/>
-      <div class='app-bar-button' onClick={removeCurTeam}><VisibilityOff /></div>
-      <div class='app-bar-button' onClick={() => navigate(`/${params.code}`)}><Menu /></div>
+      <div class='app-bar-button hastooltip' onClick={removeCurTeam}><VisibilityOff /><span class='tooltiptext'>Odstranit tým ze záložek</span></div>
+      <div class='app-bar-button hastooltip' onClick={() => navigate(`/${params.code}`)}><Menu /><span class='tooltiptext'>Zpět do menu</span></div>
       <div class='app-bar-button' onClick={() => setTeamNum(undefined)}>NÁPOVĚDA</div>
     </div>
     <Show when={teamNum()}>
       <GameDisplayBox projector={projector} />
-      
     </Show>
     <Show when={!teamNum()}>
       <Guide />

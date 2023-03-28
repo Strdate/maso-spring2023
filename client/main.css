@@ -117,3 +117,27 @@ div.timerDiv {
   display: flex;
   justify-content: center;
 }
+
+.hastooltip {
+  position: relative;
+}
+
+.hastooltip .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: #fff;
+  color: #000;
+  text-align: center;
+  padding: 5px 3px;
+  border-radius: 6px;
+  border: 1px solid #000;
+  /* Position the tooltip text - see examples below! */
+  position: absolute;
+  z-index: 1;
+  top: 100%;
+  right: 105%;
+}
+
+.hastooltip:hover .tooltiptext {
+  visibility: visible;
+}

@@ -76,6 +76,8 @@ export default function GameControls() {
     const canvas = document.getElementById("game-map") as HTMLCanvasElement
     if(team?.number && canvas) {
       canvas.focus()
+    } else {
+      document.getElementById("teamInput")?.focus()
     }
   })
 

@@ -56,7 +56,8 @@ export default function GameMap(props: Props) {
 }
 
 function transformEntities(entities: EntityInstance[], team?: Team) {
-    if(!team) {
+    // Yes, team is sometimes empty object :O
+    if(!team || !team.position) {
         return entities
     }
     entities = [...entities]

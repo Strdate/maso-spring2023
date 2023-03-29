@@ -13,6 +13,15 @@ interface MoveInputUser extends MoveInput {
 }
 
 export default function insertMove({ gameId, teamId, newPos, userId }: MoveInputUser) {
+    if(Meteor.isClient) {
+        TeamsCollection.update(teamId, {
+            $set: {
+                position: newPos
+            }
+        })
+        console.log('Running client code')
+        return
+    }
     const game = getGame(userId, gameId)
     const team = getTeam(game._id, teamId)
     const facingDir = checkPosition(team, newPos)

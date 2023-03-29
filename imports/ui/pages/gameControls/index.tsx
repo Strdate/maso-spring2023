@@ -10,9 +10,9 @@ import useClass from "../../utils/useClass"
 import useTitle from "../../utils/useTitle"
 import Guide from "./guide"
 import Tabs from "./tabs"
-import { IProjector, ProjectorCollection } from "/imports/api/collections/projectors"
 import { TeamsCollection, Team } from "/imports/api/collections/teams"
 import TeamControlsBox from "./teamControlsBox"
+import { Game, GameCollection } from "/imports/api/collections/games"
 
 export default function GameControls() {
   useClass('input-page')
@@ -23,9 +23,9 @@ export default function GameControls() {
   const [tabList, setTabList] = createSignal<string[]>([])
   let prevTeamNum: string | undefined
 
-  const loading = createSubscribe('projector', () => params.code)
-  const [found, projectorFound] = createFindOne(() => loading() ? null : ProjectorCollection.findOne({code: params.code}))
-  const projector = projectorFound as IProjector
+  const loading = createSubscribe('game', () => params.code)
+  const [found, gameFound] = createFindOne(() => loading() ? null : GameCollection.findOne({code: params.code}))
+  const game = gameFound as Game
 
   const [teamNum, setTeamNum] = createSignal<string | undefined>(undefined)
   createEffect(() => {
@@ -136,7 +136,7 @@ export default function GameControls() {
       <div class='app-bar-button hastooltip' onClick={() => navigate(`/${params.code}`)}><Menu /><span class='tooltiptext'>Zpět do menu</span></div>
     </div>
     <Show when={!showGuide()}>
-      <TeamControlsBox projector={projector} team={team} />
+      <TeamControlsBox game={game} team={team} />
     </Show>
     <Show when={showGuide()}>
       <Guide />

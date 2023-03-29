@@ -45,7 +45,7 @@ export default function GameOverview() {
                             content="Aktuální stav hry pro zobrazení na dataprojektoru"
                             link={`/${game.code}/projektor`}
                         />
-                        <Show when={isUserAuthorized()}>
+                        {/*<Show when={isUserAuthorized()}>*/}
                             <SectionLink
                                 header="Zadávátko"
                                 content="Aplikace na zadávání tahů hrajících týmů"
@@ -56,7 +56,7 @@ export default function GameOverview() {
                                 content="Potvrzování příkladů mobilním telefonem"
                                 link={`/${game.code}/scanner`}
                              />
-                        </Show>
+                        {/*</Show>*/}
                         {/*isOwner && <SectionLink
                             header="Výsledky"
                             content="Aktuální živé výsledky"

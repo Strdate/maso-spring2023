@@ -11,9 +11,7 @@ import checkWallCollision from "./utils/checkWallCollision";
 export default function insertMove({ gameId, teamId, newPos, userId, isSimulation }:
     MoveInput & {isSimulation: boolean, userId: string | null}) {
 
-    if(!isSimulation) {
-        checkGame(userId, gameId)
-    }
+    checkGame(userId, gameId, isSimulation)
     const team = getTeam(gameId, teamId)
     const facingDir = checkPosition(team, newPos)
     newPos = normalizePosition(newPos)
@@ -49,9 +47,9 @@ function checkPosition(team: Team, newPos: Pos): FacingDir {
     return facingDir
 }
 
-function checkGame(userId: string | null, gameId: string) {
+function checkGame(userId: string | null, gameId: string, isSimulation: boolean) {
     const game = GameCollection.findOne(gameId)
-    if (!game || !isAuthorized(userId, game)) {
+    if (!game || (!isAuthorized(userId, game) && !isSimulation)) {
       throw new Meteor.Error('moves.insert.insertNotAllowed', 'Nemáte pro tuto hru dostatečná oprávnění.')
     }
     const now = new Date().setMilliseconds(0)

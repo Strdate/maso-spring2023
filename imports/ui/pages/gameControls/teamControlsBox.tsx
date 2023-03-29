@@ -1,9 +1,9 @@
 import GameDisplayBox from "../projector/gameDisplayBox";
-import { IProjector } from "/imports/api/collections/projectors";
+import { Game } from "/imports/api/collections/games";
 import { Team } from "/imports/api/collections/teams";
 
 type Props = {
-    projector: IProjector
+    game: Game
     team: Team | undefined
 }
 
@@ -13,6 +13,6 @@ export default function TeamControlsBox(props: Props) {
             <span>{props.team?.number ?? '###'} - {props.team?.name}</span>
             <span>skóre: {props.team?.score?.total ?? 0}</span>
         </div>
-        <GameDisplayBox projector={props.projector} team={props.team} />
+        <GameDisplayBox game={props.game} team={props.team} />
     </div>
 }

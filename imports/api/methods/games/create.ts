@@ -2,7 +2,6 @@
 import { ValidatedMethod } from 'meteor/mdg:validated-method'
 import { Meteor } from 'meteor/meteor'
 import { GameCollection, GameInput, GameInputSchema } from '../../collections/games'
-import { ProjectorCollection } from '../../collections/projectors'
 import { GameStatus } from '../../../core/enums'
 import { entities, entityTypes } from '/imports/data/map'
 import { EntityInstance } from '/imports/core/interfaces'
@@ -31,18 +30,9 @@ export default new ValidatedMethod({
         experiencePerTask: 10,
         initiallyIssuedTasks: 6,
         totalTasksCount: 50,
-        totalExchangeableTasksCount: 4
-      })
-      ProjectorCollection.insert({
-        gameId: _id,
-        name: game.name,
-        code: game.code,
-        startAt: game.startAt,
-        endAt: game.endAt,
-        updatedAt: new Date(),
+        totalExchangeableTasksCount: 4,
         entities: initEntities()
       })
-      // TODO cache projector
       return _id
     }
   }

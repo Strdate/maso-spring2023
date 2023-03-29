@@ -1,5 +1,4 @@
-import { Game } from "/imports/api/collections/games";
-import { IProjector, ProjectorCollection } from "/imports/api/collections/projectors";
+import { Game, GameCollection } from "/imports/api/collections/games";
 import { FacingDir, Pos } from "/imports/core/interfaces";
 import { facingDirToMove, normalizePosition, vectorSum } from "/imports/core/utils/geometry";
 import { entities } from "/imports/data/map";
@@ -8,19 +7,17 @@ const MONSTER_TICK_DIST = 20
 
 export class Simulation {
     game: Game
-    projector: IProjector
     now: Date
 
     constructor({ game, now }: {game: Game, now: Date}) {
         this.game = game
-        this.projector = ProjectorCollection.findOne({ code: game.code })!
         this.now = now
     }
 
     moveMonsters = () => {
         const tick = this.getCurMonsterTick()
         console.log(`Moving monsters. Tick: ${tick}`)
-        this.projector.entities = this.projector.entities.map(ent => {
+        this.game.entities = this.game.entities.map(ent => {
             if(ent.category !== 'MONSTER') {
                 return ent
             }
@@ -40,13 +37,13 @@ export class Simulation {
     }
 
     saveEntities = () => {
-        ProjectorCollection.update(this.projector._id!,{
-            $set: { entities: this.projector.entities },
+        GameCollection.update(this.game._id, {
+            $set: { entities: this.game.entities },
         })
     }
 
     getCurMonsterTick = () => {
-        return (this.now.getTime() - this.projector.startAt.getTime()) / 1000 / MONSTER_TICK_DIST
+        return (this.now.getTime() - this.game.startAt.getTime()) / 1000 / MONSTER_TICK_DIST
     }
 }
 

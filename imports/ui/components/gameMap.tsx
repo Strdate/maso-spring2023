@@ -2,14 +2,14 @@ import { createEffect, onCleanup, onMount } from "solid-js";
 import useResize from "../utils/useResize";
 import RenderingEngine from "./RenderingEngine";
 import { MoveInput } from "/imports/api/collections/moves";
-import { IProjector } from "/imports/api/collections/projectors";
 import { Team } from "/imports/api/collections/teams";
 import { EntityInstance, FacingDir } from "/imports/core/interfaces";
 import { facingDirToMove, vectorSum } from "/imports/core/utils/geometry";
 import insertMove from "/imports/api/methods/moves/insert"
+import { Game } from "/imports/api/collections/games";
 
 type Props = {
-    projector: IProjector
+    game: Game
     team?: Team
 }
 
@@ -29,7 +29,7 @@ export default function GameMap(props: Props) {
     });
     createEffect(() => {
         innerSize() // trigger dependency
-        re.render(transformEntities(props.projector.entities, props.team))
+        re.render(transformEntities(props.game.entities, props.team))
     })
 
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -40,7 +40,7 @@ export default function GameMap(props: Props) {
         const facingDir = keyToFacingDir(event.code)
         if(facingDir) {
             const input: MoveInput = {
-                gameId: props.projector.gameId,
+                gameId: props.game._id,
                 teamId: props.team._id,
                 newPos: vectorSum(props.team.position, facingDirToMove(facingDir))
             }
@@ -48,7 +48,7 @@ export default function GameMap(props: Props) {
         }
     }
 
-    const moveCallback = (error: any, result: any) => {
+    const moveCallback = (error: any/*, result: any*/) => {
         if(error) {
             console.log(error)
         }

@@ -1,11 +1,48 @@
 import { Meteor } from 'meteor/meteor'
 import { Game, GameCollection, GameInputSchema } from '/imports/api/collections/games'
-import { ResultsCollection } from '/imports/api/collections/results'
+//import { ResultsCollection } from '/imports/api/collections/results'
 import {TeamInputSchema, TeamsCollection} from "/imports/api/collections/teams";
 import * as enums from "../imports/core/enums";
-import { ProjectorCollection } from '/imports/api/collections/projectors';
 
-Meteor.publish('game', function (code) {
+Meteor.publish('game', function(code) {
+    GameInputSchema.pick('code').validate({ code })
+    return GameCollection.find({ code }, { fields: { authorizedUsers: 0 } })
+})
+
+Meteor.publish('teams', function (gameCode) {
+    GameInputSchema.pick('code').validate({ code: gameCode })
+    const game = GameCollection.findOne({ code: gameCode })
+    if(!game) {
+        return []
+    }
+    if(!this.userId || !checkGameAccess(game, this.userId)) {
+        return []
+    }
+    return TeamsCollection.find({ gameId: game._id })
+})
+
+Meteor.publish('team', function (gameCode, teamNum) {
+    GameInputSchema.pick('code').validate({ code: gameCode })
+    TeamInputSchema.pick('number').validate({ number: teamNum })
+    const game = GameCollection.findOne({ code: gameCode });
+    if(!game) {
+        return []
+    }
+    if(!this.userId || !checkGameAccess(game, this.userId)) {
+        return []
+    }
+    return TeamsCollection.find({ gameId: game._id, number: teamNum })
+})
+
+/*function isSubAuthorized(game: Game, userId: string) {
+    return game.authorizedUsers.includes(userId)
+}*/
+
+function checkGameAccess(game: Game, userId: string) {
+    return game.authorizedUsers.includes(userId) || game.statusId === enums.GameStatus.Finished;
+}
+
+/*Meteor.publish('game', function (code) {
     try {
         GameInputSchema.pick('code').validate({ code })
         const game = GameCollection.findOne({ code })
@@ -35,42 +72,4 @@ Meteor.publish('game', function (code) {
         console.log(er)
         return []
     }
-})
-
-Meteor.publish('projector', function(code) {
-    GameInputSchema.pick('code').validate({ code })
-    return ProjectorCollection.find({ code })
-})
-
-Meteor.publish('teams', function (gameCode) {
-    GameInputSchema.pick('code').validate({ code: gameCode })
-    const game = GameCollection.findOne({ code: gameCode })
-    if(!game) {
-        return []
-    }
-    if(!this.userId || !checkGameAccess(game, this.userId)) {
-        return []
-    }
-    return TeamsCollection.find({ gameId: game._id })
-})
-
-Meteor.publish('team', function (gameCode, teamNum) {
-    GameInputSchema.pick('code').validate({ code: gameCode })
-    TeamInputSchema.pick('number').validate({ number: teamNum })
-    const game = GameCollection.findOne({ code: gameCode });
-    if(!game) {
-        return []
-    }
-    if(!this.userId || !checkGameAccess(game, this.userId)) {
-        return []
-    }
-    return TeamsCollection.find({ gameId: game._id, number: teamNum })
-})
-
-function isSubAuthorized(game: Game, userId: string) {
-    return game.authorizedUsers.includes(userId)
-}
-
-function checkGameAccess(game: Game, userId: string) {
-    return game.authorizedUsers.includes(userId) || game.statusId === enums.GameStatus.Finished;
-}
+})*/

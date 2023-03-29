@@ -1,5 +1,7 @@
 import { TaskStatus } from "./enums";
 
+type Pos = [number, number]
+
 interface TeamScore {
     tasks: number;
     total: number;
@@ -13,7 +15,7 @@ interface EntityInstance {
     facingDir?: FacingDir
   }
 
-type EntityCategory = 'MONSTER'
+type EntityCategory = 'MONSTER' | 'PACMAN'
 
 type FacingDir = 'UP' | 'DOWN' | 'RIGHT' | 'LEFT'
 
@@ -45,6 +47,7 @@ interface TaskReturnData {
 }
 
 export {
+  Pos,
   TeamScore,
   EntityInstance,
   EntityCategory,

@@ -1,22 +1,24 @@
 import { Mongo } from 'meteor/mongo';
-import { TeamScore } from '/imports/core/interfaces';
+import { FacingDir, Pos, TeamScore } from '/imports/core/interfaces';
 import SimpleSchema from "simpl-schema";
 
 export interface TeamInput {
-    name: string;
-    number: string;
-    isBot: boolean;
-    gameId: string;
+    name: string
+    number: string
+    isBot: boolean
+    gameId: string
 }
 
 export interface Team extends TeamInput {
-    _id: string;
-    externalId?: string;
-    userId: string;
-    CreatedAt: Date;
-    UpdatedAt: Date;
-    money: number;
+    _id: string
+    externalId?: string
+    userId: string
+    CreatedAt: Date
+    UpdatedAt: Date
+    money: number
     score: TeamScore
+    position: Pos
+    facingDir: FacingDir
 }
 
 export const TeamsCollection = new Mongo.Collection<Team>('teams');

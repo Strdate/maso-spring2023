@@ -152,3 +152,7 @@ div.teamtitle {
 .hastooltip:hover .tooltiptext {
   visibility: visible;
 }
+
+canvas:focus {
+  outline: none;
+}

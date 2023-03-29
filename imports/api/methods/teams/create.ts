@@ -22,6 +22,8 @@ export default new ValidatedMethod({
         CreatedAt: new Date(),
         UpdatedAt: new Date(),
         money: 0,
+        position: [10, 7],
+        facingDir: 'RIGHT',
         score: {
           tasks: 0,
           total: 0,

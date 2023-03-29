@@ -8,35 +8,28 @@ import { FacingDir, Pos } from "./interfaces";
 import { moveToFacingDir, normalizePosition, vectorDiff } from "./utils/geometry";
 import checkWallCollision from "./utils/checkWallCollision";
 
-interface MoveInputUser extends MoveInput {
-    userId: string | null
-}
+export default function insertMove({ gameId, teamId, newPos, userId, isSimulation }:
+    MoveInput & {isSimulation: boolean, userId: string | null}) {
 
-export default function insertMove({ gameId, teamId, newPos, userId }: MoveInputUser) {
-    if(Meteor.isClient) {
-        TeamsCollection.update(teamId, {
-            $set: {
-                position: newPos
-            }
-        })
-        console.log('Running client code')
-        return
+    if(!isSimulation) {
+        checkGame(userId, gameId)
     }
-    const game = getGame(userId, gameId)
-    const team = getTeam(game._id, teamId)
+    const team = getTeam(gameId, teamId)
     const facingDir = checkPosition(team, newPos)
     newPos = normalizePosition(newPos)
-    MovesCollection.insert({
-        gameId,
-        teamId,
-        newPos,
-        userId: userId!,
-        teamNumber: team.number,
-        isRevoked: false,
-        facingDir,
-        createdAt: new Date(),
-        updatedAt: new Date()
-    })
+    if(!isSimulation) {
+        MovesCollection.insert({
+            gameId,
+            teamId,
+            newPos,
+            userId: userId!,
+            teamNumber: team.number,
+            isRevoked: false,
+            facingDir,
+            createdAt: new Date(),
+            updatedAt: new Date()
+        })
+    }
     TeamsCollection.update(team._id, {
         $set: {
             position: newPos,
@@ -56,7 +49,7 @@ function checkPosition(team: Team, newPos: Pos): FacingDir {
     return facingDir
 }
 
-function getGame(userId: string | null, gameId: string) {
+function checkGame(userId: string | null, gameId: string) {
     const game = GameCollection.findOne(gameId)
     if (!game || !isAuthorized(userId, game)) {
       throw new Meteor.Error('moves.insert.insertNotAllowed', 'Nemáte pro tuto hru dostatečná oprávnění.')
@@ -71,7 +64,6 @@ function getGame(userId: string | null, gameId: string) {
     if((game.statusId != GameStatus.Running) && (game.statusId != GameStatus.OutOfTime)) {
       throw new Meteor.Error('moves.insert.notRunning', 'Hra nebyla zahájena nebo už skončila.')
     }
-    return game
 }
 
 function getTeam(gameId: string, teamId: string) {

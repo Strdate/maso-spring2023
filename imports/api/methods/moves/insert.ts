@@ -6,6 +6,6 @@ export default new ValidatedMethod({
   name: 'moves.insert',
   validate: MoveInputSchema.validator(),
   run(input: MoveInput) {
-    return insertMove({ ...input, userId: this.userId })
+    return insertMove({ ...input, userId: this.userId, isSimulation: this.isSimulation })
   }
 })

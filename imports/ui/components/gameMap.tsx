@@ -6,6 +6,7 @@ import { IProjector } from "/imports/api/collections/projectors";
 import { Team } from "/imports/api/collections/teams";
 import { EntityInstance, FacingDir } from "/imports/core/interfaces";
 import { facingDirToMove, vectorSum } from "/imports/core/utils/geometry";
+import insertMove from "/imports/api/methods/moves/insert"
 
 type Props = {
     projector: IProjector
@@ -35,6 +36,7 @@ export default function GameMap(props: Props) {
         if(!props.team) {
             return
         }
+        event.preventDefault()
         const facingDir = keyToFacingDir(event.code)
         if(facingDir) {
             const input: MoveInput = {
@@ -42,7 +44,7 @@ export default function GameMap(props: Props) {
                 teamId: props.team._id,
                 newPos: vectorSum(props.team.position, facingDirToMove(facingDir))
             }
-            Meteor.call("moves.insert", input, moveCallback)
+            insertMove.call(input, moveCallback)
         }
     }
 

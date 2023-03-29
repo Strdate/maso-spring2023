@@ -1,4 +1,5 @@
 import { FacingDir, Pos } from "../interfaces"
+import { pacmanMap } from "/imports/data/map"
 
 function vectorDiff(a: Pos, b: Pos): Pos {
     return [a[0] - b[0], a[1] - b[1]]
@@ -30,9 +31,15 @@ function vectorSum(a: Pos, b: Pos): Pos {
     return [a[0] + b[0], a[1] + b[1]]
 }
 
+function normalizePosition(pos: Pos): Pos {
+    return [((pos[0] + pacmanMap[0].length - 1) % pacmanMap[0].length) + 1,
+        ((pos[1] + pacmanMap.length - 1) % pacmanMap.length) + 1]
+}
+
 export {
     vectorDiff,
     facingDirToMove,
     moveToFacingDir,
-    vectorSum
+    vectorSum,
+    normalizePosition
 }

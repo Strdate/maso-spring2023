@@ -1,8 +1,8 @@
 import { Game } from "/imports/api/collections/games";
 import { IProjector, ProjectorCollection } from "/imports/api/collections/projectors";
 import { FacingDir, Pos } from "/imports/core/interfaces";
-import { facingDirToMove, vectorSum } from "/imports/core/utils/geometry";
-import { entities, pacmanMap } from "/imports/data/map";
+import { facingDirToMove, normalizePosition, vectorSum } from "/imports/core/utils/geometry";
+import { entities } from "/imports/data/map";
 
 const MONSTER_TICK_DIST = 20
 
@@ -57,8 +57,4 @@ function aggregatePosition(program: FacingDir[], tick: number) {
         agg = vectorSum(agg, facingDirToMove(program[i]))
     }
     return agg
-}
-
-function normalizePosition(pos: Pos): Pos {
-    return [((pos[0] - 1) % pacmanMap[0].length) + 1, ((pos[1] - 1) % pacmanMap.length) + 1]
 }

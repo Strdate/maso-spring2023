@@ -4,8 +4,9 @@ import { GameCollection } from "../api/collections/games";
 import { isAuthorized } from "./authorization";
 import { GameStatus } from "./enums";
 import { Team, TeamsCollection } from "../api/collections/teams";
-import { FacingDir } from "./interfaces";
-import { moveToFacingDir, vectorDiff } from "./utils/geometry";
+import { FacingDir, Pos } from "./interfaces";
+import { moveToFacingDir, normalizePosition, vectorDiff } from "./utils/geometry";
+import checkWallCollision from "./utils/checkWallCollision";
 
 interface MoveInputUser extends MoveInput {
     userId: string | null
@@ -15,6 +16,7 @@ export default function insertMove({ gameId, teamId, newPos, userId }: MoveInput
     const game = getGame(userId, gameId)
     const team = getTeam(game._id, teamId)
     const facingDir = checkPosition(team, newPos)
+    newPos = normalizePosition(newPos)
     MovesCollection.insert({
         gameId,
         teamId,
@@ -34,10 +36,13 @@ export default function insertMove({ gameId, teamId, newPos, userId }: MoveInput
     })
 }
 
-function checkPosition(team: Team, newPos: [number, number]): FacingDir {
+function checkPosition(team: Team, newPos: Pos): FacingDir {
     const facingDir = moveToFacingDir(vectorDiff(newPos, team.position))
     if(!facingDir) {
         throw new Meteor.Error('moves.insert.invalidPosition', 'Na tuto pozici se tým nemůže přesunout.')
+    }
+    if(!checkWallCollision(team.position, facingDir)) {
+        throw new Meteor.Error('moves.insert.cantMoveToWall', 'V cestě překáží zeď.')
     }
     return facingDir
 }

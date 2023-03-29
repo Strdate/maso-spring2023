@@ -3,7 +3,7 @@ import Menu from "@suid/icons-material/Menu"
 import VisibilityOff from "@suid/icons-material/VisibilityOff"
 import HelpIcon from "@suid/icons-material/Help"
 import { TextField } from "@suid/material"
-import { createEffect, createSignal, Show } from "solid-js"
+import { createEffect, createSignal, onMount, onCleanup, Show } from "solid-js"
 import { createFindOne, createSubscribe } from "solid-meteor-data"
 import ManagedSuspense from "../../components/managedSuspense"
 import useClass from "../../utils/useClass"
@@ -72,6 +72,13 @@ export default function GameControls() {
     }
   })
 
+  createEffect(() => {
+    const canvas = document.getElementById("game-map") as HTMLCanvasElement
+    if(team?.number && canvas) {
+      canvas.focus()
+    }
+  })
+
   const removeCurTeam = () => {
     const index = tabList().findIndex(x => x === teamNum())
     if(index >= 0) {
@@ -82,6 +89,18 @@ export default function GameControls() {
       setTabList(newTabs)
     }
   }
+
+  const focusTeamInput = (event: KeyboardEvent) => {
+    if (event.key === "Escape") {
+      document.getElementById('teamInput')?.focus()
+    }
+  }
+  onMount(() => {
+    document.addEventListener("keydown", focusTeamInput, false)
+  })
+  onCleanup(() => {
+    document.removeEventListener("keydown", focusTeamInput, false)
+  })
 
   return <ManagedSuspense loading={loading()} found={found()}>
     <div class='app-bar'>

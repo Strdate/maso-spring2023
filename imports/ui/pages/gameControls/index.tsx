@@ -8,11 +8,11 @@ import { createFindOne, createSubscribe } from "solid-meteor-data"
 import ManagedSuspense from "../../components/managedSuspense"
 import useClass from "../../utils/useClass"
 import useTitle from "../../utils/useTitle"
-import GameDisplayBox from "../projector/gameDisplayBox"
 import Guide from "./guide"
 import Tabs from "./tabs"
 import { IProjector, ProjectorCollection } from "/imports/api/collections/projectors"
 import { TeamsCollection, Team } from "/imports/api/collections/teams"
+import TeamControlsBox from "./teamControlsBox"
 
 export default function GameControls() {
   useClass('input-page')
@@ -115,7 +115,7 @@ export default function GameControls() {
       <div class='app-bar-button hastooltip' onClick={() => navigate(`/${params.code}`)}><Menu /><span class='tooltiptext'>Zpět do menu</span></div>
     </div>
     <Show when={!showGuide()}>
-      <GameDisplayBox projector={projector} />
+      <TeamControlsBox projector={projector} team={team} />
     </Show>
     <Show when={showGuide()}>
       <Guide />

@@ -16,6 +16,8 @@ export default function Projector() {
   const projector = projectorFound as IProjector
 
   return <ManagedSuspense loading={loading()} found={found()}>
-      <GameDisplayBox projector={projector} />
+      <div style={{display: "flex","justify-content":'center'}}>
+        <GameDisplayBox projector={projector} />
+      </div>
     </ManagedSuspense>
 }

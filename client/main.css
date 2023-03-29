@@ -62,6 +62,16 @@ div.timerDiv {
   align-self: stretch;
 }
 
+div.teamcontrols div.timerDiv {
+  font-size: 3vh;
+}
+
+div.teamtitle {
+  font-family: publicPixel, Arial, sans-serif;
+  color: white;
+  font-size: 3vh;
+}
+
 .app-bar {
   display: flex;
   height: 3em;

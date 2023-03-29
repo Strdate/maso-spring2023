@@ -1,9 +1,10 @@
 import { Game, GameCollection } from "/imports/api/collections/games";
 import { FacingDir, Pos } from "/imports/core/interfaces";
 import { facingDirToMove, normalizePosition, vectorSum } from "/imports/core/utils/geometry";
-import { entities } from "/imports/data/map";
+import { entities, entityTypes, items, spawnSpots } from "/imports/data/map";
 
 const MONSTER_TICK_DIST = 20
+const ITEM_LIFESPAN = 8
 
 export class Simulation {
     game: Game
@@ -36,6 +37,20 @@ export class Simulation {
         })
     }
 
+    spawnItems = () => {
+        const minute = this.getCurMinute()
+        this.game.entities = this.game.entities.filter(ent => ent.category !== 'ITEM')
+        items.filter(item => item.spawnTime <= minute && minute - item.spawnTime < ITEM_LIFESPAN).forEach(item => {
+            const type = entityTypes.find(et => et.typeId === item.type)!
+            this.game.entities.push({
+                id: item.id + 10,
+                category: 'ITEM',
+                spriteMapOffset: type.spriteMapOffset,
+                position: spawnSpots.find(ss => ss.id === item.spawnSpotId)!.position
+            })
+        })
+    }
+
     saveEntities = () => {
         GameCollection.update(this.game._id, {
             $set: { entities: this.game.entities },
@@ -44,6 +59,10 @@ export class Simulation {
 
     getCurMonsterTick = () => {
         return (this.now.getTime() - this.game.startAt.getTime()) / 1000 / MONSTER_TICK_DIST
+    }
+
+    getCurMinute = () => {
+        return (this.now.getTime() - this.game.startAt.getTime()) / 1000 / 60
     }
 }
 

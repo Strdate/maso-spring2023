@@ -23,6 +23,7 @@ async function updateRunningGames() {
     if( checkGameStatus(game, now) ) {
       const simulation = new Simulation({ game, now })
       simulation.moveMonsters()
+      simulation.spawnItems()
       simulation.saveEntities()
     }
   }))

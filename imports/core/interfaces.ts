@@ -15,7 +15,7 @@ interface EntityInstance {
     facingDir?: FacingDir
   }
 
-type EntityCategory = 'MONSTER' | 'PACMAN'
+type EntityCategory = 'MONSTER' | 'PACMAN' | 'ITEM'
 
 type FacingDir = 'UP' | 'DOWN' | 'RIGHT' | 'LEFT'
 

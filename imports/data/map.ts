@@ -1,4 +1,4 @@
-import { EntityCategory, FacingDir } from "../core/interfaces"
+import { EntityCategory, FacingDir, Pos } from "../core/interfaces"
 
 const pacmanMap = [
     [5,1,11,1,1,1,1,4,0,0,0,5,1,1,1,1,11,1,4],
@@ -18,15 +18,43 @@ const pacmanMap = [
 interface EntityType {
     typeId: number
     category: EntityCategory
-    spriteMapOffset: [number, number]
+    spriteMapOffset: Pos
+    description?: string
+    reward?: number
 }
 
 interface EntityData {
     id: number
     type: number
-    startPos: [number, number]
+    startPos: Pos
     program?: FacingDir[]
 }
+
+interface SpawnSpot {
+    id: number
+    position: Pos
+}
+
+interface ItemsData {
+    id: number
+    type: number
+    spawnSpotId: number
+    spawnTime: number
+}
+
+const spawnSpots: SpawnSpot[] = [{
+    id: 1,
+    position: [1, 2]
+},{
+    id: 2,
+    position: [6, 1]
+},{
+    id: 3,
+    position: [7, 4]
+},{
+    id: 4,
+    position: [14, 7]
+}]
 
 const entityTypes: EntityType[] = [{
     typeId: 1,
@@ -40,6 +68,30 @@ const entityTypes: EntityType[] = [{
     typeId: 3,
     category: 'MONSTER',
     spriteMapOffset: [8, 1]
+},{
+    typeId: 7,
+    category: 'ITEM',
+    spriteMapOffset: [4, 2],
+    description: 'Třešně',
+    reward: 10
+},{
+    typeId: 8,
+    category: 'ITEM',
+    spriteMapOffset: [5, 2],
+    description: 'Mince',
+    reward: 20
+},{
+    typeId: 9,
+    category: 'ITEM',
+    spriteMapOffset: [6, 2],
+    description: 'Pohár',
+    reward: 35
+},{
+    typeId: 10,
+    category: 'ITEM',
+    spriteMapOffset: [7, 2],
+    description: 'Pytel zlata',
+    reward: 60
 }]
 
 const entities: EntityData[] = [{
@@ -70,4 +122,41 @@ const entities: EntityData[] = [{
         'RIGHT','RIGHT','DOWN','DOWN','LEFT','LEFT']
 }]
 
-export { pacmanMap, entityTypes, entities }
+const items: ItemsData[] = [{
+    id: 1,
+    type: 7,
+    spawnSpotId: 1,
+    spawnTime: 0
+},{
+    id: 2,
+    type: 7,
+    spawnSpotId: 2,
+    spawnTime: 8
+},{
+    id: 3,
+    type: 8,
+    spawnSpotId: 3,
+    spawnTime: 0
+},{
+    id: 4,
+    type: 8,
+    spawnSpotId: 4,
+    spawnTime: 4
+},{
+    id: 5,
+    type: 9,
+    spawnSpotId: 1,
+    spawnTime: 4
+},{
+    id: 6,
+    type: 10,
+    spawnSpotId: 3,
+    spawnTime: 8
+},{
+    id: 6,
+    type: 10,
+    spawnSpotId: 4,
+    spawnTime: 12
+}]
+
+export { pacmanMap, entityTypes, spawnSpots, items, entities }

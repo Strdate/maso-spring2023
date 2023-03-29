@@ -66,6 +66,7 @@ div.timerDiv {
   display: flex;
   height: 3em;
   width: auto;
+  max-width: 100%;
   padding: 8px 24px 4px 24px;
   background-color: #1976d2;
   gap: 8px;

@@ -1,6 +1,7 @@
 import { useNavigate, useParams, useSearchParams } from "@solidjs/router"
 import Menu from "@suid/icons-material/Menu"
 import VisibilityOff from "@suid/icons-material/VisibilityOff"
+import HelpIcon from "@suid/icons-material/Help"
 import { TextField } from "@suid/material"
 import { createEffect, createSignal, Show } from "solid-js"
 import { createFindOne, createSubscribe } from "solid-meteor-data"
@@ -43,6 +44,8 @@ export default function GameControls() {
   const teamLoading = createSubscribe(() => valid() ? 'team' : '', () => params.code, () => teamNum())
   const [tFound, teamFound] = createFindOne(() => valid() ? TeamsCollection.findOne() : null)
   const team = teamFound as Team
+
+  const showGuide = () => !teamNum() || (!prevTeamNum && !tFound())
 
   createEffect(() => {
     if(teamLoading()) {
@@ -92,7 +95,7 @@ export default function GameControls() {
             style: { color: 'white' },
             id: 'teamInput'}}
           InputLabelProps={{ style: { color: 'white' } }}
-          style={{ 'margin-top': '2px' }}
+          style={{ 'margin-top': '2px', 'min-width': '100px', 'width': '140px' }}
           onKeyPress={(ev) => {
             if (ev.key === 'Enter') {
               // @ts-ignore
@@ -108,13 +111,13 @@ export default function GameControls() {
         />
       <Tabs tabList={tabList()} activeTab={teamNum()} callback={setTeamNum}/>
       <div class='app-bar-button hastooltip' onClick={removeCurTeam}><VisibilityOff /><span class='tooltiptext'>Odstranit tým ze záložek</span></div>
+      <div class='app-bar-button hastooltip' onClick={() => setTeamNum(undefined)}><HelpIcon /><span class='tooltiptext'>Nápověda</span></div>
       <div class='app-bar-button hastooltip' onClick={() => navigate(`/${params.code}`)}><Menu /><span class='tooltiptext'>Zpět do menu</span></div>
-      <div class='app-bar-button' onClick={() => setTeamNum(undefined)}>NÁPOVĚDA</div>
     </div>
-    <Show when={teamNum()}>
+    <Show when={!showGuide()}>
       <GameDisplayBox projector={projector} />
     </Show>
-    <Show when={!teamNum()}>
+    <Show when={showGuide()}>
       <Guide />
     </Show>
   </ManagedSuspense>

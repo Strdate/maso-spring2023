@@ -2,7 +2,7 @@ import { FacingDir, Pos } from "../interfaces";
 import { pacmanMap } from "/imports/data/map";
 
 const collisionMap: FacingDir[][] = [
-    ['UP', 'DOWN', 'RIGHT', 'LEFT'],
+    ['DOWN'],
     ['RIGHT', 'LEFT'],
     ['UP', 'DOWN'],
     ['UP', 'DOWN', 'RIGHT', 'LEFT'],

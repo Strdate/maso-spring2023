@@ -2,6 +2,7 @@ import {ValidatedMethod} from "meteor/mdg:validated-method";
 import {TeamInput, TeamInputSchema, TeamsCollection} from "/imports/api/collections/teams";
 import {GameCollection} from "/imports/api/collections/games";
 import * as enums from "../../../core/enums";
+import { playerStartPos } from "/imports/data/map";
 
 export default new ValidatedMethod({
   name: "teams.create",
@@ -22,7 +23,7 @@ export default new ValidatedMethod({
         CreatedAt: new Date(),
         UpdatedAt: new Date(),
         money: 0,
-        position: [10, 7],
+        position: playerStartPos,
         facingDir: 'RIGHT',
         score: {
           tasks: 0,

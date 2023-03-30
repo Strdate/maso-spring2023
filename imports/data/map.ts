@@ -1,19 +1,23 @@
 import { EntityCategory, FacingDir, Pos } from "../core/interfaces"
 
 const pacmanMap = [
-    [5,1,11,1,1,1,1,4,0,0,0,5,1,1,1,1,11,1,4],
-    [2,0,2,0,0,0,0,9,1,11,1,8,0,0,0,0,2,0,2],
-    [7,1,3,1,1,11,1,6,0,2,0,7,1,11,1,1,3,1,6],
-    [0,0,2,0,0,7,1,11,1,3,1,11,1,6,0,0,2,0,0],
-    [0,0,2,0,0,0,0,2,0,2,0,2,0,0,0,0,2,0,0],
-    [14,1,3,1,1,11,1,6,0,2,0,7,1,11,1,1,3,1,15],
-    [0,0,2,0,0,2,0,0,5,10,4,0,0,2,0,0,2,0,0],
-    [5,1,10,1,4,7,4,0,2,0,2,0,5,6,5,1,10,1,4],
-    [2,0,0,0,9,1,3,1,10,1,10,1,3,1,8,0,0,0,2],
-    [9,1,12,0,2,0,2,0,0,0,0,0,2,0,2,0,13,1,8],
-    [2,0,0,0,9,1,10,1,1,1,1,1,10,1,8,0,0,0,2],
-    [7,1,1,1,6,0,0,0,0,0,0,0,0,0,7,1,1,1,6]
+    [5,1,11,1,1,1,1,4,-1,-1,-1,5,1,1,1,1,11,1,4],
+    [2,-1,2,-1,-1,-1,-1,9,1,1,1,8,-1,-1,-1,-1,2,-1,2],
+    [7,1,3,1,1,11,1,6,-1,0,-1,7,1,11,1,1,3,1,6],
+    [-1,-1,2,-1,-1,7,1,11,1,3,1,11,1,6,-1,-1,2,-1,-1],
+    [-1,-1,2,-1,-1,-1,-1,2,-1,2,-1,2,-1,-1,-1,-1,2,-1,-1],
+    [14,1,3,1,1,11,1,6,-1,2,-1,7,1,11,1,1,3,1,15],
+    [-1,-1,2,-1,-1,2,-1,-1,5,10,4,-1,-1,2,-1,-1,2,-1,-1],
+    [5,1,10,1,4,7,4,-1,2,-1,2,-1,5,6,5,1,10,1,4],
+    [2,-1,-1,-1,9,1,3,1,10,1,10,1,3,1,8,-1,-1,-1,2],
+    [9,1,12,-1,2,-1,2,-1,-1,-1,-1,-1,2,-1,2,-1,13,1,8],
+    [2,-1,-1,-1,9,1,10,1,1,1,1,1,10,1,8,-1,-1,-1,2],
+    [7,1,1,1,6,-1,-1,-1,-1,-1,-1,-1,-1,-1,7,1,1,1,6]
 ]
+
+const playerStartPos: Pos = [10, 3]
+
+//.reverse().map(n => n.map(m => {switch(m) { case 4: return 6; case 5: return 7; case 10: return 11; case 6: return 4; case 7: return 5; case 11: return 10; default: return m }}))
 
 interface EntityType {
     typeId: number
@@ -69,6 +73,10 @@ const entityTypes: EntityType[] = [{
     category: 'MONSTER',
     spriteMapOffset: [8, 1]
 },{
+    typeId: 4,
+    category: 'MONSTER',
+    spriteMapOffset: [12, 1]
+},{
     typeId: 7,
     category: 'ITEM',
     spriteMapOffset: [4, 2],
@@ -106,11 +114,11 @@ const entities: EntityData[] = [{
 },{
     id: 2,
     type: 2,
-    startPos: [13, 3],
-    program: ['RIGHT','DOWN','LEFT','LEFT','DOWN','DOWN','RIGHT','RIGHT','RIGHT',
-        'RIGHT','RIGHT','RIGHT','RIGHT','RIGHT','RIGHT','RIGHT','RIGHT','RIGHT',
-        'RIGHT','RIGHT','RIGHT','UP','UP','RIGHT','RIGHT','UP','UP','RIGHT',
-        'RIGHT','DOWN','RIGHT']
+    startPos: [17, 3],
+    program: ['DOWN','DOWN','DOWN','RIGHT','RIGHT','RIGHT','RIGHT','RIGHT',
+        'RIGHT','RIGHT','RIGHT','RIGHT','RIGHT','UP','UP','LEFT','LEFT','UP',
+        'RIGHT','RIGHT','UP','RIGHT','RIGHT','RIGHT','RIGHT','UP','RIGHT',
+        'RIGHT','RIGHT','RIGHT','RIGHT','RIGHT','RIGHT','DOWN','DOWN','LEFT','LEFT']
 },{
     id: 3,
     type: 3,
@@ -120,6 +128,14 @@ const entities: EntityData[] = [{
         'RIGHT','RIGHT','RIGHT','RIGHT','RIGHT','RIGHT','RIGHT','UP','UP','RIGHT',
         'RIGHT','DOWN','UP','UP','RIGHT','RIGHT','RIGHT','RIGHT','DOWN','DOWN','LEFT','LEFT',
         'RIGHT','RIGHT','DOWN','DOWN','LEFT','LEFT']
+},{
+    id: 4,
+    type: 4,
+    startPos: [10, 6],
+    program: ['DOWN','LEFT','DOWN','DOWN','LEFT','RIGHT','RIGHT','RIGHT','RIGHT',
+        'RIGHT','UP','RIGHT','UP','UP','RIGHT','RIGHT','RIGHT','DOWN','UP','UP',
+        'UP','UP','UP','DOWN','LEFT','LEFT','LEFT','DOWN','LEFT','LEFT','LEFT',
+        'LEFT','DOWN','DOWN']
 }]
 
 const items: ItemsData[] = [{
@@ -159,4 +175,4 @@ const items: ItemsData[] = [{
     spawnTime: 12
 }]
 
-export { pacmanMap, entityTypes, spawnSpots, items, entities }
+export { pacmanMap, playerStartPos, entityTypes, spawnSpots, items, entities }

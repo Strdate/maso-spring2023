@@ -32,7 +32,10 @@ class RenderingEngine
         // render map
         for(let i = 0; i < pacmanMap.length; i++) {
             for(let j = 0; j < pacmanMap[i].length; j++) {
-                this.drawSprite(pacmanMap[i][j], 0,j+1,i+1)
+                const sprite = pacmanMap[i][j]
+                if(sprite >= 0) {
+                    this.drawSprite(sprite, 0,j+1,i+1)
+                }
             }
         }
 
@@ -51,10 +54,10 @@ class RenderingEngine
             this.drawSprite(offsetX, offsetY, ent.position[0], ent.position[1])
         })
 
-        this.drawSprite(4, 2, 9, 11)
+        /*this.drawSprite(4, 2, 9, 11)
         this.drawSprite(5, 2, 5, 6)
         this.drawSprite(6, 2, 13, 4)
-        this.drawSprite(7, 2, 15, 10)
+        this.drawSprite(7, 2, 15, 10)*/
     }
 
     loadImage = () => {

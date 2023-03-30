@@ -14,17 +14,17 @@ type Props = {
 }
 
 export default function GameMap(props: Props) {
-    let re: RenderingEngine;
+    let re: RenderingEngine
+    let canvasRef: any
     console.log('GameMap mounted!')
     const innerSize = useResize()
     onMount(() => {
-        const canvas = document.getElementById("game-map") as HTMLCanvasElement
-        canvas.addEventListener("keydown", handleKeyDown)
-        re = new RenderingEngine(canvas)
+        window.addEventListener("keydown", handleKeyDown)
+        re = new RenderingEngine(canvasRef)
     })
     onCleanup(() => {
-        const canvas = document.getElementById("game-map") as HTMLCanvasElement
-        canvas.removeEventListener("keydown", handleKeyDown)
+        //const canvas = document.getElementById("game-map") as HTMLCanvasElement
+        window.removeEventListener("keydown", handleKeyDown)
         console.log('GameMap dismounted!')
     });
     createEffect(() => {
@@ -36,7 +36,9 @@ export default function GameMap(props: Props) {
         if(!props.team) {
             return
         }
-        event.preventDefault()
+        if(document.getElementById('teamInput') === document.activeElement) {
+            return
+        }
         const facingDir = keyToFacingDir(event.code)
         if(facingDir) {
             const input: MoveInput = {
@@ -44,6 +46,7 @@ export default function GameMap(props: Props) {
                 teamId: props.team._id,
                 newPos: vectorSum(props.team.position, facingDirToMove(facingDir))
             }
+            event.preventDefault()
             insertMove.call(input, moveCallback)
         }
     }
@@ -54,7 +57,7 @@ export default function GameMap(props: Props) {
         }
     }
 
-  return <canvas tabIndex='0' id="game-map" width='300px' height='300px' ></canvas>
+  return <canvas ref={canvasRef} tabIndex='0' id="game-map" width='300px' height='300px' ></canvas>
 }
 
 function transformEntities(entities: EntityInstance[], team?: Team) {

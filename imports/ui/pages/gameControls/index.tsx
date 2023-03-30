@@ -94,7 +94,12 @@ export default function GameControls() {
 
   const focusTeamInput = (event: KeyboardEvent) => {
     if (event.key === "Escape") {
-      document.getElementById('teamInput')?.focus()
+      const teamInput = document.getElementById('teamInput')!
+      if(document.activeElement !== teamInput) {
+        teamInput.focus()
+      } else {
+        document.getElementById('game-map')?.focus()
+      }
     }
   }
   onMount(() => {
@@ -114,7 +119,8 @@ export default function GameControls() {
           variant="filled"
           inputProps={{
             style: { color: 'white' },
-            id: 'teamInput'}}
+            id: 'teamInput'
+          }}
           InputLabelProps={{ style: { color: 'white' } }}
           style={{ 'margin-top': '2px', 'min-width': '100px', 'width': '140px' }}
           onKeyPress={(ev) => {

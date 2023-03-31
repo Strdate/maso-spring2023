@@ -4,6 +4,7 @@ type Pos = [number, number]
 
 interface TeamScore {
     tasks: number;
+    items: number;
     total: number;
 }
 

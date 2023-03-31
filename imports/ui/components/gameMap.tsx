@@ -67,6 +67,9 @@ function transformEntities(entities: EntityInstance[], team?: Team) {
     }
     entities = [...entities]
 
+    // Remove picked up items
+    entities = entities.filter(ent => ent.category !== 'ITEM' || !team.pickedUpEntities.includes(ent.id) )
+
     // Add pacman sprite
     entities.push({
         id: 0,

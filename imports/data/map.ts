@@ -105,12 +105,12 @@ const entityTypes: EntityType[] = [{
 const entities: EntityData[] = [{
     id: 1,
     type: 1,
-    startPos: [3, 12],
-    program: ['RIGHT','RIGHT','UP','UP','UP','UP','LEFT','LEFT','UP','UP',
-        'UP','UP','UP','RIGHT','RIGHT','RIGHT','RIGHT','RIGHT','UP','UP','LEFT',
+    startPos: [5, 3],
+    program: ['RIGHT','RIGHT','RIGHT','UP','UP','LEFT',
         'LEFT','LEFT','LEFT','LEFT','DOWN','UP','LEFT','LEFT','DOWN','DOWN','RIGHT','RIGHT',
         'DOWN','DOWN','DOWN','DOWN','DOWN','LEFT','LEFT','DOWN','DOWN','RIGHT',
-        'RIGHT','LEFT','LEFT','DOWN','DOWN','RIGHT','RIGHT']
+        'RIGHT','LEFT','LEFT','DOWN','DOWN','RIGHT','RIGHT','RIGHT','RIGHT','UP','UP','UP',
+        'UP','LEFT','LEFT','UP','UP','UP','UP','UP','RIGHT','RIGHT']
 },{
     id: 2,
     type: 2,
@@ -162,14 +162,14 @@ const items: ItemsData[] = [{
     id: 5,
     type: 9,
     spawnSpotId: 1,
-    spawnTime: 4
+    spawnTime: 12
 },{
     id: 6,
     type: 10,
     spawnSpotId: 3,
     spawnTime: 8
 },{
-    id: 6,
+    id: 7,
     type: 10,
     spawnSpotId: 4,
     spawnTime: 12

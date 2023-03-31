@@ -19,6 +19,7 @@ export interface Team extends TeamInput {
     score: TeamScore
     position: Pos
     facingDir: FacingDir
+    pickedUpEntities: number[]
 }
 
 export const TeamsCollection = new Mongo.Collection<Team>('teams');

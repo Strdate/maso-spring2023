@@ -1,20 +1,24 @@
 import { MoveInput, MovesCollection } from "../api/collections/moves";
 import { Meteor } from 'meteor/meteor'
-import { GameCollection } from "../api/collections/games";
+import { Game, GameCollection } from "../api/collections/games";
 import { isAuthorized } from "./authorization";
 import { GameStatus } from "./enums";
 import { Team, TeamsCollection } from "../api/collections/teams";
 import { FacingDir, Pos } from "./interfaces";
-import { moveToFacingDir, normalizePosition, vectorDiff } from "./utils/geometry";
+import { moveToFacingDir, normalizePosition, vectorDiff, vectorEq } from "./utils/geometry";
 import checkWallCollision from "./utils/checkWallCollision";
+import { collide } from "./interaction";
+import TeamQueryBuilder from "./utils/teamQueryBuilder";
 
 export default function insertMove({ gameId, teamId, newPos, userId, isSimulation }:
     MoveInput & {isSimulation: boolean, userId: string | null}) {
 
-    checkGame(userId, gameId, isSimulation)
+    const game = checkGame(userId, gameId, isSimulation)
     const team = getTeam(gameId, teamId)
     const facingDir = checkPosition(team, newPos)
     newPos = normalizePosition(newPos)
+    const teamQB = new TeamQueryBuilder()
+    checkCollision(game, team, newPos, teamQB)
     if(!isSimulation) {
         MovesCollection.insert({
             gameId,
@@ -28,12 +32,9 @@ export default function insertMove({ gameId, teamId, newPos, userId, isSimulatio
             updatedAt: new Date()
         })
     }
-    TeamsCollection.update(team._id, {
-        $set: {
-            position: newPos,
-            facingDir
-        }
-    })
+    teamQB.position = newPos
+    teamQB.facingDir = facingDir
+    TeamsCollection.update(team._id, teamQB.combine())
 }
 
 function checkPosition(team: Team, newPos: Pos): FacingDir {
@@ -62,6 +63,7 @@ function checkGame(userId: string | null, gameId: string, isSimulation: boolean)
     if((game.statusId != GameStatus.Running) && (game.statusId != GameStatus.OutOfTime)) {
       throw new Meteor.Error('moves.insert.notRunning', 'Hra nebyla zahájena nebo už skončila.')
     }
+    return game
 }
 
 function getTeam(gameId: string, teamId: string) {
@@ -70,4 +72,12 @@ function getTeam(gameId: string, teamId: string) {
         throw new Meteor.Error('moves.insert.noSuchTeam', 'Tým neexistuje.')
     }
     return team
+}
+
+function checkCollision(game: Game, team: Team, newPos: Pos, teamQB: TeamQueryBuilder) {
+    game.entities.forEach(ent => {
+        if(vectorEq(newPos,ent.position)) {
+            collide(team, ent, teamQB)
+        }
+    })
 }

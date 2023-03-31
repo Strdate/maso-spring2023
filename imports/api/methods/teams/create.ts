@@ -27,8 +27,10 @@ export default new ValidatedMethod({
         facingDir: 'RIGHT',
         score: {
           tasks: 0,
+          items: 0,
           total: 0,
-        }
+        },
+        pickedUpEntities: []
       });
       // TODO cache results
     }

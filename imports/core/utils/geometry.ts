@@ -36,10 +36,15 @@ function normalizePosition(pos: Pos): Pos {
         ((pos[1] + pacmanMap.length - 1) % pacmanMap.length) + 1]
 }
 
+function vectorEq(a: Pos, b: Pos) {
+    return (a[0] === b[0]) && (a[1] === b[1])
+}
+
 export {
     vectorDiff,
     facingDirToMove,
     moveToFacingDir,
     vectorSum,
-    normalizePosition
+    normalizePosition,
+    vectorEq
 }

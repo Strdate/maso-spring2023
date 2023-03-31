@@ -18,6 +18,12 @@ export default function insertMove({ gameId, teamId, newPos, userId, isSimulatio
     const facingDir = checkPosition(team, newPos)
     newPos = normalizePosition(newPos)
     const teamQB = new TeamQueryBuilder()
+    teamQB.qb.set({
+        position: newPos,
+        facingDir,
+        state: 'PLAYING',
+        stateEndsAt: undefined
+    })
     checkCollision(game, team, newPos, teamQB)
     if(!isSimulation) {
         MovesCollection.insert({
@@ -32,10 +38,6 @@ export default function insertMove({ gameId, teamId, newPos, userId, isSimulatio
             updatedAt: new Date()
         })
     }
-    teamQB.qb.set({
-        position: newPos,
-        facingDir
-    })
     TeamsCollection.update(team._id, teamQB.combine())
 }
 
@@ -73,13 +75,16 @@ function getTeam(gameId: string, teamId: string) {
     if (!team) {
         throw new Meteor.Error('moves.insert.noSuchTeam', 'Tým neexistuje.')
     }
+    if(team.state === 'FROZEN' && team.stateEndsAt && team.stateEndsAt.getTime() > new Date().getTime()) {
+        throw new Meteor.Error('moves.insert.teamFrozen', 'Tým je momentálně zamrzlý.')
+    }
     return team
 }
 
 function checkCollision(game: Game, team: Team, newPos: Pos, teamQB: TeamQueryBuilder) {
     game.entities.forEach(ent => {
         if(vectorEq(newPos,ent.position)) {
-            if(!collide(team, ent, teamQB)) {
+            if(collide(team, ent, teamQB) && ent.category === 'MONSTER') {
                 return
             }
         }

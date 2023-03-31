@@ -1,26 +1,26 @@
 import { Mongo } from 'meteor/mongo';
 import SimpleSchema from 'simpl-schema';
-import { FacingDir } from '/imports/core/interfaces';
+import { FacingDir, Pos } from '/imports/core/interfaces';
 
 
 export interface MoveInput {
     gameId: string
     teamId: string
-    newPos: [number, number]
+    newPos: Pos
 }
 
-export interface Move extends MoveInput {
+export interface Interaction extends MoveInput {
     _id: string
     userId: string
     teamNumber: string
-    isRevoked: boolean
-    revokedByUserId?: string
     facingDir: FacingDir
+    moved: boolean
+    collisions: number[]
     createdAt: Date
     updatedAt: Date
 }
 
-export const MovesCollection = new Mongo.Collection<Move>('moves');
+export const InteractionsCollection = new Mongo.Collection<Interaction>('interactions');
 
 export const MoveInputSchema = new SimpleSchema({
     gameId: { type: String },

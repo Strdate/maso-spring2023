@@ -1,7 +1,7 @@
 import { createEffect, onCleanup, onMount } from "solid-js";
 import useResize from "../utils/useResize";
 import RenderingEngine from "./RenderingEngine";
-import { MoveInput } from "/imports/api/collections/moves";
+import { MoveInput } from "../../api/collections/interactions";
 import { Team } from "/imports/api/collections/teams";
 import { EntityInstance, FacingDir } from "/imports/core/interfaces";
 import { facingDirToMove, vectorSum } from "/imports/core/utils/geometry";

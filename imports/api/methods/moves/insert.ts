@@ -1,5 +1,5 @@
 import { ValidatedMethod } from 'meteor/mdg:validated-method'
-import { MoveInput, MoveInputSchema } from '../../collections/moves'
+import { MoveInput, MoveInputSchema } from '../../collections/interactions'
 import insertMove from '/imports/core/insertMove'
 
 export default new ValidatedMethod({

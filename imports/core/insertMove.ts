@@ -1,4 +1,4 @@
-import { MoveInput, MovesCollection } from "../api/collections/moves";
+import { MoveInput, InteractionsCollection } from "../api/collections/interactions";
 import { Meteor } from 'meteor/meteor'
 import { Game, GameCollection } from "../api/collections/games";
 import { isAuthorized } from "./authorization";
@@ -24,16 +24,17 @@ export default function insertMove({ gameId, teamId, newPos, userId, isSimulatio
         state: 'PLAYING',
         stateEndsAt: undefined
     })
-    checkCollision(game, team, newPos, teamQB)
+    const collisions = checkCollision(game, team, newPos, teamQB)
     if(!isSimulation) {
-        MovesCollection.insert({
+        InteractionsCollection.insert({
             gameId,
             teamId,
             newPos,
             userId: userId!,
             teamNumber: team.number,
-            isRevoked: false,
             facingDir,
+            moved: true,
+            collisions: collisions,
             createdAt: new Date(),
             updatedAt: new Date()
         })
@@ -82,11 +83,16 @@ function getTeam(gameId: string, teamId: string) {
 }
 
 function checkCollision(game: Game, team: Team, newPos: Pos, teamQB: TeamQueryBuilder) {
+    const collisions: number[] = []
     game.entities.forEach(ent => {
         if(vectorEq(newPos,ent.position)) {
-            if(collide(team, ent, teamQB) && ent.category === 'MONSTER') {
-                return
+            if(collide(team, ent, teamQB)) {
+                collisions.push(ent.id)
+                if(ent.category === 'MONSTER') {
+                    return
+                }
             }
         }
     })
+    return collisions
 }

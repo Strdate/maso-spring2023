@@ -1,4 +1,4 @@
-import { FacingDir, Pos } from "/imports/core/interfaces"
+import { Pos } from "/imports/core/interfaces"
 import { neighboursOf } from "/imports/core/utils/checkWallCollision"
 
 class DFS {
@@ -13,18 +13,18 @@ class DFS {
     }
 
     run = (start: Pos, excludeFirst?: Pos) => {
+        if(this.explored.length > 10) {
+            return
+        }
         this.explored.push(encode(start))
         this.sum += this.teamMap[start[1]-1][start[0]-1]
-        if(this.explored.length > 10) {
-            if(this.sum > this.longsetPath.sum) {
-                this.longsetPath = { path: this.explored.map(e => decode(e)), sum: this.sum }
-            }
-        } else {
-            neighboursOf(start)
-                .filter(n => !this.explored.includes(encode(n)) && (!excludeFirst || encode(n) !== encode(excludeFirst)))
-                .forEach(n => {
-                    this.run(n)
-                })
+        neighboursOf(start)
+            .filter(n => !this.explored.includes(encode(n)) && (!excludeFirst || encode(n) !== encode(excludeFirst)))
+            .forEach(n => {
+                this.run(n)
+            })
+        if(this.sum > this.longsetPath.sum) {
+            this.longsetPath = { path: this.explored.map(e => decode(e)), sum: this.sum }
         }
         this.sum -= this.teamMap[start[1]-1][start[0]-1]
         this.explored.pop()

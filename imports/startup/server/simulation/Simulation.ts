@@ -43,7 +43,7 @@ export class Simulation {
         items.filter(item => item.spawnTime <= minute && minute - item.spawnTime < ITEM_LIFESPAN).forEach(item => {
             const type = entityTypes.find(et => et.typeId === item.type)!
             this.game.entities.push({
-                id: item.id + 10,
+                id: item.id,
                 category: 'ITEM',
                 spriteMapOffset: type.spriteMapOffset,
                 position: spawnSpots.find(ss => ss.id === item.spawnSpotId)!.position

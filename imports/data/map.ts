@@ -13,16 +13,16 @@ const pacmanMap = [
     [9,1,12,-1,2,-1,2,-1,-1,-1,-1,-1,2,-1,2,-1,13,1,8],
     [2,-1,-1,-1,9,1,10,1,1,1,1,1,10,1,8,-1,-1,-1,2],
     [7,1,1,1,6,-1,-1,-1,-1,-1,-1,-1,-1,-1,7,1,1,1,6]
-] as const
+]
 
-const playerStartPos: Readonly<Pos> = [10, 3]
+const playerStartPos: Pos = [10, 3]
 
 //.reverse().map(n => n.map(m => {switch(m) { case 4: return 6; case 5: return 7; case 10: return 11; case 6: return 4; case 7: return 5; case 11: return 10; default: return m }}))
 
 interface EntityType {
     typeId: number
     category: EntityCategory
-    spriteMapOffset: Readonly<Pos>
+    spriteMapOffset: Pos
     description?: string
     reward?: number
 }
@@ -30,13 +30,13 @@ interface EntityType {
 interface EntityData {
     id: number
     type: number
-    startPos: Readonly<Pos>
-    program?: Readonly<FacingDir[]>
+    startPos: Pos
+    program?: FacingDir[]
 }
 
 interface SpawnSpot {
     id: number
-    position: Readonly<Pos>
+    position: Pos
 }
 
 interface ItemsData {
@@ -46,7 +46,7 @@ interface ItemsData {
     spawnTime: number
 }
 
-const spawnSpots: Readonly<SpawnSpot[]> = [{
+const spawnSpots: SpawnSpot[] = [{
     id: 1,
     position: [1, 2]
 },{
@@ -58,9 +58,9 @@ const spawnSpots: Readonly<SpawnSpot[]> = [{
 },{
     id: 4,
     position: [14, 7]
-}] as const
+}]
 
-const entityTypes: Readonly<EntityType[]> = [{
+const entityTypes: EntityType[] = [{
     typeId: 1,
     category: 'MONSTER',
     spriteMapOffset: [0, 1]
@@ -100,9 +100,9 @@ const entityTypes: Readonly<EntityType[]> = [{
     spriteMapOffset: [7, 2],
     description: 'Pytel zlata',
     reward: 60
-}] as const
+}]
 
-const entities: Readonly<EntityData[]> = [{
+const entities: EntityData[] = [{
     id: 1,
     type: 1,
     startPos: [5, 3],
@@ -136,43 +136,43 @@ const entities: Readonly<EntityData[]> = [{
         'RIGHT','UP','RIGHT','UP','UP','RIGHT','RIGHT','RIGHT','DOWN','UP','UP',
         'UP','UP','UP','DOWN','LEFT','LEFT','LEFT','DOWN','LEFT','LEFT','LEFT',
         'LEFT','DOWN','DOWN']
-}] as const
+}]
 
-const items: Readonly<ItemsData[]> = [{
-    id: 1,
+const items: ItemsData[] = [{
+    id: 11,
     type: 7,
     spawnSpotId: 1,
     spawnTime: 0
 },{
-    id: 2,
+    id: 12,
     type: 7,
     spawnSpotId: 2,
     spawnTime: 8
 },{
-    id: 3,
+    id: 13,
     type: 8,
     spawnSpotId: 3,
     spawnTime: 0
 },{
-    id: 4,
+    id: 14,
     type: 8,
     spawnSpotId: 4,
     spawnTime: 4
 },{
-    id: 5,
+    id: 15,
     type: 9,
     spawnSpotId: 1,
     spawnTime: 12
 },{
-    id: 6,
+    id: 16,
     type: 10,
     spawnSpotId: 3,
     spawnTime: 8
 },{
-    id: 7,
+    id: 17,
     type: 10,
     spawnSpotId: 4,
     spawnTime: 12
-}] as const
+}]
 
 export { pacmanMap, playerStartPos, entityTypes, spawnSpots, items, entities }

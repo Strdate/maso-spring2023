@@ -14,7 +14,7 @@ function collide(team: Team, entity: EntityInstance, teamQB: TeamQueryBuilder) {
         return true
     }
     if(entity.category === 'ITEM' && !team.pickedUpEntities.includes(entity.id)) {
-        const item = items.find(item => item.id + 10 === entity.id)!
+        const item = items.find(item => item.id === entity.id)!
         const entityType = entityTypes.find(et => et.typeId === item.type)!
         teamQB.pickedUpEntities.push(entity.id)
         teamQB.score += entityType.reward!

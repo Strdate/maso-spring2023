@@ -24,7 +24,7 @@ export default function GameMap(props: Props) {
         re = new RenderingEngine(canvasRef)
     })
     let timer: NodeJS.Timer
-    if(props.team) {
+    if(props.inputPage) {
         timer = setInterval(() => re?.render() ,500)
     }
         

@@ -2,6 +2,8 @@ import { Mongo } from 'meteor/mongo';
 import { FacingDir, Pos, TeamScore } from '/imports/core/interfaces';
 import SimpleSchema from "simpl-schema";
 
+export type TeamState = 'PLAYING' | 'FROZEN' | 'HUNTING'
+
 export interface TeamInput {
     name: string
     number: string
@@ -19,6 +21,8 @@ export interface Team extends TeamInput {
     score: TeamScore
     position: Pos
     facingDir: FacingDir
+    state: TeamState
+    stateEndsAt?: Date
     pickedUpEntities: number[]
 }
 

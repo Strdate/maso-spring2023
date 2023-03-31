@@ -13,6 +13,6 @@ export default function TeamControlsBox(props: Props) {
             <span>{props.team?.number ?? '###'} - {props.team?.name}</span>
             <span>skóre: {props.team?.score?.total ?? 0}</span>
         </div>
-        <GameDisplayBox game={props.game} team={props.team} />
+        <GameDisplayBox game={props.game} team={props.team} inputPage />
     </div>
 }

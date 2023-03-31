@@ -23,8 +23,9 @@ export default new ValidatedMethod({
         CreatedAt: new Date(),
         UpdatedAt: new Date(),
         money: 0,
-        position: playerStartPos,
+        position: [...playerStartPos],
         facingDir: 'RIGHT',
+        state: 'PLAYING',
         score: {
           tasks: 0,
           items: 0,

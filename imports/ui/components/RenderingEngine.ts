@@ -21,6 +21,8 @@ class RenderingEngine
 
     render = (newData?: EntityInstance[]) => {
         console.log('Rendering... :)')
+        const now = (new Date()).getTime()
+        const flashNow = now % 1000 > 500
         if(newData) {
             this.data = newData
         }
@@ -43,6 +45,9 @@ class RenderingEngine
         this.data.forEach(ent => {
             const offsetX = ent.spriteMapOffset[0] + RenderingEngine.facingDirToOffset(ent)
             const offsetY = ent.spriteMapOffset[1]
+            if(ent.flashing && !flashNow) {
+                return
+            }
             this.drawSprite(offsetX, offsetY, ent.position[0], ent.position[1])
         })
 

@@ -32,8 +32,10 @@ export default function insertMove({ gameId, teamId, newPos, userId, isSimulatio
             updatedAt: new Date()
         })
     }
-    teamQB.position = newPos
-    teamQB.facingDir = facingDir
+    teamQB.qb.set({
+        position: newPos,
+        facingDir
+    })
     TeamsCollection.update(team._id, teamQB.combine())
 }
 
@@ -77,7 +79,9 @@ function getTeam(gameId: string, teamId: string) {
 function checkCollision(game: Game, team: Team, newPos: Pos, teamQB: TeamQueryBuilder) {
     game.entities.forEach(ent => {
         if(vectorEq(newPos,ent.position)) {
-            collide(team, ent, teamQB)
+            if(!collide(team, ent, teamQB)) {
+                return
+            }
         }
     })
 }

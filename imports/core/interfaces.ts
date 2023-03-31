@@ -14,6 +14,7 @@ interface EntityInstance {
     spriteMapOffset: [number, number]
     position: [number, number]
     facingDir?: FacingDir
+    flashing?: boolean
   }
 
 type EntityCategory = 'MONSTER' | 'PACMAN' | 'ITEM'

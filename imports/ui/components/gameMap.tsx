@@ -11,6 +11,7 @@ import { Game } from "/imports/api/collections/games";
 type Props = {
     game: Game
     team?: Team
+    inputPage?: boolean
 }
 
 export default function GameMap(props: Props) {
@@ -22,8 +23,15 @@ export default function GameMap(props: Props) {
         window.addEventListener("keydown", handleKeyDown)
         re = new RenderingEngine(canvasRef)
     })
+    let timer: NodeJS.Timer
+    if(props.team) {
+        timer = setInterval(() => re?.render() ,500)
+    }
+        
     onCleanup(() => {
-        //const canvas = document.getElementById("game-map") as HTMLCanvasElement
+        if(timer) {
+            clearInterval(timer)
+        }
         window.removeEventListener("keydown", handleKeyDown)
         console.log('GameMap dismounted!')
     });
@@ -76,7 +84,8 @@ function transformEntities(entities: EntityInstance[], team?: Team) {
         category: 'PACMAN',
         spriteMapOffset: [0, 2],
         position: team.position,
-        facingDir: team.facingDir
+        facingDir: team.facingDir,
+        flashing: team.state === 'FROZEN'
     })
 
     return entities

@@ -3,8 +3,9 @@ import { ValidatedMethod } from 'meteor/mdg:validated-method'
 import { Meteor } from 'meteor/meteor'
 import { GameCollection, GameInput, GameInputSchema } from '../../collections/games'
 import { GameStatus } from '../../../core/enums'
-import { entities, entityTypes } from '/imports/data/map'
+import { entities, entityTypes, pacmanMap } from '/imports/data/map'
 import { EntityInstance } from '/imports/core/interfaces'
+import { MapCacheCollection } from '../../collections/mapCache'
 
 export default new ValidatedMethod({
   name: 'games.create',
@@ -33,6 +34,10 @@ export default new ValidatedMethod({
         totalExchangeableTasksCount: 4,
         entities: initEntities()
       })
+      MapCacheCollection.insert({
+        gameId: _id,
+        ...generateMapCache()
+      })
       return _id
     }
   }
@@ -54,4 +59,17 @@ function initEntities(): EntityInstance[] {
       facingDir: ent.program?.[0]
     }
   })
+}
+
+function generateMapCache() {
+  let obj: {[key: `bucket${string}`]: string[]} = {}
+  for(let i = 0; i < pacmanMap.length; i++) {
+    for(let j = 0; j < pacmanMap[i].length; j++) {
+        const sprite = pacmanMap[i][j]
+        if(sprite >= 0) {
+            obj = { ...obj, [`bucket${j+1}x${i+1}`]: [] }
+        }
+    }
+  }
+  return obj
 }

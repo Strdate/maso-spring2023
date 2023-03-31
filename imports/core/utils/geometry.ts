@@ -40,11 +40,16 @@ function vectorEq(a: Pos, b: Pos) {
     return (a[0] === b[0]) && (a[1] === b[1])
 }
 
+function bucketName(pos: Pos) {
+    return `bucket${pos[0]}x${pos[1]}`
+}
+
 export {
     vectorDiff,
     facingDirToMove,
     moveToFacingDir,
     vectorSum,
     normalizePosition,
-    vectorEq
+    vectorEq,
+    bucketName
 }

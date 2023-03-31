@@ -5,10 +5,11 @@ import { isAuthorized } from "./authorization";
 import { GameStatus } from "./enums";
 import { Team, TeamsCollection } from "../api/collections/teams";
 import { FacingDir, Pos } from "./interfaces";
-import { moveToFacingDir, normalizePosition, vectorDiff, vectorEq } from "./utils/geometry";
+import { bucketName, moveToFacingDir, normalizePosition, vectorDiff, vectorEq } from "./utils/geometry";
 import checkWallCollision from "./utils/checkWallCollision";
 import { collide } from "./interaction";
 import TeamQueryBuilder from "./utils/teamQueryBuilder";
+import { MapCacheCollection } from "../api/collections/mapCache";
 
 export default function insertMove({ gameId, teamId, newPos, userId, isSimulation }:
     MoveInput & {isSimulation: boolean, userId: string | null}) {
@@ -40,6 +41,16 @@ export default function insertMove({ gameId, teamId, newPos, userId, isSimulatio
         })
     }
     TeamsCollection.update(team._id, teamQB.combine())
+    if(!isSimulation) {
+        MapCacheCollection.update({ gameId: game._id },{
+            $push: {
+                [bucketName(newPos)]: team.number
+            },
+            $pull: {
+                [bucketName(team.position)]: team.number
+            }
+        })
+    }
 }
 
 function checkPosition(team: Team, newPos: Pos): FacingDir {

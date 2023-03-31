@@ -4,9 +4,6 @@ import { getTeams } from "./updateRunningGamesUtils"
 import { TasksCollection } from "/imports/api/collections/tasks"
 import { Random } from 'meteor/random'
 import { Simulation } from "../simulation/Simulation"
-import { MapCacheCollection } from "/imports/api/collections/mapCache"
-import { bucketName } from "/imports/core/utils/geometry"
-import { playerStartPos } from "/imports/data/map"
 
 function getRunningGames(now: Date) {
   return GameCollection.find({
@@ -53,11 +50,8 @@ function checkGameStatus(game: Game, now: Date)
   if(game.statusId === GameStatus.Created )
   {
     console.log(`Initializing game: ${game.code}`)
-    const teams = getTeams(game)
-    MapCacheCollection.update({ gameId: game._id }, {
-      $set: { [bucketName(playerStartPos)]: teams.map(team => team.number) }
-    })
     GameCollection.update({ _id: game._id },{ $set: { statusId: GameStatus.Running } })
+    const teams = getTeams(game)
 
     const bulk = TasksCollection.rawCollection().initializeUnorderedBulkOp()
     const statusId = TaskStatus.Issued

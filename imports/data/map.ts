@@ -32,6 +32,7 @@ interface EntityData {
     type: number
     startPos: Pos
     program?: FacingDir[]
+    facingDir?: FacingDir
 }
 
 interface SpawnSpot {
@@ -76,6 +77,10 @@ const entityTypes: EntityType[] = [{
     typeId: 4,
     category: 'MONSTER',
     spriteMapOffset: [12, 1]
+},{
+    typeId: 5,
+    category: 'MONSTER',
+    spriteMapOffset: [0, 1]
 },{
     typeId: 7,
     category: 'ITEM',
@@ -136,6 +141,11 @@ const entities: EntityData[] = [{
         'RIGHT','UP','RIGHT','UP','UP','RIGHT','RIGHT','RIGHT','DOWN','UP','UP',
         'UP','UP','UP','DOWN','LEFT','LEFT','LEFT','DOWN','LEFT','LEFT','LEFT',
         'LEFT','DOWN','DOWN']
+},{
+    id: 5,
+    type: 5,
+    startPos: [13, 4],
+    facingDir: 'LEFT'
 }]
 
 const items: ItemsData[] = [{

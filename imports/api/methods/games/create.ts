@@ -3,7 +3,7 @@ import { ValidatedMethod } from 'meteor/mdg:validated-method'
 import { Meteor } from 'meteor/meteor'
 import { GameCollection, GameInput, GameInputSchema } from '../../collections/games'
 import { GameStatus } from '../../../core/enums'
-import { entities, entityTypes, pacmanMap } from '/imports/data/map'
+import { entities, entityTypes } from '/imports/data/map'
 import { EntityInstance } from '/imports/core/interfaces'
 
 export default new ValidatedMethod({
@@ -51,7 +51,7 @@ function initEntities(): EntityInstance[] {
       category: ent.category,
       spriteMapOffset: ent.spriteMapOffset,
       position: ent.startPos,
-      facingDir: ent.program?.[0]
+      facingDir: ent.facingDir ?? ent.program?.[0]
     }
   })
 }

@@ -1,4 +1,5 @@
 import { FacingDir, Pos } from "../interfaces";
+import { facingDirToMove, normalizePosition, vectorSum } from "./geometry";
 import { pacmanMap } from "/imports/data/map";
 
 const collisionMap: FacingDir[][] = [
@@ -20,7 +21,17 @@ const collisionMap: FacingDir[][] = [
     ['RIGHT', 'LEFT'],
 ]
 
-export default function checkWallCollision(position: Pos, facingDir: FacingDir) {
-    const sprite = pacmanMap[position[1]-1][position[0]-1]
-    return collisionMap[sprite].includes(facingDir)
+function checkWallCollision(position: Pos, facingDir: FacingDir) {
+    return getAllowedMoves(position).includes(facingDir)
 }
+
+function getAllowedMoves(position: Pos) {
+    const sprite = pacmanMap[position[1]-1][position[0]-1]
+    return collisionMap[sprite]
+}
+
+function neighboursOf(position: Pos) {
+    return getAllowedMoves(position).map(fd => normalizePosition(vectorSum(facingDirToMove(fd), position)))
+}
+
+export { checkWallCollision, getAllowedMoves, neighboursOf }

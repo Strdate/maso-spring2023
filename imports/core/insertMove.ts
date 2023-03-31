@@ -6,7 +6,7 @@ import { GameStatus } from "./enums";
 import { Team, TeamsCollection } from "../api/collections/teams";
 import { FacingDir, Pos } from "./interfaces";
 import { moveToFacingDir, normalizePosition, vectorDiff, vectorEq } from "./utils/geometry";
-import checkWallCollision from "./utils/checkWallCollision";
+import { checkWallCollision } from "./utils/checkWallCollision";
 import { collide } from "./interaction";
 import TeamQueryBuilder from "./utils/teamQueryBuilder";
 

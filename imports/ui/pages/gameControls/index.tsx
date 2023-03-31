@@ -142,7 +142,7 @@ export default function GameControls() {
       <div class='app-bar-button hastooltip' onClick={() => navigate(`/${params.code}`)}><Menu /><span class='tooltiptext'>Zpět do menu</span></div>
     </div>
     <Show when={!showGuide()}>
-      <TeamControlsBox game={game} team={team} />
+      <TeamControlsBox game={game} team={team} loading={teamLoading()} />
     </Show>
     <Show when={showGuide()}>
       <Guide />

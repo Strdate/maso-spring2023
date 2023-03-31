@@ -2,18 +2,39 @@ import GameMap from "../../components/gameMap";
 import GameTimer from "./GameTimer";
 import { Game } from "/imports/api/collections/games";
 import { Team } from "/imports/api/collections/teams";
+import { Show, createEffect, createSignal, onCleanup } from "solid-js";
 
 type Props = {
   game: Game
   team?: Team
   inputPage?: boolean
+  loading?: boolean
 }
 
 export default function GameDisplayBox(props: Props) {
-
+  const [offline, setOffline] = createSignal()
+  const timer = setInterval(() => {
+    setOffline(!Meteor.status().connected)
+  }, 5000)
+  onCleanup(() => clearInterval(timer))
+  const overlayText = () => {
+    if(offline()) {
+      return 'Offline!'
+    }
+    if(props.loading) {
+      return 'Loading...'
+    }
+  }
   return <div style={{display: 'flex', "flex-direction": 'column', "align-items": 'center', width:'fit-content'}}>
         <GameTimer startAt={props.game.startAt} endAt={props.game.endAt} />
-        <GameMap game={props.game} team={props.team} inputPage={props.inputPage} />
+        <div style={{position: 'relative'}}>
+          <GameMap game={props.game} team={props.team} inputPage={props.inputPage} />
+          <Show when={overlayText()}>
+            <div class='game-overlay'>
+              <div class='white-box' style={{animation: 'fadein 0.4s'}}>{overlayText()}</div>
+            </div>
+          </Show>
+        </div>
       </div>
     
 }

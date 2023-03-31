@@ -1,6 +1,5 @@
-import { FacingDir, Pos } from "../interfaces"
 import QueryBuilder from "./queryBuilder"
-import { Team, TeamState } from "/imports/api/collections/teams"
+import { Team } from "/imports/api/collections/teams"
 
 class TeamQueryBuilder {
 

@@ -52,13 +52,16 @@ div.formbase :is(input[type=button], input[type=submit]) {
   font-size: 1.1rem;
 }
 
-div.timerDiv {
+div.white-box {
   font-family: publicPixel, Arial, sans-serif;
   font-size: 6vh;
   border-radius: 6px;
   background-color: white;
   padding: 0.8vh 0.8vh 0.8vh 0.8vh;
   margin: 0.8vh 6px;
+}
+
+div.stretched {
   align-self: stretch;
 }
 
@@ -155,4 +158,20 @@ div.teamtitle {
 
 canvas:focus {
   outline: none;
+}
+
+div.game-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@keyframes fadein {
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }

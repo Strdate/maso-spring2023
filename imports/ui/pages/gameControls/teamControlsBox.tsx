@@ -5,6 +5,7 @@ import { Team } from "/imports/api/collections/teams";
 type Props = {
     game: Game
     team: Team | undefined
+    loading?: boolean
 }
 
 export default function TeamControlsBox(props: Props) {
@@ -13,6 +14,6 @@ export default function TeamControlsBox(props: Props) {
             <span>{props.team?.number ?? '###'} - {props.team?.name}</span>
             <span>skóre: {props.team?.score?.total ?? 0}</span>
         </div>
-        <GameDisplayBox game={props.game} team={props.team} inputPage />
+        <GameDisplayBox game={props.game} team={!props.loading ? props.team : undefined} inputPage loading={props.loading} />
     </div>
 }

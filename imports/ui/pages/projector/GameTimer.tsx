@@ -25,7 +25,7 @@ export default function GameTimer(props: Props) {
     const start = () => new Date(props.startAt).getTime()
     const end = () => new Date(props.endAt).getTime()
     const phase = createMemo(() => getPhase(current(), start(), end()))
-    return <div class='timerDiv'>
+    return <div class='white-box stretched'>
         <Switch>
             <Match when={phase() === 'BEFORE'}>
                 Vítejte na jarním MaSu 2023

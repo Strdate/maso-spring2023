@@ -5,7 +5,7 @@ import { isAuthorized } from "./authorization";
 import { GameStatus } from "./enums";
 import { Team, TeamsCollection } from "../api/collections/teams";
 import { FacingDir, Pos } from "./interfaces";
-import { moveToFacingDir, normalizePosition, vectorDiff, vectorEq } from "./utils/geometry";
+import { moveToFacingDir, normalizePosition, vectorDiff } from "./utils/geometry";
 import { checkWallCollision } from "./utils/checkWallCollision";
 import { checkCollision } from "./interaction";
 import TeamQueryBuilder from "./utils/teamQueryBuilder";

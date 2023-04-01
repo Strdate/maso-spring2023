@@ -1,4 +1,4 @@
-import { Index, Show, createEffect, createMemo, createSignal } from "solid-js";
+import { Index, Show, createMemo } from "solid-js";
 import GameDisplayBox from "../projector/gameDisplayBox";
 import { Game } from "/imports/api/collections/games";
 import { Team } from "/imports/api/collections/teams";
@@ -32,6 +32,12 @@ export default function TeamControlsBox(props: Props) {
         && props.team.stateEndsAt
         && props.team.state === 'FROZEN'
         && (props.team.stateEndsAt.getTime() > curTime()))
+    const isInvincible = createMemo(() =>
+        props.team
+        && props.team.stateEndsAt
+        && props.team.state === 'FROZEN'
+        && (props.team.stateEndsAt.getTime() < curTime())
+    )
 
     return <div class='team-controls-box'>
         <div class='teamcontrols' style={{display: "flex", "flex-direction": 'column', width: 'fit-content'}}>
@@ -57,8 +63,14 @@ export default function TeamControlsBox(props: Props) {
         </div>
         <div style={{ display: 'flex', "flex-direction":'column', "justify-content": 'center' }}>
             <div style={{ display: 'flex', "flex-direction":'column', height: 'fit-content', width: 'fit-content', gap: '1vh' }}>
-                <div class='white-box' style={{ display: 'flex', 'flex-direction': 'column', "justify-content": 'space-between',
-                    width: '31vh', "align-items": 'center', margin: '0' }}>
+                <Show when={isInvincible()}>
+                    <div class='white-box moves-infobox' style={{"font-size": '2vh'}}>
+                        <div>Dokud se tým</div>
+                        <div>nepohne, je</div>
+                        <div>nezranitelný</div>
+                    </div>
+                </Show>
+                <div class='white-box moves-infobox'>
                     <Show when={isFrozen()}>
                         <div>Tým je</div>
                         <div>zamrzlý!</div>

@@ -2,7 +2,7 @@ import GameMap from "../../components/gameMap";
 import GameTimer from "./GameTimer";
 import { Game } from "/imports/api/collections/games";
 import { Team } from "/imports/api/collections/teams";
-import { Show, createEffect, createSignal, onCleanup } from "solid-js";
+import { Show, createSignal, onCleanup } from "solid-js";
 
 type Props = {
   game: Game

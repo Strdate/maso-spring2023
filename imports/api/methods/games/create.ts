@@ -26,7 +26,7 @@ export default new ValidatedMethod({
         authorizedUsers: [this.userId!, 'robotworkeruserid'],
         createdAt: new Date(),
         updatedAt: new Date(),
-        revenuePerTask: 100,
+        revenuePerTask: 1,
         experiencePerTask: 10,
         initiallyIssuedTasks: 6,
         totalTasksCount: 50,

@@ -24,6 +24,9 @@ export interface Team extends TeamInput {
     state: TeamState
     stateEndsAt?: Date
     pickedUpEntities: number[]
+
+    solvedTasks: number[]
+    changedTasks: number[]
 }
 
 export const TeamsCollection = new Mongo.Collection<Team>('teams');

@@ -8,6 +8,7 @@ import { facingDirToMove, vectorSum } from "/imports/core/utils/geometry";
 import insertMove from "/imports/api/methods/moves/insert"
 import { Game } from "/imports/api/collections/games";
 import { entities, entityTypes, items } from "/imports/data/map";
+import { GameStatus } from "/imports/core/enums";
 
 type Props = {
     game: Game
@@ -43,7 +44,7 @@ export default function GameMap(props: Props) {
     createEffect(() => {
         innerSize() // trigger dependency
         re.render(
-            transformEntities(props.game.entities, props.team),
+            transformEntities(props.game.entities, props.game, props.team),
             transformItems(props.team))
     })
 
@@ -75,10 +76,10 @@ export default function GameMap(props: Props) {
   return <canvas ref={canvasRef} tabIndex='0' id="game-map" width='300px' height='300px' ></canvas>
 }
 
-function transformEntities(entities: EntityInstance[], team?: Team) {
+function transformEntities(entities: EntityInstance[], game: Game, team?: Team) {
     // Yes, team is sometimes empty object :O
     if(!team || !team.position) {
-        return entities
+        return [...entities]
     }
     entities = [...entities]
 
@@ -93,6 +94,7 @@ function transformEntities(entities: EntityInstance[], team?: Team) {
         position: team.position,
         facingDir: team.facingDir,
         flashing: team.state === 'FROZEN'
+            && (game.statusId === GameStatus.Running || game.statusId === GameStatus.OutOfTime)
     })
 
     return entities

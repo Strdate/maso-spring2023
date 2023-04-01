@@ -31,7 +31,9 @@ export default new ValidatedMethod({
           items: 0,
           total: 0,
         },
-        pickedUpEntities: []
+        pickedUpEntities: [],
+        solvedTasks: [],
+        changedTasks: []
       })
       // TODO cache results
     }

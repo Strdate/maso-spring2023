@@ -58,6 +58,16 @@ function solve(game: Game, team: Team, task: Task, userId: string) {
     case TaskStatus.Issued:
       setTaskStatus(task, TaskStatus.Solved, userId)
       const nextTaskNumber = issueNewTask(game, team, userId)
+      TeamsCollection.update(team._id, {
+        $inc: {
+          'score.tasks': game.experiencePerTask,
+          'score.total': game.experiencePerTask,
+          money: game.revenuePerTask,
+        },
+        $push: {
+          solvedTasks: task.number,
+        }
+      })
       return returnData(team, { number: task.number, statusId: TaskStatus.Solved }, nextTaskNumber)
     case TaskStatus.Solved:
       return returnData(team, task, null)
@@ -74,6 +84,11 @@ function exchange(game: Game, team: Team, task: Task, userId: string) {
         return badRequest('Tým už vyměnil maximum příkladů.')
       }
       setTaskStatus(task, TaskStatus.Exchanged, userId)
+      TeamsCollection.update(team._id, {
+        $push: {
+          changedTasks: task.number,
+        }
+      })
       const nextTaskNumber = issueNewTask(game, team, userId)
       return returnData(team, { number: task.number, statusId: TaskStatus.Exchanged }, nextTaskNumber)
     case TaskStatus.Solved:
@@ -90,10 +105,25 @@ function cancel(game: Game, team: Team, task: Task, userId: string) {
     case TaskStatus.Solved:
       revokeLastIssuedTask(game, team, userId)
       setTaskStatus(task, TaskStatus.Issued, userId)
+      TeamsCollection.update(team._id, {
+        $inc: {
+          'score.tasks': -1 * game.experiencePerTask,
+          'score.total': -1 * game.experiencePerTask,
+          money: -1 * game.revenuePerTask,
+        },
+        $pull: {
+          solvedTasks: task.number,
+        }
+      })
       return returnData(team, { number: task.number, statusId: TaskStatus.Issued }, null)
     case TaskStatus.Exchanged:
       revokeLastIssuedTask(game, team, userId)
       setTaskStatus(task, TaskStatus.Issued, userId)
+      TeamsCollection.update(team._id, {
+        $pull: {
+          changedTasks: task.number,
+        }
+      })
       return returnData(team, { number: task.number, statusId: TaskStatus.Issued }, null)
   }
 }

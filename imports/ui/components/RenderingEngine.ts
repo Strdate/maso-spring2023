@@ -23,7 +23,7 @@ class RenderingEngine
     render = (newData?: EntityInstance[], pickedUpItems?: Pos[], flashNow?: boolean) => {
         console.log('Rendering... :)')
         if(newData) {
-            this.data = newData
+            this.data = newData//[...newData]
         }
         if(pickedUpItems) {
             this.pickedUpItems = pickedUpItems
@@ -69,8 +69,13 @@ class RenderingEngine
 
     loadImage = () => {
         const img = new Image()
-        img.src = '/images/sprites.png'
+        const src = '/images/sprites.png'
+        img.src = src
         img.onload = () => this.render()
+        img.onerror = () => setTimeout(() => {
+            console.log('Image error')
+            img.src = src
+        });
         return img
     }
 
@@ -104,6 +109,7 @@ class RenderingEngine
     drawText = (text: string, left: number, top: number) => {
         const scale = this.scale
         this.ctx.font = `${6 * scale}px publicPixel`
+        //console.log('text height:',6*scale)
         this.ctx.fillStyle = '#ffffff'
         this.ctx.textBaseline = 'top'
         this.ctx.fillText(
@@ -115,10 +121,20 @@ class RenderingEngine
 
     resize = () => {
         const rect = this.canvas.getBoundingClientRect()
-        this.scale = (window.innerHeight - rect.top) * 0.95 / SPRITE_SIZE / pacmanMap.length
-        this.canvas.height = this.scale * SPRITE_SIZE * (pacmanMap.length + (this.isInput ? 0.5 : 0))
-        this.canvas.width = this.scale * SPRITE_SIZE * pacmanMap[0].length
-        this.ctx.imageSmoothingEnabled = false
+        const prevScale = this.scale
+        const newScale = (window.innerHeight - rect.top) * 0.95 / SPRITE_SIZE / (pacmanMap.length + (this.isInput ? 1 : 0))
+        if(newScale !== prevScale) {
+            //console.log('scale changed')
+            this.scale = newScale
+            this.canvas.height = this.scale * SPRITE_SIZE * (pacmanMap.length + (this.isInput ? 0.5 : 0))
+            this.canvas.width = this.scale * SPRITE_SIZE * pacmanMap[0].length
+            this.ctx.imageSmoothingEnabled = false
+            // hack cus I suck at css
+            const tasksContainer = document.getElementById('tasks-container')
+            if(tasksContainer) {
+                tasksContainer.style.maxWidth = `${this.canvas.width}px`
+            }
+        }
     }
 
     static facingDirToOffset = (ent: EntityInstance) => {

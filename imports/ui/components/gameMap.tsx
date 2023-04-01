@@ -9,6 +9,7 @@ import insertMove from "/imports/api/methods/moves/insert"
 import { Game } from "/imports/api/collections/games";
 import { entities, entityTypes, items } from "/imports/data/map";
 import { GameStatus } from "/imports/core/enums";
+import { resetMovesLeft } from "../utils/utils";
 
 type Props = {
     game: Game
@@ -59,7 +60,7 @@ export default function GameMap(props: Props) {
         }
         if(event.code === 'KeyR') {
             event.preventDefault()
-            props.setMovesLeft!(6)
+            resetMovesLeft(props.team, props.setMovesLeft!)
         }
         if((props.movesLeft ?? 0) <= 0) {
             return

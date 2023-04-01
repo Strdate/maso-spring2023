@@ -24,6 +24,7 @@ export default function insertMove({ gameId, teamId, newPos, userId, isSimulatio
         state: 'PLAYING',
         stateEndsAt: undefined
     })
+    teamQB.qb.inc({ money: -1 })
     team.position = newPos
     const collisions = checkCollision(game, team, teamQB)
     if(!isSimulation) {
@@ -78,6 +79,9 @@ function getTeam(gameId: string, teamId: string) {
     }
     if(team.state === 'FROZEN' && team.stateEndsAt && team.stateEndsAt.getTime() > new Date().getTime()) {
         throw new Meteor.Error('moves.insert.teamFrozen', 'Tým je momentálně zamrzlý.')
+    }
+    if(team.money <= 0) {
+        throw new Meteor.Error('moves.insert.insufficientMoves', 'Nedostatek volných pohybů.')
     }
     return team
 }

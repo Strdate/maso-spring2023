@@ -3,7 +3,7 @@ import Menu from "@suid/icons-material/Menu"
 import VisibilityOff from "@suid/icons-material/VisibilityOff"
 import HelpIcon from "@suid/icons-material/Help"
 import { TextField } from "@suid/material"
-import { createEffect, createSignal, onMount, onCleanup, Show } from "solid-js"
+import { createEffect, createSignal, onMount, onCleanup, Show, untrack } from "solid-js"
 import { createFindOne, createSubscribe } from "solid-meteor-data"
 import ManagedSuspense from "../../components/managedSuspense"
 import useClass from "../../utils/useClass"
@@ -13,8 +13,7 @@ import Tabs from "./tabs"
 import { TeamsCollection, Team } from "/imports/api/collections/teams"
 import TeamControlsBox from "./teamControlsBox"
 import { Game, GameCollection } from "/imports/api/collections/games"
-
-const MOVES_PER_VISIT = 6
+import { resetMovesLeft } from "../../utils/utils"
 
 export default function GameControls() {
   useClass('input-page')
@@ -61,7 +60,7 @@ export default function GameControls() {
         setTabList([...tabList(), teamNum()!]).sort((a,b) => parseInt(a) - parseInt(b))
       }
       prevTeamNum = teamNum()!
-      setMovesLeft(MOVES_PER_VISIT)
+      resetMovesLeft(team, setMovesLeft)
     }
     if(!tFound() && tabList().includes(teamNum()!)) {
       setTabList((tabl) => tabl.filter(t => t !== teamNum()))

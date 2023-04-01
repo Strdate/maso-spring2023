@@ -14,6 +14,8 @@ type Props = {
     game: Game
     team?: Team
     inputPage?: boolean
+    movesLeft?: number
+    setMovesLeft?: (moves: number) => void
 }
 
 export default function GameMap(props: Props) {
@@ -55,6 +57,13 @@ export default function GameMap(props: Props) {
         if(document.getElementById('teamInput') === document.activeElement) {
             return
         }
+        if(event.code === 'KeyR') {
+            event.preventDefault()
+            props.setMovesLeft!(6)
+        }
+        if((props.movesLeft ?? 0) <= 0) {
+            return
+        }
         const facingDir = keyToFacingDir(event.code)
         if(facingDir) {
             const input: MoveInput = {
@@ -63,12 +72,14 @@ export default function GameMap(props: Props) {
                 newPos: vectorSum(props.team.position, facingDirToMove(facingDir))
             }
             event.preventDefault()
+            props.setMovesLeft!(Math.max(0, props.movesLeft! - 1))
             insertMove.call(input, moveCallback)
         }
     }
 
     const moveCallback = (error: any/*, result: any*/) => {
         if(error) {
+            props.setMovesLeft!(props.movesLeft! + 1)
             console.log(error)
         }
     }

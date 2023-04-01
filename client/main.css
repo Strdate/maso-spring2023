@@ -189,6 +189,7 @@ div.tasks {
   gap: 2px;
   color: #ffffff;
   font-size: 2.25vh;
+  margin-top: 0.6vh;
 }
 
 div.task-box {

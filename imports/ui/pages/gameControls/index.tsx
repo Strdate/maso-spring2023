@@ -14,6 +14,8 @@ import { TeamsCollection, Team } from "/imports/api/collections/teams"
 import TeamControlsBox from "./teamControlsBox"
 import { Game, GameCollection } from "/imports/api/collections/games"
 
+const MOVES_PER_VISIT = 6
+
 export default function GameControls() {
   useClass('input-page')
   useTitle('Zadávátko | MaSo 2023')
@@ -21,6 +23,7 @@ export default function GameControls() {
   const [searchParams, setSearchParams] = useSearchParams()
   const navigate = useNavigate()
   const [tabList, setTabList] = createSignal<string[]>([])
+  const [movesLeft, setMovesLeft] = createSignal(0)
   let prevTeamNum: string | undefined
 
   const loading = createSubscribe('game', () => params.code)
@@ -58,6 +61,7 @@ export default function GameControls() {
         setTabList([...tabList(), teamNum()!]).sort((a,b) => parseInt(a) - parseInt(b))
       }
       prevTeamNum = teamNum()!
+      setMovesLeft(MOVES_PER_VISIT)
     }
     if(!tFound() && tabList().includes(teamNum()!)) {
       setTabList((tabl) => tabl.filter(t => t !== teamNum()))
@@ -142,7 +146,13 @@ export default function GameControls() {
       <div class='app-bar-button hastooltip' onClick={() => navigate(`/${params.code}`)}><Menu /><span class='tooltiptext'>Zpět do menu</span></div>
     </div>
     <Show when={!showGuide()}>
-      <TeamControlsBox game={game} team={team} loading={teamLoading()} />
+      <TeamControlsBox
+        game={game}
+        team={team}
+        loading={teamLoading()}
+        movesLeft={movesLeft()}
+        setMovesLeft={setMovesLeft}
+    />
     </Show>
     <Show when={showGuide()}>
       <Guide />

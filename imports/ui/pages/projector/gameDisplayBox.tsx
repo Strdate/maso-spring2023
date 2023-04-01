@@ -9,6 +9,8 @@ type Props = {
   team?: Team
   inputPage?: boolean
   loading?: boolean
+  movesLeft?: number
+  setMovesLeft?: (moves: number) => void
 }
 
 export default function GameDisplayBox(props: Props) {
@@ -28,7 +30,13 @@ export default function GameDisplayBox(props: Props) {
   return <div style={{display: 'flex', "flex-direction": 'column', "align-items": 'center', width:'fit-content'}}>
         <GameTimer startAt={props.game.startAt} endAt={props.game.endAt} />
         <div style={{position: 'relative'}}>
-          <GameMap game={props.game} team={props.team} inputPage={props.inputPage} />
+          <GameMap
+            game={props.game}
+            team={props.team}
+            inputPage={props.inputPage}
+            movesLeft={props.movesLeft}
+            setMovesLeft={props.setMovesLeft}
+          />
           <Show when={overlayText()}>
             <div class='game-overlay'>
               <div class='white-box' style={{animation: 'fadein 0.4s'}}>{overlayText()}</div>

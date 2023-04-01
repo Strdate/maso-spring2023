@@ -42,7 +42,7 @@ class RenderingEngine
         }
 
         // render entities
-        this.data.forEach(ent => {
+        this.data.sort(sortFunc).forEach(ent => {
             const offsetX = ent.spriteMapOffset[0] + RenderingEngine.facingDirToOffset(ent)
             const offsetY = ent.spriteMapOffset[1]
             if(ent.flashing && !flashNow) {
@@ -94,6 +94,17 @@ class RenderingEngine
             default: return 0
         }
     }
+}
+
+function sortFunc(a: EntityInstance, b: EntityInstance) {
+    const getOrder = (inst: EntityInstance) => {
+        switch(inst.category) {
+            case 'ITEM': return 1
+            case 'MONSTER': return 2
+            case 'PACMAN' : return 3
+        }
+    }
+    return getOrder(a) - getOrder(b)
 }
 
 export default RenderingEngine

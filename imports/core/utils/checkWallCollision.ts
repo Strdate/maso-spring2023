@@ -19,9 +19,11 @@ const collisionMap: FacingDir[][] = [
     ['RIGHT'],
     ['RIGHT', 'LEFT'],
     ['RIGHT', 'LEFT'],
+    ['DOWN', 'RIGHT', 'LEFT'] // 'UP'
 ]
 
 function checkWallCollision(position: Pos, facingDir: FacingDir) {
+    if(position[0] === 10 && position[1] === 4) { return true }
     return getAllowedMoves(position).includes(facingDir)
 }
 

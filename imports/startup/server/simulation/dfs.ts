@@ -13,11 +13,12 @@ class DFS {
     }
 
     run = (start: Pos, excludeFirst?: Pos) => {
-        if(this.explored.length > 10) {
+        const depth = this.explored.length
+        if(depth > 10) {
             return
         }
         this.explored.push(encode(start))
-        this.sum += this.teamMap[start[1]-1][start[0]-1]
+        this.sum += this.teamMap[start[1]-1][start[0]-1] * (depth < 3 ? 2 : 1)
         neighboursOf(start)
             .filter(n => !this.explored.includes(encode(n)) && (!excludeFirst || encode(n) !== encode(excludeFirst)))
             .forEach(n => {

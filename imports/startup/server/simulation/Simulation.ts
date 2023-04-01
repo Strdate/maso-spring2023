@@ -1,9 +1,13 @@
 import { doSimpleMove, graphSearch } from "./monsterUtils";
 import { Game, GameCollection } from "/imports/api/collections/games";
+import { InteractionsCollection } from "/imports/api/collections/interactions";
 import { TeamsCollection, Team } from "/imports/api/collections/teams";
 import { FacingDir, Pos } from "/imports/core/interfaces";
 import { facingDirToMove, normalizePosition, vectorSum } from "/imports/core/utils/geometry";
+import TeamQueryBuilder from "/imports/core/utils/teamQueryBuilder";
 import { entities, entityTypes, items, pacmanMap, spawnSpots } from "/imports/data/map";
+import { checkCollision } from "/imports/core/interaction";
+import { Random } from 'meteor/random'
 
 const MONSTER_TICK_DIST = 20
 const ITEM_LIFESPAN = 8
@@ -19,9 +23,43 @@ export class Simulation {
         this.now = now
         this.teams = TeamsCollection.find({ gameId: game._id }, { fields: {
             _id: 1,
+            number: 1,
             position: 1,
             state: 1,
-        stateEndsAt: 1 }}).fetch()
+            stateEndsAt: 1,
+            pickedUpEntities: 1
+        }}).fetch()
+    }
+
+    checkCollisions = () => {
+        const teamBulk = TeamsCollection.rawCollection().initializeUnorderedBulkOp()
+        const interactionsBulk = InteractionsCollection.rawCollection().initializeUnorderedBulkOp()
+        this.teams.forEach((team) => {
+            if(team.state !== 'PLAYING' && team.state !== 'HUNTING') {
+                return
+            }
+            const teamQB = new TeamQueryBuilder()
+            const collisions = checkCollision(this.game, team, teamQB)
+            if(collisions.length > 0) {
+                teamBulk.find({ _id: team._id }).update(teamQB.combine())
+                interactionsBulk.insert({
+                    _id: Random.id(),
+                    gameId: this.game._id,
+                    teamId: team._id,
+                    newPos: team.position,
+                    userId: 'robotworkeruserid',
+                    teamNumber: team.number,
+                    moved: false,
+                    collisions: collisions,
+                    createdAt: new Date()
+                })
+                console.log(`Collision with team ${team.number}, query: `,teamQB.combine())
+            }
+        })
+        if(teamBulk.length > 0) {
+            teamBulk.execute()
+            interactionsBulk.execute()
+        }
     }
 
     moveMonsters = () => {

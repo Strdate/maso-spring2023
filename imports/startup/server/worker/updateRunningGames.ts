@@ -24,6 +24,7 @@ async function updateRunningGames() {
       const simulation = new Simulation({ game, now })
       simulation.moveMonsters()
       simulation.spawnItems()
+      simulation.checkCollisions()
       simulation.saveEntities()
     }
   }))
@@ -40,6 +41,7 @@ async function moveMonsters() {
     if( game.statusId === GameStatus.Running || game.statusId === GameStatus.OutOfTime ) {
       const simulation = new Simulation({ game, now })
       simulation.moveMonsters()
+      simulation.checkCollisions()
       simulation.saveEntities()
     }
   }))

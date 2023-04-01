@@ -1,13 +1,13 @@
 import { MoveInput, InteractionsCollection } from "../api/collections/interactions";
 import { Meteor } from 'meteor/meteor'
-import { Game, GameCollection } from "../api/collections/games";
+import { GameCollection } from "../api/collections/games";
 import { isAuthorized } from "./authorization";
 import { GameStatus } from "./enums";
 import { Team, TeamsCollection } from "../api/collections/teams";
 import { FacingDir, Pos } from "./interfaces";
 import { moveToFacingDir, normalizePosition, vectorDiff, vectorEq } from "./utils/geometry";
 import { checkWallCollision } from "./utils/checkWallCollision";
-import { collide } from "./interaction";
+import { checkCollision } from "./interaction";
 import TeamQueryBuilder from "./utils/teamQueryBuilder";
 
 export default function insertMove({ gameId, teamId, newPos, userId, isSimulation }:
@@ -24,7 +24,8 @@ export default function insertMove({ gameId, teamId, newPos, userId, isSimulatio
         state: 'PLAYING',
         stateEndsAt: undefined
     })
-    const collisions = checkCollision(game, team, newPos, teamQB)
+    team.position = newPos
+    const collisions = checkCollision(game, team, teamQB)
     if(!isSimulation) {
         InteractionsCollection.insert({
             gameId,
@@ -35,8 +36,7 @@ export default function insertMove({ gameId, teamId, newPos, userId, isSimulatio
             facingDir,
             moved: true,
             collisions: collisions,
-            createdAt: new Date(),
-            updatedAt: new Date()
+            createdAt: new Date()
         })
     }
     TeamsCollection.update(team._id, teamQB.combine())
@@ -80,19 +80,4 @@ function getTeam(gameId: string, teamId: string) {
         throw new Meteor.Error('moves.insert.teamFrozen', 'Tým je momentálně zamrzlý.')
     }
     return team
-}
-
-function checkCollision(game: Game, team: Team, newPos: Pos, teamQB: TeamQueryBuilder) {
-    const collisions: number[] = []
-    game.entities.forEach(ent => {
-        if(vectorEq(newPos,ent.position)) {
-            if(collide(team, ent, teamQB)) {
-                collisions.push(ent.id)
-                if(ent.category === 'MONSTER') {
-                    return
-                }
-            }
-        }
-    })
-    return collisions
 }

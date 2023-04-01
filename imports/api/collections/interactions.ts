@@ -13,11 +13,10 @@ export interface Interaction extends MoveInput {
     _id: string
     userId: string
     teamNumber: string
-    facingDir: FacingDir
+    facingDir?: FacingDir
     moved: boolean
     collisions: number[]
     createdAt: Date
-    updatedAt: Date
 }
 
 export const InteractionsCollection = new Mongo.Collection<Interaction>('interactions');

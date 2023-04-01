@@ -54,7 +54,7 @@ class RenderingEngine
         })
 
         if(this.isInput) {
-            this.drawText('Předměty:', 1, pacmanMap.length + 1)
+            //this.drawText('Předměty:', 1, pacmanMap.length + 1)
             for(let i = 0; i < this.pickedUpItems.length; i++) {
                 const offset = this.pickedUpItems[i]
                 this.drawPickedUpItem(offset[0], offset[1], i, 0)
@@ -100,7 +100,7 @@ class RenderingEngine
             mapOffsetY * SPRITE_SIZE,
             SPRITE_SIZE,
             SPRITE_SIZE,
-            (left + 7) * SPRITE_SIZE * scale / 2,
+            (left /*+ 7*/) * SPRITE_SIZE * scale / 2,
             (top + pacmanMap.length * 2) * SPRITE_SIZE * scale / 2,
             SPRITE_SIZE * scale / 2.1,
             SPRITE_SIZE * scale / 2.1)

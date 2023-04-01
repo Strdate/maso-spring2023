@@ -54,7 +54,6 @@ div.formbase :is(input[type=button], input[type=submit]) {
 }
 
 div.white-box {
-  font-family: publicPixel, Arial, sans-serif;
   font-size: 6vh;
   border-radius: 6px;
   background-color: white;
@@ -62,12 +61,19 @@ div.white-box {
   margin: 0.8vh 6px;
 }
 
+.team-controls-box .white-box {
+  font-size: 3vh;
+}
+
 div.stretched {
   align-self: stretch;
 }
 
-div.teamcontrols div.timer-div {
-  font-size: 3vh;
+.team-controls-box {
+  font-family: publicPixel, Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  gap: 4vh;
 }
 
 div.teamtitle {
@@ -182,7 +188,6 @@ div.tasks {
   flex-wrap: wrap;
   gap: 2px;
   color: #ffffff;
-  font-family: publicPixel, Arial, sans-serif;
   font-size: 2.25vh;
 }
 

@@ -10,7 +10,6 @@ type Props = {
 }
 
 export default function TeamControlsBox(props: Props) {
-    //const visibleTasks = Math.min(50, solved.length + changed.length + initiallyIssuedTasks )
     const visibleTaskCount = () => {
         if(props.team?.solvedTasks) {
             return Math.min(
@@ -22,18 +21,29 @@ export default function TeamControlsBox(props: Props) {
     }
     const tasks = () => [...Array(visibleTaskCount() + 1).keys()].slice(1)
 
-    return <div class='teamcontrols' style={{display: "flex", "flex-direction": 'column', width: 'fit-content'}}>
-        <div class='teamtitle' style={{display: 'flex', "justify-content": 'space-between', padding: '8px'}}>
-            <span>{props.team?.number ?? '###'} - {props.team?.name}</span>
-            <span>skóre: {props.team?.score?.total ?? 0}</span>
+    return <div class='team-controls-box'>
+        <div class='teamcontrols' style={{display: "flex", "flex-direction": 'column', width: 'fit-content'}}>
+            <div class='teamtitle' style={{display: 'flex', "justify-content": 'space-between', padding: '8px'}}>
+                <span>{props.team?.number ?? '###'} - {props.team?.name}</span>
+                <span>skóre: {props.team?.score?.total ?? 0}</span>
+            </div>
+            <GameDisplayBox game={props.game} team={!props.loading ? props.team : undefined} inputPage loading={props.loading} />
+            <div class='tasks' id='tasks-container'>{/*Příklady:*/}
+            <Index each={tasks()}>{(task) =>
+                <div class='task-box' classList={{
+                    solved: props.team!.solvedTasks.includes(task()),
+                    exchanged: props.team!.changedTasks.includes(task()),
+            }}>{task()}</div>}</Index>
+            </div>
         </div>
-        <GameDisplayBox game={props.game} team={!props.loading ? props.team : undefined} inputPage loading={props.loading} />
-        <div class='tasks' id='tasks-container'>Příklady:
-        <Index each={tasks()}>{(task) =>
-            <div class='task-box' classList={{
-                solved: props.team!.solvedTasks.includes(task()),
-                exchanged: props.team!.changedTasks.includes(task()),
-        }}>{task()}</div>}</Index>
+        <div style={{ display: 'flex', "flex-direction":'column', "justify-content": 'center' }}>
+            <div style={{ display: 'flex', "flex-direction":'column', height: 'fit-content', width: 'fit-content', gap: '1vh' }}>
+                <div class='white-box' style={{ display: 'flex', 'flex-direction': 'column', "align-items": 'center', gap: '3vh', margin: '0' }}>
+                    <div>Zbývá tahů</div>
+                    <div style={{ "font-size": '5vh' }}>6</div>
+                </div>
+                <div style={{ color: '#ffffff', "font-size": '2vh' }}>celkem: 12</div>
+            </div>
         </div>
     </div>
 }

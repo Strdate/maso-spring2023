@@ -107,7 +107,7 @@ function transformItems(team: Team | undefined) {
     return team.pickedUpEntities.map(entId => {
         const type = entities.find(ent => ent.id === entId) ?? items.find(item => item.id === entId)
         return entityTypes.find(t => t.typeId === type!.type)!.spriteMapOffset
-    }).slice(-31)
+    }).slice(/*-31*/ -38)
 }
 
 function keyToFacingDir(code: string): FacingDir | undefined {

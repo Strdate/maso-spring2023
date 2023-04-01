@@ -1,4 +1,4 @@
-import { EntityInstance } from "/imports/core/interfaces";
+import { EntityInstance, Pos } from "/imports/core/interfaces";
 import { pacmanMap } from "/imports/data/map";
 
 const SPRITE_SIZE = 16
@@ -8,23 +8,25 @@ class RenderingEngine
     img: HTMLImageElement;
     canvas: HTMLCanvasElement;
     ctx: CanvasRenderingContext2D;
-    scale: number;
-    data: EntityInstance[];
+    scale: number = 1
+    data: EntityInstance[] = []
+    pickedUpItems: Pos[] = []
+    isInput: boolean
 
-    constructor(canvas: HTMLCanvasElement) {
+    constructor(canvas: HTMLCanvasElement, isInput?: boolean) {
         this.img = this.loadImage()
         this.canvas = canvas
         this.ctx = canvas.getContext("2d")!
-        this.scale = 1
-        this.data = []
+        this.isInput = Boolean(isInput)
     }
 
-    render = (newData?: EntityInstance[]) => {
+    render = (newData?: EntityInstance[], pickedUpItems?: Pos[], flashNow?: boolean) => {
         console.log('Rendering... :)')
-        const now = (new Date()).getTime()
-        const flashNow = now % 1000 > 500
         if(newData) {
             this.data = newData
+        }
+        if(pickedUpItems) {
+            this.pickedUpItems = pickedUpItems
         }
         this.resize()
 
@@ -50,6 +52,14 @@ class RenderingEngine
             }
             this.drawSprite(offsetX, offsetY, ent.position[0], ent.position[1])
         })
+
+        if(this.isInput) {
+            this.drawText('Předměty:', 1, pacmanMap.length + 1)
+            for(let i = 0; i < this.pickedUpItems.length; i++) {
+                const offset = this.pickedUpItems[i]
+                this.drawPickedUpItem(offset[0], offset[1], i, 0)
+            }
+        }
 
         /*this.drawSprite(4, 2, 9, 11)
         this.drawSprite(5, 2, 5, 6)
@@ -77,10 +87,36 @@ class RenderingEngine
             SPRITE_SIZE * scale)
     }
 
+    drawPickedUpItem = (mapOffsetX: number, mapOffsetY: number, left: number, top: number) => {
+        const scale = this.scale
+        this.ctx.drawImage(
+            this.img,
+            mapOffsetX * SPRITE_SIZE,
+            mapOffsetY * SPRITE_SIZE,
+            SPRITE_SIZE,
+            SPRITE_SIZE,
+            (left + 7) * SPRITE_SIZE * scale / 2,
+            (top + pacmanMap.length * 2) * SPRITE_SIZE * scale / 2,
+            SPRITE_SIZE * scale / 2.1,
+            SPRITE_SIZE * scale / 2.1)
+    }
+
+    drawText = (text: string, left: number, top: number) => {
+        const scale = this.scale
+        this.ctx.font = `${6 * scale}px publicPixel`
+        this.ctx.fillStyle = '#ffffff'
+        this.ctx.textBaseline = 'top'
+        this.ctx.fillText(
+            text,
+            (left - 1) * SPRITE_SIZE * scale,
+            (top - 1) * SPRITE_SIZE * scale
+        )
+    }
+
     resize = () => {
         const rect = this.canvas.getBoundingClientRect()
         this.scale = (window.innerHeight - rect.top) * 0.95 / SPRITE_SIZE / pacmanMap.length
-        this.canvas.height = this.scale * SPRITE_SIZE * pacmanMap.length
+        this.canvas.height = this.scale * SPRITE_SIZE * (pacmanMap.length + (this.isInput ? 0.5 : 0))
         this.canvas.width = this.scale * SPRITE_SIZE * pacmanMap[0].length
         this.ctx.imageSmoothingEnabled = false
     }

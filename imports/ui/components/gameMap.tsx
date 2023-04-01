@@ -7,6 +7,7 @@ import { EntityInstance, FacingDir } from "/imports/core/interfaces";
 import { facingDirToMove, vectorSum } from "/imports/core/utils/geometry";
 import insertMove from "/imports/api/methods/moves/insert"
 import { Game } from "/imports/api/collections/games";
+import { entities, entityTypes, items } from "/imports/data/map";
 
 type Props = {
     game: Game
@@ -17,15 +18,19 @@ type Props = {
 export default function GameMap(props: Props) {
     let re: RenderingEngine
     let canvasRef: any
+    let flash = false
     console.log('GameMap mounted!')
     const innerSize = useResize()
     onMount(() => {
         window.addEventListener("keydown", handleKeyDown)
-        re = new RenderingEngine(canvasRef)
+        re = new RenderingEngine(canvasRef, props.inputPage)
     })
     let timer: NodeJS.Timer
     if(props.inputPage) {
-        timer = setInterval(() => re?.render() ,500)
+        timer = setInterval(() => {
+            flash = !flash
+            re?.render(undefined, undefined, flash)
+        } ,500)
     }
         
     onCleanup(() => {
@@ -37,7 +42,9 @@ export default function GameMap(props: Props) {
     });
     createEffect(() => {
         innerSize() // trigger dependency
-        re.render(transformEntities(props.game.entities, props.team))
+        re.render(
+            transformEntities(props.game.entities, props.team),
+            transformItems(props.team))
     })
 
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -89,6 +96,16 @@ function transformEntities(entities: EntityInstance[], team?: Team) {
     })
 
     return entities
+}
+
+function transformItems(team: Team | undefined) {
+    if(!team?.pickedUpEntities) {
+        return []
+    }
+    return team.pickedUpEntities.map(entId => {
+        const type = entities.find(ent => ent.id === entId) ?? items.find(item => item.id === entId)
+        return entityTypes.find(t => t.typeId === type!.type)!.spriteMapOffset
+    }).slice(-31)
 }
 
 function keyToFacingDir(code: string): FacingDir | undefined {

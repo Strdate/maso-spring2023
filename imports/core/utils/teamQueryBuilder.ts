@@ -5,6 +5,7 @@ class TeamQueryBuilder {
 
     score: number = 0
     pickedUpEntities: number[] = []
+    eatenEnities: number[] = []
     qb = new QueryBuilder<Team>()
 
     combine = () => {
@@ -16,6 +17,9 @@ class TeamQueryBuilder {
         }
         if(this.pickedUpEntities.length > 0) {
             this.qb.push({ pickedUpEntities: { $each: this.pickedUpEntities } })
+        }
+        if(this.eatenEnities.length > 0) {
+            this.qb.push({ 'boostData.eatenEnities': { $each: this.eatenEnities } })
         }
 
         return this.qb.build()

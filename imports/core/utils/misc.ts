@@ -1,7 +1,18 @@
 import { Pos } from "../interfaces";
+import { Team } from "/imports/api/collections/teams";
 
 function formatPath(path: Pos[]) {
     return path.map(n => `[${n[0]},${n[1]}]`).join(' -> ')
 }
 
-export { formatPath }
+function isTeamHunting(team?: Team, now?: number) {
+    now ??= new Date().getTime()
+    return team
+        && team.boostData
+        && team.state === 'HUNTING'
+        && team.stateEndsAt
+        && (team.stateEndsAt.getTime() > now)
+        && team.boostData.movesLeft > 0
+}
+
+export { formatPath, isTeamHunting }

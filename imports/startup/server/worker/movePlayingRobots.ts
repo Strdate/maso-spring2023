@@ -1,5 +1,4 @@
 import { Game, GameCollection } from "/imports/api/collections/games";
-import { InteractionsCollection } from "/imports/api/collections/interactions";
 import { Team, TeamsCollection } from "/imports/api/collections/teams";
 import insertMove from "/imports/core/insertMove";
 import { FacingDir, Pos } from "/imports/core/interfaces";

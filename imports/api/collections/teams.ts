@@ -11,6 +11,11 @@ export interface TeamInput {
     gameId: string
 }
 
+export interface BoostData {
+    movesLeft: number
+    eatenEnities: number[]
+}
+
 export interface Team extends TeamInput {
     _id: string
     externalId?: string
@@ -19,13 +24,15 @@ export interface Team extends TeamInput {
     UpdatedAt: Date
     money: number
     score: TeamScore
+    solvedTasks: number[]
+    changedTasks: number[]
+    boostCount: number
     position: Pos
     facingDir: FacingDir
     state: TeamState
     stateEndsAt?: Date
+    boostData: BoostData
     pickedUpEntities: number[]
-    solvedTasks: number[]
-    changedTasks: number[]
 }
 
 export const TeamsCollection = new Mongo.Collection<Team>('teams');

@@ -3,6 +3,7 @@ import GameDisplayBox from "../projector/gameDisplayBox";
 import { Game } from "/imports/api/collections/games";
 import { Team } from "/imports/api/collections/teams";
 import { useCurTime } from "../../utils/useInterval";
+import { isTeamHunting } from "/imports/core/utils/misc";
 
 type Props = {
     game: Game
@@ -38,6 +39,10 @@ export default function TeamControlsBox(props: Props) {
         && props.team.state === 'FROZEN'
         && (props.team.stateEndsAt.getTime() < curTime())
     )
+    const isHunting = createMemo(() => 
+        isTeamHunting(props.team, curTime())
+    )
+    const boostCount = () => props.team?.boostData.movesLeft ?? 0
 
     return <div class='team-controls-box'>
         <div class='teamcontrols' style={{display: "flex", "flex-direction": 'column', width: 'fit-content'}}>
@@ -63,6 +68,15 @@ export default function TeamControlsBox(props: Props) {
         </div>
         <div style={{ display: 'flex', "flex-direction":'column', "justify-content": 'center' }}>
             <div style={{ display: 'flex', "flex-direction":'column', height: 'fit-content', width: 'fit-content', gap: '1vh' }}>
+                <Show when={isHunting()}>
+                    <div class='white-box moves-infobox' /*style={{"font-size": '2vh'}}*/>
+                        <div>Tým loví</div>
+                        <div>duchy!</div>
+                        <div>Zbývá:</div>
+                        <div style={{ "font-size": '5vh', "margin-top": '3vh' }}>{formattedMS(props.team!.stateEndsAt!.getTime() - curTime())}</div>
+                        <div style={{"font-size": '2vh', "margin-top": '1vh'}}>Nebo {boostCount()} {boostCount() > 4 ? 'tahů' : 'tahy'}</div>
+                    </div>
+                </Show>
                 <Show when={isInvincible()}>
                     <div class='white-box moves-infobox' style={{"font-size": '2vh'}}>
                         <div>Dokud se tým</div>
@@ -84,6 +98,9 @@ export default function TeamControlsBox(props: Props) {
                     
                 </div>
                 <div style={{ color: '#ffffff', "font-size": '2vh' }}>celkem{isFrozen() ? ' tahů' : ''}: {props.team?.money ?? '#'}</div>
+                <Show when={props.team?.boostCount ?? 0 > 0}>
+                    <div style={{ color: '#ffffff', "font-size": '2vh' }}>boostů: {props.team!.boostCount}</div>
+                </Show>
             </div>
         </div>
     </div>
@@ -94,9 +111,9 @@ function formattedMS(ms: number) {
     const sec = Math.round(ms / 1000)
     const hours = Math.floor(sec / 3600)
     if (hours > 0) {
-      result += `${hours}:`
+        result += `${hours}:`
     }
     const minutes = Math.floor(sec / 60) - hours * 60
     const fill = hours > 0 && minutes < 10 ? '0' : ''
     return `${result + fill + minutes}:${`0${sec % 60}`.slice(-2)}`
-  }
+}

@@ -25,7 +25,7 @@ async function updateRunningGames() {
       const moved = simulation.moveMonsters()
       if(moved) {
         simulation.spawnItems()
-        simulation.checkCollisions()
+        simulation.checkCollisions(now.getTime())
         simulation.saveEntities()
       }
     }
@@ -44,7 +44,7 @@ async function moveMonsters() {
       const simulation = new Simulation({ game, now })
       const moved = simulation.moveMonsters()
       if(moved) {
-        simulation.checkCollisions()
+        simulation.checkCollisions(now.getTime())
         simulation.saveEntities()
       }
     }

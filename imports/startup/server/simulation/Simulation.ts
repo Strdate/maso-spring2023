@@ -27,11 +27,12 @@ export class Simulation {
             position: 1,
             state: 1,
             stateEndsAt: 1,
-            pickedUpEntities: 1
+            pickedUpEntities: 1,
+            boostData: 1
         }}).fetch()
     }
 
-    checkCollisions = () => {
+    checkCollisions = (now: number) => {
         const teamBulk = TeamsCollection.rawCollection().initializeUnorderedBulkOp()
         const interactionsBulk = InteractionsCollection.rawCollection().initializeUnorderedBulkOp()
         this.teams.forEach((team) => {
@@ -39,7 +40,7 @@ export class Simulation {
                 return
             }
             const teamQB = new TeamQueryBuilder()
-            const collisions = checkCollision(this.game, team, teamQB)
+            const collisions = checkCollision(this.game, team, teamQB, now)
             if(collisions.length > 0) {
                 teamBulk.find({ _id: team._id }).update(teamQB.combine())
                 interactionsBulk.insert({

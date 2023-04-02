@@ -27,3 +27,8 @@ export const MoveInputSchema = new SimpleSchema({
     newPos: { type: Array, defaultValue: new Array() },
     'newPos.$': { type: SimpleSchema.Integer }
   })
+
+export const ActivateBoostInputSchema = new SimpleSchema({
+    gameId: { type: String },
+    teamId: { type: String }
+})

@@ -23,9 +23,14 @@ export default new ValidatedMethod({
         CreatedAt: new Date(),
         UpdatedAt: new Date(),
         money: 0,
+        boostCount: 0,
         position: playerStartPos,
         facingDir: 'RIGHT',
         state: 'PLAYING',
+        boostData: {
+          movesLeft: 0,
+          eatenEnities: []
+        },
         score: {
           tasks: 0,
           items: 0,

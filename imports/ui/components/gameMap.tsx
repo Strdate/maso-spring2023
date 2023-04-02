@@ -3,13 +3,16 @@ import useResize from "../utils/useResize";
 import RenderingEngine from "./RenderingEngine";
 import { MoveInput } from "../../api/collections/interactions";
 import { Team } from "/imports/api/collections/teams";
-import { EntityInstance, FacingDir } from "/imports/core/interfaces";
+import { EntityInstance, FacingDir, Pos } from "/imports/core/interfaces";
 import { facingDirToMove, vectorSum } from "/imports/core/utils/geometry";
 import insertMove from "/imports/api/methods/moves/insert"
+import activateBoost from "/imports/api/methods/moves/activateBoost"
 import { Game } from "/imports/api/collections/games";
 import { entities, entityTypes, items } from "/imports/data/map";
 import { GameStatus } from "/imports/core/enums";
 import { resetMovesLeft } from "../utils/utils";
+import useKeyHold from "../utils/useKeyHold";
+import { isTeamHunting } from "/imports/core/utils/misc";
 
 type Props = {
     game: Game
@@ -18,6 +21,9 @@ type Props = {
     movesLeft?: number
     setMovesLeft?: (moves: number) => void
 }
+
+const HUNTED_MONSTER_OFFSET: Pos = [0, 3]
+const EATEN_MONSTER_OFFSET: Pos = [1, 3]
 
 export default function GameMap(props: Props) {
     let re: RenderingEngine
@@ -51,16 +57,39 @@ export default function GameMap(props: Props) {
             transformItems(props.team))
     })
 
-    const handleKeyDown = (event: KeyboardEvent) => {
+    const checkTeamState = (): boolean => {
         if(!props.team) {
-            return
+            return false
         }
         if(document.getElementById('teamInput') === document.activeElement) {
+            return false
+        }
+        return true
+    }
+
+    const handleKeyHold = (code: string) => {
+        if(!checkTeamState()) {
+            return
+        }
+        if(code !== 'KeyB') {
+            return
+        }
+        activateBoost.call({
+            gameId: props.game._id,
+            teamId: props.team!._id
+        }, (error: any) => {
+            console.log(error)
+        })
+    }
+    useKeyHold(handleKeyHold)
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+        if(!checkTeamState()) {
             return
         }
         if(event.code === 'KeyR') {
             event.preventDefault()
-            resetMovesLeft(props.team, props.setMovesLeft!)
+            resetMovesLeft(props.team!, props.setMovesLeft!)
         }
         if((props.movesLeft ?? 0) <= 0) {
             return
@@ -69,8 +98,8 @@ export default function GameMap(props: Props) {
         if(facingDir) {
             const input: MoveInput = {
                 gameId: props.game._id,
-                teamId: props.team._id,
-                newPos: vectorSum(props.team.position, facingDirToMove(facingDir))
+                teamId: props.team!._id,
+                newPos: vectorSum(props.team!.position, facingDirToMove(facingDir))
             }
             event.preventDefault()
             props.setMovesLeft!(Math.max(0, props.movesLeft! - 1))
@@ -98,6 +127,19 @@ function transformEntities(entities: EntityInstance[], game: Game, team?: Team) 
     // Remove picked up items
     entities = entities.filter(ent => ent.category !== 'ITEM' || !team.pickedUpEntities.includes(ent.id) )
 
+    // Make ghosts SCARED
+    if(isTeamHunting(team)) {
+        entities = entities.map(ent => {
+            if(ent.category !== 'MONSTER') {
+                return ent
+            }
+            if(team.boostData.eatenEnities.includes(ent.id)) {
+                return { ...ent, spriteMapOffset: EATEN_MONSTER_OFFSET, facingDir: undefined }
+            }
+            return { ...ent, spriteMapOffset: HUNTED_MONSTER_OFFSET, facingDir: undefined }
+        })
+    }
+
     // Add pacman sprite
     entities.push({
         id: 0,
@@ -112,11 +154,15 @@ function transformEntities(entities: EntityInstance[], game: Game, team?: Team) 
     return entities
 }
 
-function transformItems(team: Team | undefined) {
+function transformItems(team: Team | undefined): Pos[] {
     if(!team?.pickedUpEntities) {
         return []
     }
     return team.pickedUpEntities.map(entId => {
+        // TODO remove hack :)
+        if(entId === -1) {
+            return HUNTED_MONSTER_OFFSET
+        }
         const type = entities.find(ent => ent.id === entId) ?? items.find(item => item.id === entId)
         return entityTypes.find(t => t.typeId === type!.type)!.spriteMapOffset
     }).slice(/*-31*/ -38)

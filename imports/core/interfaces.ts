@@ -2,6 +2,11 @@ import { TaskStatus } from "./enums";
 
 type Pos = [number, number]
 
+interface MeteorMethodBase {
+  isSimulation: boolean,
+  userId: string | null
+}
+
 interface TeamScore {
     tasks: number;
     items: number;
@@ -50,6 +55,7 @@ interface TaskReturnData {
 
 export {
   Pos,
+  MeteorMethodBase,
   TeamScore,
   EntityInstance,
   EntityCategory,

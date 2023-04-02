@@ -25,6 +25,7 @@ interface EntityType {
     spriteMapOffset: Pos
     description?: string
     reward?: number
+    isBoost?: boolean
 }
 
 interface EntityData {
@@ -157,9 +158,15 @@ const entityTypes: EntityType[] = [{
     typeId: 11,
     category: 'ITEM',
     spriteMapOffset: [16, 1],
-    description: 'Powerup',
+    description: 'Boost',
+    isBoost: true,
     reward: 0
-}]
+}/*,{
+    typeId: 12,
+    category: 'ITEM',
+    spriteMapOffset: [0, 3],
+    description: 'Eaten monster'
+}*/]
 
 const entities: EntityData[] = [{
     id: 1,

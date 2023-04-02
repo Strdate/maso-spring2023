@@ -194,6 +194,8 @@ div.tasks {
 div.task-box {
   padding: 4px;
   font-size: 1.3vh;
+  min-width: 2ch;
+  text-align: center;
   color: #000000;
   background-color: #ffffff;
 }

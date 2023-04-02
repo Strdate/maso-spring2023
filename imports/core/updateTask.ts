@@ -202,5 +202,5 @@ function returnData(team: Team, task: {number: number, statusId: TaskStatus}, ne
 }
 
 function getAllTaskNumbers(game: Game) {
-  return [...Array(game.totalTasksCount).keys()].map(x => x + 1)
+  return [...Array(game.totalTasksCount + 1).keys()].slice(1)
 }

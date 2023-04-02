@@ -40,11 +40,27 @@ function vectorEq(a: Pos, b: Pos) {
     return (a[0] === b[0]) && (a[1] === b[1])
 }
 
+function filterMoveByFacingDir(moves: FacingDir[], facingDir?: FacingDir) {
+    if(!facingDir) {
+        return moves
+    }
+    if(moves.length <= 1) {
+        return moves
+    } 
+    switch(facingDir) {
+        case 'UP': return moves.filter(m => m !== 'DOWN')
+        case 'DOWN': return moves.filter(m => m !== 'UP')
+        case 'LEFT': return moves.filter(m => m !== 'RIGHT')
+        case 'RIGHT': return moves.filter(m => m !== 'LEFT')
+    }
+}
+
 export {
     vectorDiff,
     facingDirToMove,
     moveToFacingDir,
     vectorSum,
     normalizePosition,
-    vectorEq
+    vectorEq,
+    filterMoveByFacingDir
 }

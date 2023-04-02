@@ -21,9 +21,9 @@ class DFS {
         this.sum += visited ? 0 : this.teamMap[start[1]-1][start[0]-1] * (depth < 3 ? 2 : 1)
         const neighbours = neighboursOf(start)
         neighbours
-            .filter(n => (!excludeFirst || encode(n) !== encode(excludeFirst)))
+            .filter(n => (neighbours.length > 1 && (!excludeFirst || encode(n) !== encode(excludeFirst))))
             .forEach(n => {
-                this.run({ start: n, visited: this.explored.includes(encode(n)), excludeFirst: neighbours.length > 1 ? start : undefined })
+                this.run({ start: n, visited: this.explored.includes(encode(n)), excludeFirst: start })
             })
         if(this.sum > this.longsetPath.sum) {
             this.longsetPath = { path: this.explored.map(e => decode(e)), sum: this.sum }

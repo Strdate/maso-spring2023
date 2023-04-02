@@ -1,5 +1,6 @@
 import schedule from 'node-schedule'
 import {updateRunningGames, moveMonsters} from './updateRunningGames'
+import movePlayingRobots from './movePlayingRobots'
 
 function init() {
   const updateGames = async (invoked: Date) => {
@@ -22,10 +23,20 @@ function init() {
     console.log(`Moving monsters ended ${new Date()}`)
   }
 
+  const moveRobots = async (invoked: Date) => {
+    console.log(`Moving robots started ${invoked}/${new Date()}`)
+    try {
+      await movePlayingRobots()
+    } catch (err) {
+      console.log(err)
+    }
+    console.log(`Moving robots ended ${new Date()}`)
+  }
+
   schedule.scheduleJob(`0 * * * * *`, updateGames)
   schedule.scheduleJob(`20 * * * * *`, moveMonstersLoc)
   schedule.scheduleJob(`40 * * * * *`, moveMonstersLoc)
-  //schedule.scheduleJob(`* * * * * *`, moveMonstersLoc)
+  schedule.scheduleJob(`10 * * * * *`, moveRobots)
 }
 
 export default init

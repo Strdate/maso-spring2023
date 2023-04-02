@@ -53,7 +53,7 @@ export class Simulation {
                     collisions: collisions,
                     createdAt: new Date()
                 })
-                console.log(`Collision with team ${team.number}, query: `,teamQB.combine())
+                //console.log(`Collision with team ${team.number}, query: `,teamQB.combine())
             }
         })
         if(teamBulk.length > 0) {

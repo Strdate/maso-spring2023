@@ -17,7 +17,7 @@ function doSimpleMove(ent: EntityInstance): { newPos: Pos, newFacingDir?: Facing
 
 function graphSearch(mapState: number[][], start: Pos, exclude: Pos/*, mode: 'MIN' | 'MAX'*/): FacingDir {
     const dfs = new DFS(mapState)
-    dfs.run(start, exclude)
+    dfs.run({ start, excludeFirst: exclude })
     const longestPath = dfs.longsetPath
     console.log(`Winner: Sum: ${longestPath.sum}, path: ${longestPath.path.map(n => `[${n[0]},${n[1]}]`).join(' -> ')}`)
     return moveToFacingDir(vectorDiff(longestPath.path[1], start))!

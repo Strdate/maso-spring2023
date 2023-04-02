@@ -62,9 +62,12 @@ export class Simulation {
         }
     }
 
-    moveMonsters = () => {
+    moveMonsters = (): boolean => {
         const tick = this.getCurMonsterTick()
         console.log(`Moving monsters. Tick: ${tick}`)
+        if(tick < 0) {
+            return false
+        }
         this.game.entities = this.game.entities.map(ent => {
             if(ent.category !== 'MONSTER') {
                 return ent
@@ -92,10 +95,14 @@ export class Simulation {
             }
             return ent
         })
+        return true
     }
 
     spawnItems = () => {
         const minute = this.getCurMinute()
+        if(minute < 0) {
+            return
+        }
         this.game.entities = this.game.entities.filter(ent => ent.category !== 'ITEM')
         items.filter(item => item.spawnTime <= minute && minute - item.spawnTime < ITEM_LIFESPAN).forEach(item => {
             const type = entityTypes.find(et => et.typeId === item.type)!
@@ -122,11 +129,11 @@ export class Simulation {
     }
 
     getCurMonsterTick = () => {
-        return (this.now.getTime() - this.game.startAt.getTime()) / 1000 / MONSTER_TICK_DIST
+        return (this.now.getTime() - this.game.startAt.getTime() - this.game.freezeTimeMins * 60 * 1000) / 1000 / MONSTER_TICK_DIST
     }
 
     getCurMinute = () => {
-        return (this.now.getTime() - this.game.startAt.getTime()) / 1000 / 60
+        return (this.now.getTime() - this.game.startAt.getTime()) / 1000 / 60 - this.game.freezeTimeMins
     }
 }
 

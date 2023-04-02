@@ -12,22 +12,23 @@ class DFS {
         this.teamMap = teamMap
     }
 
-    run = (start: Pos, excludeFirst?: Pos) => {
+    run = ({ start, excludeFirst, visited }: { start: Pos, excludeFirst?: Pos, visited?: boolean }) => {
         const depth = this.explored.length
         if(depth > 10) {
             return
         }
         this.explored.push(encode(start))
-        this.sum += this.teamMap[start[1]-1][start[0]-1] * (depth < 3 ? 2 : 1)
-        neighboursOf(start)
-            .filter(n => !this.explored.includes(encode(n)) && (!excludeFirst || encode(n) !== encode(excludeFirst)))
+        this.sum += visited ? 0 : this.teamMap[start[1]-1][start[0]-1] * (depth < 3 ? 2 : 1)
+        const neighbours = neighboursOf(start)
+        neighbours
+            .filter(n => (!excludeFirst || encode(n) !== encode(excludeFirst)))
             .forEach(n => {
-                this.run(n)
+                this.run({ start: n, visited: this.explored.includes(encode(n)), excludeFirst: neighbours.length > 1 ? start : undefined })
             })
         if(this.sum > this.longsetPath.sum) {
             this.longsetPath = { path: this.explored.map(e => decode(e)), sum: this.sum }
         }
-        this.sum -= this.teamMap[start[1]-1][start[0]-1]
+        this.sum -= visited ? 0 : this.teamMap[start[1]-1][start[0]-1]
         this.explored.pop()
     }
 }

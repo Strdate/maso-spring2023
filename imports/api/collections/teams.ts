@@ -24,7 +24,6 @@ export interface Team extends TeamInput {
     state: TeamState
     stateEndsAt?: Date
     pickedUpEntities: number[]
-
     solvedTasks: number[]
     changedTasks: number[]
 }

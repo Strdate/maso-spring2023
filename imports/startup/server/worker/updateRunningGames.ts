@@ -22,10 +22,12 @@ async function updateRunningGames() {
   await Promise.all(runningGames.map(async game => {
     if( checkGameStatus(game, now) ) {
       const simulation = new Simulation({ game, now })
-      simulation.moveMonsters()
-      simulation.spawnItems()
-      simulation.checkCollisions()
-      simulation.saveEntities()
+      const moved = simulation.moveMonsters()
+      if(moved) {
+        simulation.spawnItems()
+        simulation.checkCollisions()
+        simulation.saveEntities()
+      }
     }
   }))
 }
@@ -40,9 +42,11 @@ async function moveMonsters() {
   await Promise.all(runningGames.map(async game => {
     if( game.statusId === GameStatus.Running || game.statusId === GameStatus.OutOfTime ) {
       const simulation = new Simulation({ game, now })
-      simulation.moveMonsters()
-      simulation.checkCollisions()
-      simulation.saveEntities()
+      const moved = simulation.moveMonsters()
+      if(moved) {
+        simulation.checkCollisions()
+        simulation.saveEntities()
+      }
     }
   }))
 }

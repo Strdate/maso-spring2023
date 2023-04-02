@@ -103,7 +103,7 @@ export class Simulation {
                 id: item.id,
                 category: 'ITEM',
                 spriteMapOffset: type.spriteMapOffset,
-                position: spawnSpots.find(ss => ss.id === item.spawnSpotId)!.position
+                position: spawnSpots.find(ss => ss.letter === item.spawnSpot)!.position
             })
         })
     }

@@ -20,6 +20,7 @@ body.task-scanner {
 
 body.projector {
   background-color: #000000;
+  font-family: publicPixel, Arial, sans-serif;
 }
 
 body.input-page {
@@ -30,7 +31,6 @@ body.input-page {
 
 h1 {
   font-size: 1.6rem;
-  /*font-family: "Vollkorn", "Times New Roman", serif;*/
   font-weight: 400;
   margin: 0;
   padding: 0;
@@ -38,7 +38,6 @@ h1 {
 
 h2 {
   font-size: 1.2rem;
-  /*font-family: "Vollkorn", "Times New Roman", serif;*/
   font-weight: 400;
   margin: 0;
   padding: 0;
@@ -209,12 +208,12 @@ div.task-box.exchanged {
   background-color: #a0045b;
 }
 
-.moves-infobox {
+div.moves-infobox {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
   width: 31vh;
-  align-items: 'center';
-  margin: 0;
+  align-items: center;
+  margin: 0.5vh 0px;
 }

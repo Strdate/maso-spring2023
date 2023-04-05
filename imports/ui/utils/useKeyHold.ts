@@ -1,6 +1,6 @@
 import { onCleanup } from "solid-js";
 
-export default function useKeyHold(callbackFn: (code: string) => void, timeMs = 1000) {
+export default function useKeyHold(callbackFn: (code: string) => void, timeMs = 500) {
     let lastKeyUpAt = 0
 
     const keyDownCallback = (ev: KeyboardEvent) => {

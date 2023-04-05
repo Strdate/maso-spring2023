@@ -8,9 +8,10 @@ interface MeteorMethodBase {
 }
 
 interface TeamScore {
-    tasks: number;
-    items: number;
-    total: number;
+    tasks: number
+    items: number
+    ghosts: number
+    total: number
 }
 
 interface EntityInstance {

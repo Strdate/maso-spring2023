@@ -16,17 +16,21 @@ export interface BoostData {
     eatenEnities: number[]
 }
 
-export interface Team extends TeamInput {
+export interface TeamBase extends TeamInput {
+    money: number
+    boostCount: number
+    score: TeamScore
+    ghostCollisions: number
+}
+
+export interface Team extends TeamBase {
     _id: string
     externalId?: string
     userId: string
     CreatedAt: Date
     UpdatedAt: Date
-    money: number
-    score: TeamScore
     solvedTasks: number[]
     changedTasks: number[]
-    boostCount: number
     position: Pos
     facingDir: FacingDir
     state: TeamState

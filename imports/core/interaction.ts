@@ -8,7 +8,7 @@ import TeamQueryBuilder from "./utils/teamQueryBuilder";
 
 const FREEZE_TIME = 0.5
 const EATEN_MONSTER_ENTITY = -1
-const EATEN_MONSTER_REWARD = 35
+const EATEN_MONSTER_REWARD = 30
 
 function checkCollision(game: Game, team: Team, teamQB: TeamQueryBuilder, now: number): number[] {
     const collisions: number[] = []

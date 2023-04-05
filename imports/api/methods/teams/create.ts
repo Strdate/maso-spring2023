@@ -24,6 +24,7 @@ export default new ValidatedMethod({
         UpdatedAt: new Date(),
         money: 0,
         boostCount: 0,
+        ghostCollisions: 0,
         position: playerStartPos,
         facingDir: 'RIGHT',
         state: 'PLAYING',
@@ -34,6 +35,7 @@ export default new ValidatedMethod({
         score: {
           tasks: 0,
           items: 0,
+          ghosts: 0,
           total: 0,
         },
         pickedUpEntities: [],

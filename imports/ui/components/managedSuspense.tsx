@@ -12,8 +12,8 @@ export default function ManagedSuspense(props: Props) {
         console.log(`ManagedSuspense. Loading: ${props.loading}, found: ${props.found}`)
     })*/
     return (
-        <Show when={!props.loading} fallback={<div>Loading...</div>}>
-            <Show when={props.found} fallback={<div>Hra nebyla nalezena :(</div>}>
+        <Show when={!props.loading} fallback={<div class='error-box'>Loading...</div>}>
+            <Show when={props.found} fallback={<div class='error-box'>Hra nebyla nalezena :(</div>}>
                 {props.children}
             </Show>
         </Show>

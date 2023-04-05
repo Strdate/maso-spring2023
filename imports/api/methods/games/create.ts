@@ -5,6 +5,7 @@ import { GameCollection, GameInput, GameInputSchema } from '../../collections/ga
 import { GameStatus } from '../../../core/enums'
 import { entities, entityTypes } from '/imports/data/map'
 import { EntityInstance } from '/imports/core/interfaces'
+import { ResultsCollection } from '../../collections/results'
 
 export default new ValidatedMethod({
   name: 'games.create',
@@ -32,6 +33,11 @@ export default new ValidatedMethod({
         totalTasksCount: 50,
         totalExchangeableTasksCount: 4,
         entities: initEntities()
+      })
+      ResultsCollection.insert({
+        gameId: _id,
+        teams: [],
+        UpdatedAt: new Date()
       })
       return _id
     }

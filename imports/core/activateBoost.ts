@@ -4,7 +4,7 @@ import { MeteorMethodBase } from "./interfaces";
 import { isTeamHunting } from "./utils/misc";
 import { checkGame, getTeam } from "./utils/moves";
 
-const BOOST_MAX_MOVES = 30
+const BOOST_MAX_MOVES = 24
 const BOOST_MAX_TIME_MIN = 6
 
 export default function activateBoost({ gameId, teamId, isSimulation, userId }:

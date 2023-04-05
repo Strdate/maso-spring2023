@@ -1,21 +1,16 @@
 import { Mongo } from 'meteor/mongo';
-import { TeamScore } from '/imports/core/interfaces';
+import { TeamBase } from './teams';
 
 /* Cache */
 
-export interface TeamResults {
-    _id: string;
-    name: string;
-    number: number;
-    place: number;
-    isBot: boolean;
-    money: number;
-    solvedTasksCount: number;
-    score: TeamScore;
+export interface TeamResults extends Omit<TeamBase,'gameId'> {
+    solvedTaskCount: number
+    changedTaskCount: number
+    pickedUpItems: number
 }
 
 export interface Results {
-    _id?: string;
+    _id: string;
     gameId: string;
     teams: TeamResults[];
     UpdatedAt: Date;

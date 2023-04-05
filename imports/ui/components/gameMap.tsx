@@ -35,11 +35,19 @@ export default function GameMap(props: Props) {
         window.addEventListener("keydown", handleKeyDown)
         re = new RenderingEngine(canvasRef, props.inputPage)
     })
+
+    const render = (falsh?: boolean) => {
+        re?.render(
+            transformEntities(props.game.entities, props.game, props.team),
+            transformItems(props.team),
+            flash)
+    }
+
     let timer: NodeJS.Timer
     if(props.inputPage) {
         timer = setInterval(() => {
             flash = !flash
-            re?.render(undefined, undefined, flash)
+            render(flash)
         } ,500)
     }
         
@@ -52,9 +60,7 @@ export default function GameMap(props: Props) {
     });
     createEffect(() => {
         innerSize() // trigger dependency
-        re.render(
-            transformEntities(props.game.entities, props.game, props.team),
-            transformItems(props.team))
+        render()
     })
 
     const checkTeamState = (): boolean => {

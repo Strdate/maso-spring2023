@@ -1,4 +1,4 @@
-import { Index, Show, createMemo } from "solid-js";
+import { Index, Show, createEffect, createMemo } from "solid-js";
 import GameDisplayBox from "../projector/gameDisplayBox";
 import { Game } from "/imports/api/collections/games";
 import { Team } from "/imports/api/collections/teams";
@@ -74,7 +74,7 @@ export default function TeamControlsBox(props: Props) {
                         <div>duchy!</div>
                         <div>Zbývá:</div>
                         <div style={{ "font-size": '5vh', "margin-top": '3vh' }}>{formattedMS(props.team!.stateEndsAt!.getTime() - curTime())}</div>
-                        <div style={{"font-size": '2vh', "margin-top": '1vh'}}>Nebo {boostCount()} {boostCount() > 4 ? 'tahů' : 'tahy'}</div>
+                        <div style={{"font-size": '2vh', "margin-top": '1vh'}}>Nebo {boostCount()} {boostCount() > 4 ? 'tahů' : (boostCount() > 1 ? 'tahy' : 'tah')}</div>
                     </div>
                 </Show>
                 <Show when={isInvincible()}>

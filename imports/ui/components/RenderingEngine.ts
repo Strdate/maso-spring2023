@@ -12,6 +12,7 @@ class RenderingEngine
     data: EntityInstance[] = []
     pickedUpItems: Pos[] = []
     isInput: boolean
+    flash: boolean = false
 
     constructor(canvas: HTMLCanvasElement, isInput?: boolean) {
         this.img = this.loadImage()
@@ -27,6 +28,9 @@ class RenderingEngine
         }
         if(pickedUpItems) {
             this.pickedUpItems = pickedUpItems
+        }
+        if(flashNow !== undefined) {
+            this.flash = flashNow
         }
         this.resize()
 
@@ -47,7 +51,7 @@ class RenderingEngine
         this.data.sort(sortFunc).forEach(ent => {
             const offsetX = ent.spriteMapOffset[0] + RenderingEngine.facingDirToOffset(ent)
             const offsetY = ent.spriteMapOffset[1]
-            if(ent.flashing && !flashNow) {
+            if(ent.flashing && !this.flash) {
                 return
             }
             this.drawSprite(offsetX, offsetY, ent.position[0], ent.position[1])

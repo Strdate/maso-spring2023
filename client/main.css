@@ -228,3 +228,34 @@ div.error-box {
   color: #000000;
   border-radius: 5px;
 }
+
+.results-div {
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 16px 8px;
+}
+
+.results-div .sticky-table-header {
+  position: sticky;
+  top: 0;
+  background: #ffffff;
+  border-bottom: 1px solid black;
+}
+
+.results-div .cell {
+  font-size: 1em;
+  width: 80px;
+  padding: 10px 16px;
+}
+
+.results-div .head-cell {
+  font-weight: bold;
+}
+
+.results-div .grow {
+  min-width: 150px;
+}
+
+.results-div .bold {
+  font-weight: bold;
+}

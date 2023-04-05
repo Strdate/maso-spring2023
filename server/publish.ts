@@ -3,10 +3,16 @@ import { Game, GameCollection, GameInputSchema } from '/imports/api/collections/
 //import { ResultsCollection } from '/imports/api/collections/results'
 import {TeamInputSchema, TeamsCollection} from "/imports/api/collections/teams";
 import * as enums from "../imports/core/enums";
+import { ResultsCollection } from '/imports/api/collections/results';
 
 Meteor.publish('game', function(code) {
     GameInputSchema.pick('code').validate({ code })
     return GameCollection.find({ code }, { fields: { authorizedUsers: 0 } })
+})
+
+Meteor.publish('results', function(code) {
+    GameInputSchema.pick('code').validate({ code })
+    return ResultsCollection.find({ gameCode: code })
 })
 
 Meteor.publish('teams', function (gameCode) {

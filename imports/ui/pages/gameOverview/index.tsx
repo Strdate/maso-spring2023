@@ -56,6 +56,11 @@ export default function GameOverview() {
                                 content="Potvrzování příkladů mobilním telefonem"
                                 link={`/${game.code}/scanner`}
                              />
+                             <SectionLink
+                                header="Výsledky"
+                                content="Aktuální živé výsledky"
+                                link={`/${game.code}/vysledky`}
+                             />
                         {/*</Show>*/}
                         {/*isOwner && <SectionLink
                             header="Výsledky"

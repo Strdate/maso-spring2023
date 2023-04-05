@@ -36,6 +36,7 @@ export default new ValidatedMethod({
       })
       ResultsCollection.insert({
         gameId: _id,
+        gameCode: game.code,
         teams: [],
         UpdatedAt: new Date()
       })

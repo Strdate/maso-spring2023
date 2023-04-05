@@ -4,6 +4,7 @@ import { getTeams } from "./updateRunningGamesUtils"
 import { TasksCollection } from "/imports/api/collections/tasks"
 import { Random } from 'meteor/random'
 import { Simulation } from "../simulation/Simulation"
+import cacheResults from "./cacheResults"
 
 function getRunningGames(now: Date) {
   return GameCollection.find({
@@ -28,6 +29,7 @@ async function updateRunningGames() {
         simulation.checkCollisions(now.getTime())
         simulation.saveEntities()
       }
+      cacheResults(game._id)
     }
   }))
 }

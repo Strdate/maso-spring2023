@@ -6,6 +6,7 @@ import GameOverview from "./pages/gameOverview";
 import Projector from "./pages/projector";
 import GameControls from "./pages/gameControls";
 import ScannerQR from "./pages/ScannerQR";
+import ResultsPage from "./pages/results";
 
 export const App = () => {
   return (
@@ -16,6 +17,7 @@ export const App = () => {
       <Route path="/:code/projektor" component={Projector} />
       <Route path="/:code/input" component={GameControls} />
       <Route path="/:code/scanner" component={ScannerQR} />
+      <Route path="/:code/vysledky" component={ResultsPage} />
       <Route path="*" component={Homepage} />
     </Routes>
   )

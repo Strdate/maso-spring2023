@@ -4,6 +4,7 @@ import { TeamBase } from './teams';
 /* Cache */
 
 export interface TeamResults extends Omit<TeamBase,'gameId'> {
+    rank: number
     solvedTaskCount: number
     changedTaskCount: number
     pickedUpItems: number
@@ -12,6 +13,7 @@ export interface TeamResults extends Omit<TeamBase,'gameId'> {
 export interface Results {
     _id: string;
     gameId: string;
+    gameCode: string;
     teams: TeamResults[];
     UpdatedAt: Date;
   }

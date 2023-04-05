@@ -45,6 +45,7 @@ function collide(team: Team, entity: EntityInstance, teamQB: TeamQueryBuilder, n
             stateEndsAt: new Date( new Date().getTime() + FREEZE_TIME * 60000),
         })
         teamQB.pickedUpEntities.push(entity.id)
+        teamQB.qb.inc({ ghostCollisions: 1 })
         return { collided: true, cancelCollisions: true }
     }
     if(entity.category === 'ITEM' && !team.pickedUpEntities.includes(entity.id)) {

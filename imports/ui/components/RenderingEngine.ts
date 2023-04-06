@@ -56,7 +56,7 @@ class RenderingEngine
                 return
             }
             this.drawSprite(offsetX, offsetY, ent.position[0], ent.position[1])
-            if(ent.healthIndicator) {
+            if(ent.healthIndicator !== undefined) {
                 this.drawSprite(HEALTH_INDICATOR_OFFSET[0] + ent.healthIndicator, HEALTH_INDICATOR_OFFSET[1], ent.position[0], ent.position[1])
             }
         })

@@ -131,6 +131,10 @@ const entityTypes: EntityType[] = [{
     category: 'MONSTER',
     spriteMapOffset: [0, 1]
 },{
+    typeId: 6,
+    category: 'MONSTER',
+    spriteMapOffset: [8, 2]
+},{
     typeId: 7,
     category: 'ITEM',
     spriteMapOffset: [4, 2],
@@ -207,6 +211,11 @@ const entities: EntityData[] = [{
     type: 5,
     startPos: [5, 6],
     facingDir: 'RIGHT'
+},{
+    id: 6,
+    type: 6,
+    startPos: [6, 11],
+    facingDir: 'RIGHT'
 }]
 
 const items: ItemsData[] = [
@@ -272,4 +281,5 @@ const items: ItemsData[] = [
     {"id": 70, "spawnSpot": "D", "type": 8, "spawnTime": 76},
 ]
 
-export { pacmanMap, playerStartPos, entityTypes, spawnSpots, items, entities }
+export { pacmanMap, playerStartPos, entityTypes, spawnSpots, items, entities,
+    ItemsData }

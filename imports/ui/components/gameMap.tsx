@@ -36,20 +36,17 @@ export default function GameMap(props: Props) {
         re = new RenderingEngine(canvasRef, props.inputPage)
     })
 
-    const render = (falsh?: boolean) => {
+    const render = (flash?: boolean) => {
         re?.render(
-            transformEntities(props.game.entities, props.game, props.team),
+            transformEntities(props.game.entities, props.game, props.inputPage, props.team),
             transformItems(props.team),
             flash)
     }
 
-    let timer: NodeJS.Timer
-    if(props.inputPage) {
-        timer = setInterval(() => {
-            flash = !flash
-            render(flash)
-        } ,500)
-    }
+    let timer = setInterval(() => {
+        flash = !flash
+        render(flash)
+    } ,500)
         
     onCleanup(() => {
         if(timer) {
@@ -123,7 +120,7 @@ export default function GameMap(props: Props) {
   return <canvas ref={canvasRef} tabIndex='0' id="game-map" width='300px' height='300px' ></canvas>
 }
 
-function transformEntities(entities: EntityInstance[], game: Game, team?: Team) {
+function transformEntities(entities: EntityInstance[], game: Game, inputPage: boolean | undefined, team?: Team) {
     // Yes, team is sometimes empty object :O
     if(!team || !team.position) {
         return [...entities]
@@ -131,7 +128,8 @@ function transformEntities(entities: EntityInstance[], game: Game, team?: Team) 
     entities = [...entities]
 
     // Remove picked up items
-    entities = entities.filter(ent => ent.category !== 'ITEM' || !team.pickedUpEntities.includes(ent.id) )
+    entities = entities.filter(ent => ent.category !== 'ITEM' || !team.pickedUpEntities.includes(ent.id) ).map(ent =>
+        ({ ...ent, flashing: ent.flashing && !inputPage }))
 
     // Make ghosts SCARED
     if(isTeamHunting(team)) {

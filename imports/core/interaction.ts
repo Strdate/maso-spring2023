@@ -8,13 +8,13 @@ import TeamQueryBuilder from "./utils/teamQueryBuilder";
 
 const FREEZE_TIME = 0.5
 const EATEN_MONSTER_ENTITY = -1
-const EATEN_MONSTER_REWARD = 30
+const EATEN_MONSTER_REWARD = 25
 
 function checkCollision(game: Game, team: Team, teamQB: TeamQueryBuilder, now: number): number[] {
     const collisions: number[] = []
     game.entities.forEach(ent => {
         if(vectorEq(team.position,ent.position)) {
-            console.log(`Team ${team.number} colliding with ${ent.category} id ${ent.id}`)
+            //console.log(`Team ${team.number} colliding with ${ent.category} id ${ent.id}`)
             const collision = collide(team, ent, teamQB, now)
             if(collision.collided) {
                 collisions.push(ent.id)

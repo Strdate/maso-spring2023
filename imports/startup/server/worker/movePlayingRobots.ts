@@ -58,9 +58,9 @@ function doRandomMoves(team: Team, game: Game, now: Date) {
         previousMove = facingDir
         moves.push(newPos)
     }
-    if(moves.length > 1) {
+    /*if(moves.length > 1) {
         console.log(`Inserted moves for robot ${team.number}: ${formatPath(moves)}`)
-    }
+    }*/
 }
 
 function checkForMonsters(pos: Pos, game: Game) {

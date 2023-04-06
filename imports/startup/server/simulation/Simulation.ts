@@ -1,11 +1,11 @@
-import { doSimpleMove, graphSearch } from "./monsterUtils";
+import { doSimpleMove, graphSearch, monsterGraphSearch } from "./monsterUtils";
 import { Game, GameCollection } from "/imports/api/collections/games";
 import { InteractionsCollection } from "/imports/api/collections/interactions";
 import { TeamsCollection, Team } from "/imports/api/collections/teams";
 import { FacingDir, Pos } from "/imports/core/interfaces";
 import { facingDirToMove, normalizePosition, vectorSum } from "/imports/core/utils/geometry";
 import TeamQueryBuilder from "/imports/core/utils/teamQueryBuilder";
-import { entities, entityTypes, items, pacmanMap, spawnSpots } from "/imports/data/map";
+import { ItemsData, entities, entityTypes, items, pacmanMap, spawnSpots } from "/imports/data/map";
 import { checkCollision } from "/imports/core/interaction";
 import { Random } from 'meteor/random'
 
@@ -82,10 +82,14 @@ export class Simulation {
                     position,
                     facingDir: facingDir
                 }
-            } else if(ent.id === 5) {
+            } else if(ent.id === 5 || ent.id === 6) {
                 const move = doSimpleMove(ent)
                 if(!move.newFacingDir) {
-                    move.newFacingDir = graphSearch(this.getMapState(), move.newPos, ent.position)
+                    if(ent.id === 5) {
+                        move.newFacingDir = graphSearch(this.getMapState(), move.newPos, ent.position)
+                    } else {
+                        move.newFacingDir = monsterGraphSearch(aggregateMonsterMapState(this.game), move.newPos, ent.position)
+                    }
                 }
                 console.log('Moving to: ',move.newFacingDir,move.newPos)
                 return {
@@ -105,14 +109,15 @@ export class Simulation {
             return
         }
         this.game.entities = this.game.entities.filter(ent => ent.category !== 'ITEM')
-        items.filter(item => item.spawnTime <= minute && minute - item.spawnTime < ITEM_LIFESPAN).forEach(item => {
+        items.filter(item => isItemVisible(item, this.game, minute)).forEach(item => {
             const type = entityTypes.find(et => et.typeId === item.type)!
             this.game.entities.push({
                 id: item.id,
                 category: 'ITEM',
                 spriteMapOffset: type.spriteMapOffset,
                 position: spawnSpots.find(ss => ss.letter === item.spawnSpot)!.position,
-                healthIndicator: getHelathState(item.spawnTime, minute)
+                healthIndicator: getHelathState(item.spawnTime, minute),
+                flashing: getHelathState(item.spawnTime, minute) === 3
             })
         })
     }
@@ -139,9 +144,13 @@ export class Simulation {
     }
 }
 
+function isItemVisible(item: ItemsData, game: Game, minute: number) {
+    return item.spawnTime <= minute && minute - item.spawnTime < ITEM_LIFESPAN
+}
+
 function getHelathState(spawnTime: number, minute: number) {
     const timeLeft = spawnTime + ITEM_LIFESPAN - minute
-    console.log('Time left:',timeLeft)
+    //console.log('Time left:',timeLeft)
     switch(timeLeft) {
         case 1: return 3
         case 2: return 2
@@ -161,15 +170,28 @@ function aggregatePosition(program: FacingDir[], tick: number) {
 }
 
 function aggregateMapState(teams: Team[]) {
-    const arr: number[][] = new Array(pacmanMap.length)
-    for (let i = 0; i < arr.length; i++) {
-        arr[i] = new Array(pacmanMap[0].length).fill(0)
-    }
+    const arr = getMapArray()
     for(let i = 0; i < teams.length; i++) {
         const team = teams[i]
         if(team.state === 'PLAYING' || team.state === 'HUNTING') {
             arr[team.position[1]-1][team.position[0]-1] += 1
         }
+    }
+    return arr
+}
+
+function aggregateMonsterMapState(game: Game) {
+    const arr = getMapArray()
+    game.entities.filter(ent => ent.category === 'MONSTER' && ent.id !== 6).forEach(ent => {
+        arr[ent.position[1]-1][ent.position[0]-1] += 1
+    })
+    return arr
+}
+
+function getMapArray() {
+    const arr: number[][] = new Array(pacmanMap.length)
+    for (let i = 0; i < arr.length; i++) {
+        arr[i] = new Array(pacmanMap[0].length).fill(0)
     }
     return arr
 }

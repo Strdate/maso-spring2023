@@ -1,4 +1,5 @@
 import DFS from "./dfs";
+import DFS_2 from "./dfs2";
 import { EntityInstance, FacingDir, Pos } from "/imports/core/interfaces";
 import { getAllowedMoves } from "/imports/core/utils/checkWallCollision";
 import { facingDirToMove, filterMoveByFacingDir, moveToFacingDir, normalizePosition, vectorDiff, vectorSum } from "/imports/core/utils/geometry";
@@ -13,7 +14,7 @@ function doSimpleMove(ent: EntityInstance): { newPos: Pos, newFacingDir?: Facing
     return { newPos }
 }
 
-function graphSearch(mapState: number[][], start: Pos, exclude: Pos/*, mode: 'MIN' | 'MAX'*/): FacingDir {
+function graphSearch(mapState: number[][], start: Pos, exclude: Pos): FacingDir {
     const dfs = new DFS(mapState)
     dfs.run({ start, excludeFirst: exclude })
     const longestPath = dfs.longsetPath
@@ -21,4 +22,10 @@ function graphSearch(mapState: number[][], start: Pos, exclude: Pos/*, mode: 'MI
     return moveToFacingDir(vectorDiff(longestPath.path[1], start))!
 }
 
-export { doSimpleMove, graphSearch }
+function monsterGraphSearch(mapState: number[][], start: Pos, exclude: Pos) {
+    const dfs = new DFS_2(mapState)
+    const nextPos = dfs.findPath({ start, excludeFirst: exclude })
+    return moveToFacingDir(vectorDiff(nextPos, start))!
+}
+
+export { doSimpleMove, graphSearch, monsterGraphSearch }

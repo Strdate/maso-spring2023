@@ -36,6 +36,7 @@ function collide(team: Team, entity: EntityInstance, teamQB: TeamQueryBuilder, n
                 teamQB.pickedUpEntities.push(EATEN_MONSTER_ENTITY)
                 teamQB.eatenEnities.push(entity.id)
                 teamQB.score += EATEN_MONSTER_REWARD
+                teamQB.scoreGhosts += EATEN_MONSTER_REWARD
                 return { collided: true, cancelCollisions: false }
             }
             return { collided: false, cancelCollisions: false }

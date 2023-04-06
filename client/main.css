@@ -239,7 +239,7 @@ div.error-box {
   position: sticky;
   top: 0;
   background: #ffffff;
-  border-bottom: 1px solid black;
+  box-shadow: inset 0px -2px #ddd;
 }
 
 .results-div .cell {
@@ -254,8 +254,13 @@ div.error-box {
 
 .results-div .grow {
   min-width: 150px;
+  white-space: nowrap;
 }
 
 .results-div .bold {
   font-weight: bold;
+}
+
+.results-div .standard-row:hover {
+  background: #F5F4F4;
 }

@@ -1,4 +1,4 @@
-import { useParams } from "@solidjs/router";
+import { A, useParams } from "@solidjs/router";
 import useTitle from "/imports/ui/utils/useTitle";
 import { createFindOne, createSubscribe } from "solid-meteor-data";
 import { Results, ResultsCollection } from "/imports/api/collections/results";
@@ -32,7 +32,7 @@ export default function ResultsPage(props: Props) {
     const teams = () => results.teams.map(t => ({
         rank: `${t.rank}.`,
         number: t.number,
-        name: t.name,
+        name: t.name.substring(0,25),
         money: t.money,
         ghostCollisions: t.ghostCollisions,
         pickedUpItems: t.pickedUpItems,
@@ -44,7 +44,7 @@ export default function ResultsPage(props: Props) {
 
     return <ManagedSuspense loading={loading()} found={found()}>
         <div class='results-div'>
-        <div style={{"font-size": '2.5em', "text-align": 'center', padding: '16px 0'}}>Výsledky</div>
+        <div style={{"font-size": '3em', "text-align": 'center', padding: '24px 0'}}>Výsledky</div>
         <Table>
               <TableHead>
                 <TableRow class='sticky-table-header'>
@@ -56,10 +56,14 @@ export default function ResultsPage(props: Props) {
               <TableBody>
                 <For each={teams()}>
                     {(team) =>
-                        <TableRow>
+                        <TableRow class='standard-row'>
                             <Index each={columns}>
-                                {/*@ts-ignore*/}
-                                {(col, index) => <TableCell align={align(index)} class={`cell ${col().class}`}>{team[col().prop]}</TableCell>}
+                                {(col, index) =>
+                                  <TableCell align={align(index)} class={`cell ${col().class}`}>
+                                    {/*@ts-ignore*/}
+                                    { index !== 2 ? team[col().prop] : <A href={`/${params.code}/input?team=${team.number}`}>{team.name}</A>}
+                                  </TableCell>
+                                }
                             </Index>
                         </TableRow>}
                 </For>

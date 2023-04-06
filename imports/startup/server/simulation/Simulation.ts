@@ -111,7 +111,8 @@ export class Simulation {
                 id: item.id,
                 category: 'ITEM',
                 spriteMapOffset: type.spriteMapOffset,
-                position: spawnSpots.find(ss => ss.letter === item.spawnSpot)!.position
+                position: spawnSpots.find(ss => ss.letter === item.spawnSpot)!.position,
+                healthIndicator: getHelathState(item.spawnTime, minute)
             })
         })
     }
@@ -135,6 +136,18 @@ export class Simulation {
 
     getCurMinute = () => {
         return (this.now.getTime() - this.game.startAt.getTime()) / 1000 / 60 - this.game.freezeTimeMins
+    }
+}
+
+function getHelathState(spawnTime: number, minute: number) {
+    const timeLeft = spawnTime + ITEM_LIFESPAN - minute
+    console.log('Time left:',timeLeft)
+    switch(timeLeft) {
+        case 1: return 3
+        case 2: return 2
+        case 3: return 1
+        case 4: return 0
+        default: return undefined
     }
 }
 

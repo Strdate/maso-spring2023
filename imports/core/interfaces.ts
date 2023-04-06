@@ -21,6 +21,7 @@ interface EntityInstance {
     position: [number, number]
     facingDir?: FacingDir
     flashing?: boolean
+    healthIndicator?: number
   }
 
 type EntityCategory = 'MONSTER' | 'PACMAN' | 'ITEM'

@@ -2,6 +2,7 @@ import { EntityInstance, Pos } from "/imports/core/interfaces";
 import { pacmanMap, spawnSpots } from "/imports/data/map";
 
 const SPRITE_SIZE = 16
+const HEALTH_INDICATOR_OFFSET: Pos = [4,3]
 
 class RenderingEngine
 {
@@ -55,6 +56,9 @@ class RenderingEngine
                 return
             }
             this.drawSprite(offsetX, offsetY, ent.position[0], ent.position[1])
+            if(ent.healthIndicator) {
+                this.drawSprite(HEALTH_INDICATOR_OFFSET[0] + ent.healthIndicator, HEALTH_INDICATOR_OFFSET[1], ent.position[0], ent.position[1])
+            }
         })
 
         if(this.isInput) {

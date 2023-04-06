@@ -4,6 +4,7 @@ import { Team } from "/imports/api/collections/teams"
 class TeamQueryBuilder {
 
     score: number = 0
+    scoreGhosts: number = 0
     pickedUpEntities: number[] = []
     eatenEnities: number[] = []
     qb = new QueryBuilder<Team>()
@@ -11,7 +12,8 @@ class TeamQueryBuilder {
     combine = () => {
         if(this.score > 0) {
             this.qb.inc({
-                'score.items': this.score,
+                'score.items': (this.score - this.scoreGhosts),
+                'score.ghosts': (this.scoreGhosts),
                 'score.total': this.score
             })
         }

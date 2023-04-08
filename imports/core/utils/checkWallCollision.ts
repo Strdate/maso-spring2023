@@ -1,6 +1,6 @@
 import { FacingDir, Pos } from "../interfaces";
-import { facingDirToMove, normalizePosition, vectorSum } from "./geometry";
-import { pacmanMap } from "/imports/data/map";
+import { facingDirToMove, normalizePosition, vectorEq, vectorSum } from "./geometry";
+import { pacmanMap, playerStartPos } from "/imports/data/map";
 
 const collisionMap: FacingDir[][] = [
     ['DOWN'],
@@ -23,7 +23,7 @@ const collisionMap: FacingDir[][] = [
 ]
 
 function checkWallCollision(position: Pos, facingDir: FacingDir) {
-    if(position[0] === 10 && position[1] === 4) { return true }
+    if(vectorEq(position,playerStartPos)) { return true }
     return getAllowedMoves(position).includes(facingDir)
 }
 

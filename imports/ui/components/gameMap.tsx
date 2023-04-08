@@ -8,7 +8,7 @@ import { facingDirToMove, vectorSum } from "/imports/core/utils/geometry";
 import insertMove from "/imports/api/methods/moves/insert"
 import activateBoost from "/imports/api/methods/moves/activateBoost"
 import { Game } from "/imports/api/collections/games";
-import { entities, entityTypes, items } from "/imports/data/map";
+import { entities, entityTypes, items, pacmanMap } from "/imports/data/map";
 import { GameStatus } from "/imports/core/enums";
 import { resetMovesLeft } from "../utils/utils";
 import useKeyHold from "../utils/useKeyHold";
@@ -169,7 +169,7 @@ function transformItems(team: Team | undefined): Pos[] {
         }
         const type = entities.find(ent => ent.id === entId) ?? items.find(item => item.id === entId)
         return entityTypes.find(t => t.typeId === type!.type)!.spriteMapOffset
-    }).slice(/*-31*/ -38)
+    }).slice(-(pacmanMap[0].length*2))
 }
 
 function keyToFacingDir(code: string): FacingDir | undefined {

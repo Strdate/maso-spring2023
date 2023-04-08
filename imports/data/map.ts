@@ -89,10 +89,10 @@ const spawnSpots: SpawnSpot[] = [{
     position: [13, 7]
 },{
     letter: 'N',
-    position: [3, 10]
+    position: [2, 12]
 },{
     letter: 'O',
-    position: [2, 12]
+    position: [3, 10]
 },{
     letter: 'P',
     position: [4, 10]
@@ -222,7 +222,7 @@ const items: ItemsData[] = [
     { "id": 11, "spawnSpot": "I", "type": 9, "spawnTime": 0 },
     { "id": 12, "spawnSpot": "G", "type": 7, "spawnTime": 0 },
     { "id": 13, "spawnSpot": "P", "type": 8, "spawnTime": 0 },
-    { "id": 14, "spawnSpot": "N", "type": 10, "spawnTime": 4 },
+    { "id": 14, "spawnSpot": "O", "type": 10, "spawnTime": 4 },
     { "id": 15, "spawnSpot": "E", "type": 8, "spawnTime": 4 },
     { "id": 16, "spawnSpot": "R", "type": 7, "spawnTime": 4 },
     { "id": 17, "spawnSpot": "T", "type": 9, "spawnTime": 8 },
@@ -235,7 +235,7 @@ const items: ItemsData[] = [
     { "id": 24, "spawnSpot": "B", "type": 8, "spawnTime": 16 },
     { "id": 25, "spawnSpot": "H", "type": 7, "spawnTime": 16 },
     { "id": 26, "spawnSpot": "S", "type": 10, "spawnTime": 20 },
-    { "id": 27, "spawnSpot": "O", "type": 9, "spawnTime": 20 },
+    { "id": 27, "spawnSpot": "N", "type": 9, "spawnTime": 20 },
     { "id": 28, "spawnSpot": "K", "type": 7, "spawnTime": 20 },
     { "id": 29, "spawnSpot": "F", "type": 11, "spawnTime": 24 },
     { "id": 30, "spawnSpot": "J", "type": 7, "spawnTime": 24 },
@@ -248,8 +248,8 @@ const items: ItemsData[] = [
     { "id": 37, "spawnSpot": "D", "type": 7, "spawnTime": 32 },
     { "id": 38, "spawnSpot": "G", "type": 7, "spawnTime": 36},
     { "id": 39, "spawnSpot": "R", "type": 8, "spawnTime": 36},
-    { "id": 40, "spawnSpot": "O", "type": 7, "spawnTime": 36},
-    { "id": 41, "spawnSpot": "N", "type": 10, "spawnTime": 40},
+    { "id": 40, "spawnSpot": "N", "type": 7, "spawnTime": 36},
+    { "id": 41, "spawnSpot": "O", "type": 10, "spawnTime": 40},
     { "id": 42, "spawnSpot": "S", "type": 11, "spawnTime": 40},
     { "id": 43, "spawnSpot": "E", "type": 7, "spawnTime": 40},
     { "id": 44, "spawnSpot": "I", "type": 7, "spawnTime": 44},
@@ -271,13 +271,13 @@ const items: ItemsData[] = [
     { "id": 60, "spawnSpot": "F", "type": 9, "spawnTime": 64},
     { "id": 61, "spawnSpot": "L", "type": 7, "spawnTime": 64},
     { "id": 62, "spawnSpot": "S", "type": 9, "spawnTime": 68},
-    { "id": 63, "spawnSpot": "O", "type": 7, "spawnTime": 68},
+    { "id": 63, "spawnSpot": "N", "type": 7, "spawnTime": 68},
     { "id": 64, "spawnSpot": "A", "type": 7, "spawnTime": 68},
     { "id": 65, "spawnSpot": "J", "type": 10, "spawnTime": 72},
     { "id": 66, "spawnSpot": "M", "type": 8, "spawnTime": 72},
     { "id": 67, "spawnSpot": "Q", "type": 7, "spawnTime": 72},
     { "id": 68, "spawnSpot": "B", "type": 8, "spawnTime": 76},
-    { "id": 69, "spawnSpot": "N", "type": 8, "spawnTime": 76},
+    { "id": 69, "spawnSpot": "O", "type": 8, "spawnTime": 76},
     { "id": 70, "spawnSpot": "T", "type": 7, "spawnTime": 76},
 ]
 

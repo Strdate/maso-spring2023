@@ -53,7 +53,7 @@ div.formbase :is(input[type=button], input[type=submit]) {
 }
 
 div.white-box {
-  font-size: 6vh;
+  font-size: 5.6vh;
   border-radius: 6px;
   background-color: white;
   padding: 0.8vh 0.8vh 0.8vh 0.8vh;

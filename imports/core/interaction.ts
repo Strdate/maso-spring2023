@@ -12,18 +12,19 @@ const EATEN_MONSTER_REWARD = 25
 
 function checkCollision(game: Game, team: Team, teamQB: TeamQueryBuilder, now: number): number[] {
     const collisions: number[] = []
-    game.entities.forEach(ent => {
+    for(let i = 0; i < game.entities.length; i++) {
+        const ent = game.entities[i]
         if(vectorEq(team.position,ent.position)) {
             //console.log(`Team ${team.number} colliding with ${ent.category} id ${ent.id}`)
             const collision = collide(team, ent, teamQB, now)
             if(collision.collided) {
                 collisions.push(ent.id)
                 if(collision.cancelCollisions) {
-                    return
+                    break
                 }
             }
         }
-    })
+    }
     return collisions
 }
 

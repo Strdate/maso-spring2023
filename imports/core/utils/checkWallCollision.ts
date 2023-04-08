@@ -23,7 +23,7 @@ const collisionMap: FacingDir[][] = [
 ]
 
 function checkWallCollision(position: Pos, facingDir: FacingDir) {
-    if(vectorEq(position,playerStartPos)) { return true }
+    if(vectorEq(vectorSum(position,[0,-1]),playerStartPos) && facingDir === 'UP') { return true }
     return getAllowedMoves(position).includes(facingDir)
 }
 

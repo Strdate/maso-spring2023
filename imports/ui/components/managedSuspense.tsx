@@ -1,10 +1,10 @@
 import { Show } from "solid-js"
+import { JSX } from "solid-js";
 
 interface Props {
     loading: boolean,
     found: boolean,
-    children: import("c:/Users/Adam/source/repos/maso-solid/node_modules/solid-js/types/jsx").JSX.Element[]
-        | import("c:/Users/Adam/source/repos/maso-solid/node_modules/solid-js/types/jsx").JSX.Element
+    children: JSX.Element | JSX.Element[]
 }
 
 export default function ManagedSuspense(props: Props) {

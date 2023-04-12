@@ -1,9 +1,9 @@
 import { useNavigate } from "@solidjs/router";
+import { JSX } from "solid-js";
 
 interface Props {
     title: string,
-    children: import("c:/Users/Adam/source/repos/maso-solid/node_modules/solid-js/types/jsx").JSX.Element[]
-        | import("c:/Users/Adam/source/repos/maso-solid/node_modules/solid-js/types/jsx").JSX.Element,
+    children: JSX.Element | JSX.Element[],
     onConfirm(data: any): void
     showBackButton?: boolean
 }
@@ -12,7 +12,7 @@ interface Props {
 // TODO Refactor "FromBase" with typo to "FormBase"
 export default function FromBase(props: Props) {
     const navigate = useNavigate()
-    return ( 
+    return (
     <div style={{
         display: 'flex',
         "flex-direction": 'column',

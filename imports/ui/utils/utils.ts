@@ -7,4 +7,4 @@ function resetMovesLeft(team: Team, resetFunc: (newMoney: number) => void) {
     resetFunc(Math.min(MOVES_PER_VISIT,untrack(() => team.money)))
 }
 
-export { resetMovesLeft }
+export { resetMovesLeft, MOVES_PER_VISIT }

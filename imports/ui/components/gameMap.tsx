@@ -6,13 +6,15 @@ import { Team } from "/imports/api/collections/teams";
 import { EntityInstance, FacingDir, Pos } from "/imports/core/interfaces";
 import { facingDirToMove, vectorSum } from "/imports/core/utils/geometry";
 import insertMove from "/imports/api/methods/moves/insert"
+import revertMove from "/imports/api/methods/moves/revert";
 import activateBoost from "/imports/api/methods/moves/activateBoost"
 import { Game } from "/imports/api/collections/games";
 import { entities, entityTypes, items, pacmanMap } from "/imports/data/map";
 import { GameStatus } from "/imports/core/enums";
-import { resetMovesLeft } from "../utils/utils";
+import {MOVES_PER_VISIT, resetMovesLeft} from "../utils/utils";
 import useKeyHold from "../utils/useKeyHold";
 import { isTeamHunting } from "/imports/core/utils/misc";
+import alertify from "alertifyjs";
 
 type Props = {
     game: Game
@@ -94,6 +96,19 @@ export default function GameMap(props: Props) {
             event.preventDefault()
             resetMovesLeft(props.team!, props.setMovesLeft!)
         }
+        if (event.code === "Backspace") {
+            if (props.movesLeft! < MOVES_PER_VISIT) {
+                const input = {
+                    gameId: props.game._id,
+                    teamId: props.team!._id,
+                }
+                props.setMovesLeft!(props.movesLeft! + 1);
+                revertMove.call(input, revertCallback);
+            }
+
+            event.preventDefault();
+
+        }
         if((props.movesLeft ?? 0) <= 0) {
             return
         }
@@ -114,6 +129,18 @@ export default function GameMap(props: Props) {
         if(error) {
             props.setMovesLeft!(props.movesLeft! + 1)
             console.log(error)
+        }
+    }
+
+    const revertCallback = (error: any) => {
+        if (error) {
+            console.log(error)
+            props.setMovesLeft!(props.movesLeft! - 1);
+            if(error.reason) {
+                alertify.error(error.reason)
+            } else {
+                alertify.error('Neznámá chyba')
+            }
         }
     }
 

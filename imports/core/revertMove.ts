@@ -14,7 +14,9 @@ import { isTeamHunting } from "./utils/misc";
 const MAX_TIME_TO_REVERT = 60_000;  // ms
 export default function revertMove({ gameId, teamId, userId, isSimulation }:
                                      InteractionGameTeamInput & MeteorMethodBase) {
-    if(!isSimulation) {  // TODO remove this, we want client to precheck before sending request
+    // Has to be in isSimulation to only happen on the server.
+    if(!isSimulation) {
+        // Check
         const now = new Date().getTime();
         const game = checkGame(userId, gameId, isSimulation);
         const team = getTeam(gameId, teamId);
@@ -42,24 +44,22 @@ export default function revertMove({ gameId, teamId, userId, isSimulation }:
             teamQB.qb.inc({ 'boostData.movesLeft': 1 })
         }
         const collisions = checkCollision(game, team, teamQB, now);
-        // if(!isSimulation) {
-            InteractionsCollection.update(lastMove._id, {
-                $set: { reverted: true },
+        InteractionsCollection.update(lastMove._id, {
+            $set: { reverted: true },
+        })
+        if (collisions.length > 0) {
+            InteractionsCollection.insert({
+                gameId,
+                teamId,
+                newPos: secondLastMove.newPos,
+                userId: userId!,
+                teamNumber: team.number,
+                facingDir: secondLastMove.facingDir,
+                moved: false,
+                collisions: collisions,
+                createdAt: new Date()
             })
-            if (collisions.length > 0) {
-                InteractionsCollection.insert({
-                    gameId,
-                    teamId,
-                    newPos: secondLastMove.newPos,
-                    userId: userId!,
-                    teamNumber: team.number,
-                    facingDir: secondLastMove.facingDir,
-                    moved: false,
-                    collisions: collisions,
-                    createdAt: new Date()
-                })
-            }
-        // }
+        }
         TeamsCollection.update(team._id, teamQB.combine())
     }
 }

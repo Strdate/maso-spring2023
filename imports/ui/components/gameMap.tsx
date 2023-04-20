@@ -102,7 +102,6 @@ export default function GameMap(props: Props) {
                     gameId: props.game._id,
                     teamId: props.team!._id,
                 }
-                props.setMovesLeft!(props.movesLeft! + 1);
                 revertMove.call(input, revertCallback);
             }
 
@@ -135,12 +134,13 @@ export default function GameMap(props: Props) {
     const revertCallback = (error: any) => {
         if (error) {
             console.log(error)
-            props.setMovesLeft!(props.movesLeft! - 1);
             if(error.reason) {
                 alertify.error(error.reason)
             } else {
                 alertify.error('Neznámá chyba')
             }
+        } else {
+            props.setMovesLeft!(props.movesLeft! + 1);
         }
     }
 

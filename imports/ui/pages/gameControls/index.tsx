@@ -96,7 +96,7 @@ export default function GameControls() {
   }
 
   const focusTeamInput = (event: KeyboardEvent) => {
-    if (event.key === "Escape") {
+    if (['Escape','NumpadDivide'].includes(event.code)) {
       const teamInput = document.getElementById('teamInput')!
       if(document.activeElement !== teamInput) {
         teamInput.focus()

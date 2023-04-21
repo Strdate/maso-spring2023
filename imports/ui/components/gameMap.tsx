@@ -76,7 +76,7 @@ export default function GameMap(props: Props) {
         if(!checkTeamState()) {
             return
         }
-        if(code !== 'KeyB') {
+        if(!['KeyB','NumpadMultiply'].includes(code)) {
             return
         }
         activateBoost.call({
@@ -92,11 +92,11 @@ export default function GameMap(props: Props) {
         if(!checkTeamState()) {
             return
         }
-        if(event.code === 'KeyR') {
+        if(['KeyR'].includes(event.code)) {
             event.preventDefault()
             resetMovesLeft(props.team!, props.setMovesLeft!)
         }
-        if (event.code === "Backspace") {
+        if (['Backspace','NumpadSubtract'].includes(event.code)) {
             if (props.movesLeft! < MOVES_PER_VISIT) {
                 const input = {
                     gameId: props.game._id,
@@ -203,15 +203,19 @@ function keyToFacingDir(code: string): FacingDir | undefined {
     switch(code) {
         case 'ArrowUp':
         case 'KeyW':
+        case 'Numpad8':
             return 'UP'
         case 'ArrowDown':
         case 'KeyS':
+        case 'Numpad2':
             return 'DOWN'
         case 'ArrowRight':
         case 'KeyD':
+        case 'Numpad6':
             return 'RIGHT'
         case 'ArrowLeft':
         case 'KeyA':
+        case 'Numpad4':
             return 'LEFT'
     }
 }

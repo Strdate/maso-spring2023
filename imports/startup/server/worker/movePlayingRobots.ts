@@ -1,13 +1,12 @@
 import { Game, GameCollection } from "/imports/api/collections/games";
 import { Team, TeamsCollection } from "/imports/api/collections/teams";
+import { ROBOT_WORKER_ID } from "/imports/core/enums";
 import insertMove from "/imports/core/insertMove";
 import { FacingDir, Pos } from "/imports/core/interfaces";
 import updateTask from "/imports/core/updateTask";
 import { getAllowedMoves } from "/imports/core/utils/checkWallCollision";
 import { facingDirToMove, filterMoveByFacingDir, normalizePosition, vectorEq, vectorSum } from "/imports/core/utils/geometry";
 import { formatPath } from "/imports/core/utils/misc";
-
-const ROBOT_WORKER_ID = 'robotworkeruserid'
 
 export default async function movePlayingRobots() {
     const now = new Date(new Date().setMilliseconds(0))

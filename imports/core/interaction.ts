@@ -6,7 +6,6 @@ import { vectorEq } from "./utils/geometry";
 import { isTeamHunting } from "./utils/misc";
 import TeamQueryBuilder from "./utils/teamQueryBuilder";
 
-const FREEZE_TIME = 0.5
 const EATEN_MONSTER_ENTITY = -1
 const EATEN_MONSTER_REWARD = 25
 
@@ -16,7 +15,7 @@ function checkCollision(game: Game, team: Team, teamQB: TeamQueryBuilder, now: n
         const ent = game.entities[i]
         if(vectorEq(team.position,ent.position)) {
             //console.log(`Team ${team.number} colliding with ${ent.category} id ${ent.id}`)
-            const collision = collide(team, ent, teamQB, now)
+            const collision = collide(game, team, ent, teamQB, now)
             if(collision.collided) {
                 collisions.push(ent.id)
                 if(collision.cancelCollisions) {
@@ -28,7 +27,7 @@ function checkCollision(game: Game, team: Team, teamQB: TeamQueryBuilder, now: n
     return collisions
 }
 
-function collide(team: Team, entity: EntityInstance, teamQB: TeamQueryBuilder, now: number): 
+function collide(game: Game, team: Team, entity: EntityInstance, teamQB: TeamQueryBuilder, now: number): 
     { collided: boolean, cancelCollisions: boolean } {
 
     if(entity.category === 'MONSTER') {
@@ -44,7 +43,7 @@ function collide(team: Team, entity: EntityInstance, teamQB: TeamQueryBuilder, n
         }
         teamQB.qb.set({
             state: 'FROZEN',
-            stateEndsAt: new Date( new Date().getTime() + FREEZE_TIME * 60000),
+            stateEndsAt: new Date( new Date().getTime() + game.monsterPanaltySecs * 1000),
         })
         teamQB.pickedUpEntities.push(entity.id)
         teamQB.qb.inc({ ghostCollisions: 1 })

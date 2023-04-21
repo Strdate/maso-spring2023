@@ -2,12 +2,10 @@
 import { ValidatedMethod } from 'meteor/mdg:validated-method'
 import { Meteor } from 'meteor/meteor'
 import { GameCollection, GameInput, GameInputSchema } from '../../collections/games'
-import { GameStatus } from '../../../core/enums'
+import { GameStatus, INITIAL_SETUP_USER_ID, ROBOT_WORKER_ID } from '../../../core/enums'
 import { entities, entityTypes } from '/imports/data/map'
 import { EntityInstance } from '/imports/core/interfaces'
 import { ResultsCollection } from '../../collections/results'
-import {ROBOT_WORKER_ID} from "/imports/startup/server/worker/movePlayingRobots";
-import {INITIAL_SETUP_USER_ID} from "/imports/startup/server/worker/updateRunningGames";
 
 export default new ValidatedMethod({
   name: 'games.create',
@@ -34,6 +32,8 @@ export default new ValidatedMethod({
         initiallyIssuedTasks: 6,
         totalTasksCount: 50,
         totalExchangeableTasksCount: 4,
+        boostMaxTimeSecs: 360,
+        bosstMaxMoves: 24,
         entities: initEntities()
       })
       ResultsCollection.insert({

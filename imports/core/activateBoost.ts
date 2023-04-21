@@ -4,21 +4,18 @@ import { MeteorMethodBase } from "./interfaces";
 import { isTeamHunting } from "./utils/misc";
 import { checkGame, getTeam } from "./utils/moves";
 
-const BOOST_MAX_MOVES = 24
-const BOOST_MAX_TIME_MIN = 0.5
-
 export default function activateBoost({ gameId, teamId, isSimulation, userId }:
     ActivateBoostInput & MeteorMethodBase) {
 
-    checkGame(userId, gameId, isSimulation)
+    const game = checkGame(userId, gameId, isSimulation)
     const team = getTeam(gameId, teamId)
     checkTeamState(team)
     TeamsCollection.update(team._id,{
         $set: {
-            'boostData.movesLeft': BOOST_MAX_MOVES,
+            'boostData.movesLeft': game.bosstMaxMoves,
             'boostData.eatenEnities': [],
             state: 'HUNTING',
-            stateEndsAt: new Date(new Date().getTime() + BOOST_MAX_TIME_MIN * 60 * 1000)
+            stateEndsAt: new Date(new Date().getTime() + game.boostMaxTimeSecs * 1000)
         },
         $inc: {
             boostCount: -1

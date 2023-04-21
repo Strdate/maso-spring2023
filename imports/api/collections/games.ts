@@ -9,6 +9,7 @@ interface GameInput {
   startAt: Date
   endAt: Date
   freezeTimeMins: number
+  monsterPanaltySecs: number
 }
 
 interface Game extends GameInput {
@@ -18,6 +19,8 @@ interface Game extends GameInput {
   initiallyIssuedTasks: number
   totalTasksCount: number
   totalExchangeableTasksCount: number
+  boostMaxTimeSecs: number
+  bosstMaxMoves: number
   statusId: GameStatus
   userId: string
   authorizedUsers: string[]
@@ -34,6 +37,7 @@ const GameInputSchema = new SimpleSchema({
   startAt: { type: Date },
   endAt: { type: Date },
   freezeTimeMins: { type: SimpleSchema.Integer, min: 1, defaultValue: 10 },
+  monsterPanaltySecs: { type: SimpleSchema.Integer, min: 1, defaultValue: 480 }
 })
 
 export { Game, GameInput, GameCollection, GameInputSchema }

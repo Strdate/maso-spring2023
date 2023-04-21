@@ -19,7 +19,8 @@ export default function CreateGame() {
                 code: res.gameCode,
                 startAt: new Date(res.startAt),
                 endAt: new Date(res.endAt),
-                freezeTimeMins: Number(res.freezetime)
+                freezeTimeMins: Number(res.freezetime),
+                monsterPanaltySecs: Number(res.monsterPenalty)
             }
             console.log(mapped)
             CreateGameMethod.call(mapped, err => {
@@ -39,6 +40,8 @@ export default function CreateGame() {
             <input type="datetime-local" id="endAt" name="endAt" value={defEndDate()} />
             <label for="freezetime">Freezetime</label>
             <input type="number" id="freezetime" name="freezetime" value={2} />
+            <label for="monsterPenalty">Trestný čas</label>
+            <input type="number" id="monsterPenalty" name="monsterPenalty" value={480} />
             <input type="submit" value="Vytvořit" />
         </FromBase>
 

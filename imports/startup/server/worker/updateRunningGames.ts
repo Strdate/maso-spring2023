@@ -1,5 +1,5 @@
 import { Game, GameCollection } from "/imports/api/collections/games"
-import { GameStatus, TaskStatus } from "/imports/core/enums"
+import { GameStatus, INITIAL_SETUP_USER_ID, TaskStatus } from "/imports/core/enums"
 import { getTeams } from "./updateRunningGamesUtils"
 import { TasksCollection } from "/imports/api/collections/tasks"
 import { Random } from 'meteor/random'
@@ -55,7 +55,6 @@ async function moveMonsters() {
   }))
 }
 
-export const INITIAL_SETUP_USER_ID = "initialsetupuserid";
 function checkGameStatus(game: Game, now: Date)
 {
   if(game.statusId === GameStatus.Created )

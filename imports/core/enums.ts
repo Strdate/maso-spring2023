@@ -1,3 +1,6 @@
+const ROBOT_WORKER_ID = 'robotworkeruserid'
+const INITIAL_SETUP_USER_ID = "initialsetupuserid";
+
 const enum GameStatus {
     Created = 1,
     Running,
@@ -19,4 +22,4 @@ const enum TaskStatus {
     Exchanged
 }
 
-export { GameStatus, TaskStatus, GameStatusLabels }
+export { GameStatus, TaskStatus, GameStatusLabels, ROBOT_WORKER_ID, INITIAL_SETUP_USER_ID }

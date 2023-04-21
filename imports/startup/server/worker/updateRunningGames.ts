@@ -5,6 +5,8 @@ import { TasksCollection } from "/imports/api/collections/tasks"
 import { Random } from 'meteor/random'
 import { Simulation } from "../simulation/Simulation"
 import cacheResults from "./cacheResults"
+import {InteractionsCollection} from "/imports/api/collections/interactions";
+import {playerStartPos} from "/imports/data/map";
 
 function getRunningGames(now: Date) {
   return GameCollection.find({
@@ -53,6 +55,7 @@ async function moveMonsters() {
   }))
 }
 
+export const INITIAL_SETUP_USER_ID = "initialsetupuserid";
 function checkGameStatus(game: Game, now: Date)
 {
   if(game.statusId === GameStatus.Created )
@@ -61,11 +64,23 @@ function checkGameStatus(game: Game, now: Date)
     GameCollection.update({ _id: game._id },{ $set: { statusId: GameStatus.Running } })
     const teams = getTeams(game)
 
-    const bulk = TasksCollection.rawCollection().initializeUnorderedBulkOp()
+    const bulkTeams = TasksCollection.rawCollection().initializeUnorderedBulkOp()
+    const bulkInteractions = InteractionsCollection.rawCollection().initializeUnorderedBulkOp()
     const statusId = TaskStatus.Issued
     teams.forEach(team => {
+      bulkInteractions.insert({
+        gameId: game._id,
+        teamId: team._id,
+        newPos: playerStartPos,
+        userId: INITIAL_SETUP_USER_ID,
+        teamNumber: team.number,
+        facingDir: "RIGHT",
+        moved: true,
+        collisions: [],
+        createdAt: new Date(),
+      });
       for (let i = 1; i <= game.initiallyIssuedTasks; i++) {
-        bulk.insert({
+        bulkTeams.insert({
           _id: Random.id(),
           number: i,
           teamId: team._id,
@@ -75,12 +90,12 @@ function checkGameStatus(game: Game, now: Date)
           isRevoked: false,
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
-        })
+        });
      }
     })
-    if(teams.length > 0)
-    {
-      bulk.execute()
+    if(teams.length > 0) {
+      bulkTeams.execute();
+      bulkInteractions.execute();
     }
     return true
   }

@@ -2,6 +2,7 @@ import { isAuthorized } from "../authorization"
 import { GameStatus } from "../enums"
 import { GameCollection } from "/imports/api/collections/games"
 import { TeamsCollection } from "/imports/api/collections/teams"
+import {InteractionsCollection} from "/imports/api/collections/interactions";
 
 function checkGame(userId: string | null, gameId: string, isSimulation: boolean) {
     const game = GameCollection.findOne(gameId)
@@ -29,4 +30,13 @@ function getTeam(gameId: string, teamId: string) {
     return team
 }
 
-export { checkGame, getTeam }
+function getLastInteractions(gameId: string, teamId: string) {
+  console.log("getLastInteractions", gameId, teamId)
+  const lastInteraction = InteractionsCollection.findOne({gameId, teamId, reverted: { $ne: true } },
+    { sort: { createdAt: -1 } });
+  const moves = InteractionsCollection.find({gameId, teamId, reverted: { $ne: true }, moved: true},
+    { sort: { createdAt: -1 }, limit: 2 }).fetch();
+  return [lastInteraction, moves[0] || undefined, moves[1] || moves[0] || undefined];
+}
+
+export { checkGame, getTeam, getLastInteractions }

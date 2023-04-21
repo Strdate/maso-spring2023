@@ -6,6 +6,8 @@ import { GameStatus } from '../../../core/enums'
 import { entities, entityTypes } from '/imports/data/map'
 import { EntityInstance } from '/imports/core/interfaces'
 import { ResultsCollection } from '../../collections/results'
+import {ROBOT_WORKER_ID} from "/imports/startup/server/worker/movePlayingRobots";
+import {INITIAL_SETUP_USER_ID} from "/imports/startup/server/worker/updateRunningGames";
 
 export default new ValidatedMethod({
   name: 'games.create',
@@ -24,7 +26,7 @@ export default new ValidatedMethod({
         ...game,
         statusId: GameStatus.Created,
         userId: this.userId!,
-        authorizedUsers: [this.userId!, 'robotworkeruserid'],
+        authorizedUsers: [this.userId!, ROBOT_WORKER_ID, INITIAL_SETUP_USER_ID],
         createdAt: new Date(),
         updatedAt: new Date(),
         revenuePerTask: 6,

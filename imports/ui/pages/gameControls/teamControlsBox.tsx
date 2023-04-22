@@ -47,7 +47,7 @@ export default function TeamControlsBox(props: Props) {
     return <div class='team-controls-box'>
         <div class='teamcontrols' style={{display: "flex", "flex-direction": 'column', width: 'fit-content'}}>
             <div class='teamtitle' style={{display: 'flex', "justify-content": 'space-between', padding: '8px'}}>
-                <span>{props.team?.number ?? '###'} - {props.team?.name.substring(0,18)}</span>
+                <span>{props.team?.number ?? '###'} - {props.team?.name?.substring(0,18)}</span>
                 <span>skóre: {props.team?.score?.total ?? 0}</span>
             </div>
             <GameDisplayBox 

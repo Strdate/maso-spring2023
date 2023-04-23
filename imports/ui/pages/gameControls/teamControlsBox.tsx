@@ -1,9 +1,10 @@
-import { Index, Show, createEffect, createMemo } from "solid-js";
+import { Index, Show, createMemo } from "solid-js";
 import GameDisplayBox from "../projector/gameDisplayBox";
 import { Game } from "/imports/api/collections/games";
 import { Team } from "/imports/api/collections/teams";
-import { useCurTime } from "../../utils/useInterval";
 import { isTeamHunting } from "/imports/core/utils/misc";
+import { useCurTime } from "../../utils/curTimeProvider";
+import { formattedMS } from "../../utils/utils";
 
 type Props = {
     game: Game
@@ -93,27 +94,15 @@ export default function TeamControlsBox(props: Props) {
                     </Show>
                     <Show when={!isFrozen()}>
                         <div>Zbývá tahů</div>
-                        <div style={{ "font-size": '5vh', "margin-top": '3vh'  }}>{props.movesLeft}</div>
+                        <div style={{ "font-size": '5vh', "margin-top": '3vh' }}>{props.movesLeft}</div>
                     </Show>
                     
                 </div>
                 <div style={{ color: '#ffffff', "font-size": '2vh' }}>celkem{isFrozen() ? ' tahů' : ''}: {props.team?.money ?? '#'}</div>
                 <Show when={props.team?.boostCount ?? 0 > 0}>
-                    <div style={{ color: '#ffffff', "font-size": '2vh' }}>boostů: {props.team!.boostCount}</div>
+                    <div style={{ color: '#ffffff', "font-size": '2vh' }}>maso: {props.team!.boostCount}</div>
                 </Show>
             </div>
         </div>
     </div>
-}
-
-function formattedMS(ms: number) {
-    let result = ''
-    const sec = Math.round(ms / 1000)
-    const hours = Math.floor(sec / 3600)
-    if (hours > 0) {
-        result += `${hours}:`
-    }
-    const minutes = Math.floor(sec / 60) - hours * 60
-    const fill = hours > 0 && minutes < 10 ? '0' : ''
-    return `${result + fill + minutes}:${`0${sec % 60}`.slice(-2)}`
 }

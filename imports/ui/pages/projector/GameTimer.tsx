@@ -1,6 +1,6 @@
-import { Tracker } from 'meteor/tracker'
-import { TimeSync } from 'meteor/mizzao:timesync'
-import { createMemo, createSignal, Switch, Match, onCleanup } from 'solid-js'
+import { createMemo, Switch, Match } from 'solid-js'
+import { useCurTime } from '../../utils/curTimeProvider'
+import { formattedMS } from '../../utils/utils'
 
 type Props = {
     startAt: Date,
@@ -10,20 +10,10 @@ type Props = {
 const commencingLength = 10 * 60 * 1000
 
 export default function GameTimer(props: Props) {
-    const [currentTime, setCurrentTime] = createSignal(new Date().getTime())
-    Tracker.autorun(() => {
-        TimeSync.serverTime(null, 60000)
-        setCurrentTime(new Date(Date.now() + TimeSync.serverOffset()).setMilliseconds(0))
-    })
-    const timer = setInterval( () => {
-        setCurrentTime((new Date(Date.now() + TimeSync.serverOffset())).setMilliseconds(0))
-    }, 100)
+    const current = useCurTime()
 
-    onCleanup(() => clearInterval(timer))
-
-    const current = () => new Date(currentTime()).getTime()
-    const start = () => new Date(props.startAt).getTime()
-    const end = () => new Date(props.endAt).getTime()
+    const start = () => props.startAt.getTime()
+    const end = () => props.endAt.getTime()
     const phase = createMemo(() => getPhase(current(), start(), end()))
     return <div class='white-box stretched timer-div'>
         <Switch>
@@ -42,18 +32,6 @@ export default function GameTimer(props: Props) {
         </Switch>
     </div>
 }
-
-function formattedMS(ms: number) {
-    let result = ''
-    const sec = Math.round(ms / 1000)
-    const hours = Math.floor(sec / 3600)
-    if (hours > 0) {
-      result += `${hours}:`
-    }
-    const minutes = Math.floor(sec / 60) - hours * 60
-    const fill = hours > 0 && minutes < 10 ? '0' : ''
-    return `${result + fill + minutes}:${`0${sec % 60}`.slice(-2)}`
-  }
 
 function getPhase(current: number, start: number, end: number) {
     if (start - current - commencingLength > 0) {

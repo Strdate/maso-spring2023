@@ -7,7 +7,7 @@ import { checkWallCollision } from "./utils/checkWallCollision";
 import { checkCollision } from "./interaction";
 import TeamQueryBuilder from "./utils/teamQueryBuilder";
 import { checkGame, getTeam } from "./utils/moves";
-import { isTeamHunting } from "./utils/misc";
+import { isTeamFrozen, isTeamHunting } from "./utils/misc";
 
 export default function insertMove({ gameId, teamId, newPos, userId, isSimulation }:
     MoveInput & MeteorMethodBase) {
@@ -60,7 +60,7 @@ function checkPosition(team: Team, newPos: Pos): FacingDir {
 }
 
 function checkTeamState(team: Team) {
-    if(team.state === 'FROZEN' && team.stateEndsAt && team.stateEndsAt.getTime() > new Date().getTime()) {
+    if(isTeamFrozen(team)) {
         throw new Meteor.Error('moves.insert.teamFrozen', 'Tým je momentálně zamrzlý.')
     }
     if(team.money <= 0) {

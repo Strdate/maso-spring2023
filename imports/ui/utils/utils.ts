@@ -1,4 +1,4 @@
-import { createMemo, untrack } from "solid-js"
+import { untrack } from "solid-js"
 import { Team } from "/imports/api/collections/teams"
 
 const MOVES_PER_VISIT = 6

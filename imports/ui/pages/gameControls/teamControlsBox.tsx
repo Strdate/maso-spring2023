@@ -2,7 +2,7 @@ import { Index, Show, createMemo } from "solid-js";
 import GameDisplayBox from "../projector/gameDisplayBox";
 import { Game } from "/imports/api/collections/games";
 import { Team } from "/imports/api/collections/teams";
-import { isTeamHunting } from "/imports/core/utils/misc";
+import { isTeamFrozen, isTeamHunting } from "/imports/core/utils/misc";
 import { useCurTime } from "../../utils/curTimeProvider";
 import { formattedMS } from "../../utils/utils";
 
@@ -30,15 +30,13 @@ export default function TeamControlsBox(props: Props) {
 
 
     const isFrozen = createMemo(() =>
-        props.team
-        && props.team.stateEndsAt
-        && props.team.state === 'FROZEN'
-        && (props.team.stateEndsAt.getTime() > curTime()))
+        isTeamFrozen(props.team, curTime())
+    )
     const isInvincible = createMemo(() =>
         props.team
         && props.team.stateEndsAt
         && props.team.state === 'FROZEN'
-        && (props.team.stateEndsAt.getTime() < curTime())
+        && (props.team.stateEndsAt.getTime() <= curTime())
     )
     const isHunting = createMemo(() => 
         isTeamHunting(props.team, curTime())

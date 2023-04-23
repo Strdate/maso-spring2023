@@ -1,7 +1,7 @@
 import { Team, TeamsCollection } from "../api/collections/teams";
 import { ActivateBoostInput } from "../api/methods/moves/activateBoost";
 import { MeteorMethodBase } from "./interfaces";
-import { isTeamHunting } from "./utils/misc";
+import { isTeamFrozen, isTeamHunting } from "./utils/misc";
 import { checkGame, getTeam } from "./utils/moves";
 
 export default function activateBoost({ gameId, teamId, isSimulation, userId }:
@@ -12,10 +12,10 @@ export default function activateBoost({ gameId, teamId, isSimulation, userId }:
     checkTeamState(team)
     TeamsCollection.update(team._id,{
         $set: {
-            'boostData.movesLeft': game.bosstMaxMoves,
+            'boostData.movesLeft': game.boostMaxMoves,
             'boostData.eatenEnities': [],
             state: 'HUNTING',
-            stateEndsAt: new Date(new Date().getTime() + game.boostMaxTimeSecs * 1000)
+            stateEndsAt: new Date(Math.round(new Date().getTime() / 1000 + game.boostMaxTimeSecs) * 1000)
         },
         $inc: {
             boostCount: -1
@@ -25,7 +25,7 @@ export default function activateBoost({ gameId, teamId, isSimulation, userId }:
 }
 
 function checkTeamState(team: Team) {
-    if(team.state === 'FROZEN' && team.stateEndsAt && team.stateEndsAt.getTime() > new Date().getTime()) {
+    if(isTeamFrozen(team)) {
         throw new Meteor.Error('moves.insert.teamFrozen', 'Tým je momentálně zamrzlý.')
     }
     if(isTeamHunting(team)) {

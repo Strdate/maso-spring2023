@@ -43,7 +43,7 @@ function collide(game: Game, team: Team, entity: EntityInstance, teamQB: TeamQue
         }
         teamQB.qb.set({
             state: 'FROZEN',
-            stateEndsAt: new Date( new Date().getTime() + game.monsterPanaltySecs * 1000),
+            stateEndsAt: new Date( Math.round(new Date().getTime() / 1000 + game.monsterPanaltySecs) * 1000),
         })
         teamQB.pickedUpEntities.push(entity.id)
         teamQB.qb.inc({ ghostCollisions: 1 })

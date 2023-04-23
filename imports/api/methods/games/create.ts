@@ -33,7 +33,7 @@ export default new ValidatedMethod({
         totalTasksCount: 50,
         totalExchangeableTasksCount: 4,
         boostMaxTimeSecs: 360,
-        bosstMaxMoves: 24,
+        boostMaxMoves: 24,
         entities: initEntities()
       })
       ResultsCollection.insert({

@@ -20,7 +20,7 @@ interface Game extends GameInput {
   totalTasksCount: number
   totalExchangeableTasksCount: number
   boostMaxTimeSecs: number
-  bosstMaxMoves: number
+  boostMaxMoves: number
   statusId: GameStatus
   userId: string
   authorizedUsers: string[]

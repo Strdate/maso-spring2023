@@ -8,7 +8,7 @@ import { MeteorMethodBase } from "./interfaces";
 import { checkCollision } from "./interaction";
 import TeamQueryBuilder from "./utils/teamQueryBuilder";
 import {checkGame, getLastInteractions, getTeam} from "./utils/moves";
-import { isTeamHunting } from "./utils/misc";
+import { isTeamFrozen, isTeamHunting } from "./utils/misc";
 
 
 const MAX_TIME_TO_REVERT = 60_000;  // ms
@@ -65,7 +65,7 @@ export default function revertMove({ gameId, teamId, userId, isSimulation }:
 }
 
 function checkTeamState(team: Team) {
-    if(team.state === 'FROZEN' && team.stateEndsAt && team.stateEndsAt.getTime() > new Date().getTime()) {
+    if(isTeamFrozen(team)) {
         throw new Meteor.Error('moves.revert.teamFrozen', 'Tým je momentálně zamrzlý.');
     }
 }

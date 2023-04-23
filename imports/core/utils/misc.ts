@@ -15,4 +15,12 @@ function isTeamHunting(team?: Team, now?: number) {
         && team.boostData.movesLeft > 0
 }
 
-export { formatPath, isTeamHunting }
+function isTeamFrozen(team?: Team, now?: number) {
+    now ??= new Date().getTime()
+    return team
+        && team.state === 'FROZEN'
+        && team.stateEndsAt
+        && (team.stateEndsAt.getTime() > now)
+}
+
+export { formatPath, isTeamHunting, isTeamFrozen }

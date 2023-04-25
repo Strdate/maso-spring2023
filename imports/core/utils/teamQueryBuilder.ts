@@ -27,7 +27,7 @@ class TeamQueryBuilder {
         return this.qb.build()
     }
 
-    updateCache = (team: Team) => {
+    /*updateCache = (team: Team) => {
         if(this.score > 0) {
             team.score.items = team.score.items + this.score - this.scoreGhosts
             team.score.ghosts = team.score.ghosts + this.scoreGhosts
@@ -41,7 +41,7 @@ class TeamQueryBuilder {
         }
 
         return this.qb.updateCache(team)
-    }
+    }*/
 }
 
 export default TeamQueryBuilder

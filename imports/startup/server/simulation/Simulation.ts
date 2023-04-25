@@ -135,7 +135,7 @@ export class Simulation {
         GameCollection.update(this.game._id, {
             $set: { entities: this.game.entities },
         })
-        gameCache.del(this.game._id)
+        gameCache.del(this.game.code)
     }
 
     getMapState = () => {

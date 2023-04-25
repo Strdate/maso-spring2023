@@ -80,7 +80,7 @@ export default function GameMap(props: Props) {
             return
         }
         activateBoost.call({
-            gameId: props.game._id,
+            gameCode: props.game.code,
             teamId: props.team!._id
         }, (error: any) => {
             console.log(error)
@@ -99,7 +99,7 @@ export default function GameMap(props: Props) {
         if (['Backspace','NumpadSubtract'].includes(event.code)) {
             if (props.movesLeft! < MOVES_PER_VISIT) {
                 const input = {
-                    gameId: props.game._id,
+                    gameCode: props.game.code,
                     teamId: props.team!._id,
                 }
                 revertMove.call(input, revertCallback);
@@ -114,7 +114,7 @@ export default function GameMap(props: Props) {
         const facingDir = keyToFacingDir(event.code)
         if(facingDir) {
             const input: MoveInput = {
-                gameId: props.game._id,
+                gameCode: props.game.code,
                 teamId: props.team!._id,
                 newPos: vectorSum(props.team!.position, facingDirToMove(facingDir))
             }

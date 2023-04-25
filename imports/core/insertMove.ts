@@ -11,18 +11,19 @@ import { isTeamFrozen, isTeamHunting } from "./utils/misc";
 import { Promise } from 'meteor/promise';
 import { Random } from 'meteor/random'
 
-export default function insertMove({ gameId, teamId, newPos, userId, isSimulation }:
+export default function insertMove({ gameCode, teamId, newPos, userId, isSimulation }:
     MoveInput & MeteorMethodBase) {
 
     const { gameCache, teamCache } = isSimulation ?
         { gameCache: undefined, teamCache: undefined} : require('/imports/server/dbCache.ts')
 
     const now = new Date().getTime()
-    const game = checkGame(userId, gameId, isSimulation, gameCache)
-    const team = getTeam(gameId, teamId, teamCache)
+    const game = checkGame(userId, gameCode, isSimulation, gameCache)
+    const team = getTeam(game._id, teamId, teamCache)
     checkTeamState(team)
     const facingDir = checkPosition(team, newPos)
     newPos = normalizePosition(newPos)
+    team.position = newPos
     const teamQB = new TeamQueryBuilder()
     teamQB.qb.set({
         position: newPos,
@@ -32,7 +33,6 @@ export default function insertMove({ gameId, teamId, newPos, userId, isSimulatio
         stateEndsAt: isTeamHunting(team, now) ? team.stateEndsAt : undefined
     })
     teamQB.qb.inc({ money: -1 })
-    team.position = newPos
     const collisions = checkCollision(game, team, teamQB, now)
     if(team.state === 'HUNTING') {
         teamQB.qb.inc({ 'boostData.movesLeft': -1 })
@@ -40,7 +40,8 @@ export default function insertMove({ gameId, teamId, newPos, userId, isSimulatio
     if(!isSimulation) {
         const p1 = InteractionsCollection.rawCollection().insertOne({
             _id: Random.id(),
-            gameId,
+            gameId: game._id,
+            gameCode: gameCode,
             teamId,
             newPos,
             userId: userId!,
@@ -51,12 +52,13 @@ export default function insertMove({ gameId, teamId, newPos, userId, isSimulatio
             createdAt: new Date()
         })
         // @ts-ignore
-        const p2 = TeamsCollection.rawCollection().updateOne({ _id: team._id }, teamQB.combine())
-        Promise.await(Promise.all([p1, p2]))
-        teamQB.updateCache(team)
+        const p2 = TeamsCollection.rawCollection().findOneAndUpdate({ _id: team._id }, teamQB.combine(), { returnDocument: 'after' })
+        const [p1ret, newTeam] = Promise.await(Promise.all([p1, p2]))
+        teamCache.set(team._id, newTeam.value)
     } else {
         TeamsCollection.update({ _id: team._id }, teamQB.combine())
     }
+    console.log('Move finished')
 }
 
 function checkPosition(team: Team, newPos: Pos): FacingDir {

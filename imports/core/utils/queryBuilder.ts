@@ -28,19 +28,29 @@ class QueryBuilder<T> {
     updateCache = (obj: any) => {
         if(!isObjEmpty(this.setObj)) {
             Object.keys(this.setObj).forEach(key => {
+                if(key.includes('.')) {
+                    return
+                }
                 obj[key] = this.setObj[key]
             })
         }
-        if(!isObjEmpty(this.pushObj)) {
+        /*if(!isObjEmpty(this.pushObj)) {
             Object.keys(this.pushObj).forEach(key => {
+                if(key.includes('.')) {
+                    return
+                }
+                console.log(`key ${key}`)
                 obj[key].push(this.pushObj[key])
             })
         }
         if(!isObjEmpty(this.incObj)) {
             Object.keys(this.incObj).forEach(key => {
+                if(key.includes('.')) {
+                    return
+                }
                 obj[key] += this.incObj[key]
             })
-        }
+        }*/
     }
 }
 

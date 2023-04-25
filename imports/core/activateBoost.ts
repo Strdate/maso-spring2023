@@ -4,11 +4,14 @@ import { MeteorMethodBase } from "./interfaces";
 import { isTeamFrozen, isTeamHunting } from "./utils/misc";
 import { checkGame, getTeam } from "./utils/moves";
 
-export default function activateBoost({ gameId, teamId, isSimulation, userId }:
+export default function activateBoost({ gameCode, teamId, isSimulation, userId }:
     ActivateBoostInput & MeteorMethodBase) {
 
-    const game = checkGame(userId, gameId, isSimulation)
-    const team = getTeam(gameId, teamId)
+    const { gameCache, teamCache } = isSimulation ?
+        { gameCache: undefined, teamCache: undefined} : require('/imports/server/dbCache.ts')
+
+    const game = checkGame(userId, gameCode, isSimulation, gameCache)
+    const team = getTeam(game._id, teamId)
     checkTeamState(team)
     TeamsCollection.update(team._id,{
         $set: {
@@ -21,6 +24,9 @@ export default function activateBoost({ gameId, teamId, isSimulation, userId }:
             boostCount: -1
         }
     })
+    if(teamCache) {
+        teamCache.del(team._id)
+    }
     console.log('Boost aktivován')
 }
 

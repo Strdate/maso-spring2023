@@ -97,7 +97,7 @@ function checkGameStatus(game: Game, now: Date)
       bulkTeams.execute();
       bulkInteractions.execute();
     }
-    gameCache.del(game._id)
+    gameCache.del(game.code)
     return true
   }
 

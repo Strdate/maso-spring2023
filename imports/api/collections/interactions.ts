@@ -4,7 +4,7 @@ import { FacingDir, Pos } from '/imports/core/interfaces';
 
 
 export interface InteractionGameTeamInput {
-    gameId: string
+    gameCode: string
     teamId: string
 }
 
@@ -14,6 +14,7 @@ export interface MoveInput extends InteractionGameTeamInput {
 
 export interface Interaction extends MoveInput {
     _id: string
+    gameId: string
     userId: string
     teamNumber: string
     facingDir?: FacingDir
@@ -26,18 +27,18 @@ export interface Interaction extends MoveInput {
 export const InteractionsCollection = new Mongo.Collection<Interaction>('interactions');
 
 export const MoveInputSchema = new SimpleSchema({
-    gameId: { type: String },
+    gameCode: { type: String },
     teamId: { type: String },
     newPos: { type: Array, defaultValue: new Array() },
     'newPos.$': { type: SimpleSchema.Integer }
   })
 
 export const ActivateBoostInputSchema = new SimpleSchema({
-    gameId: { type: String },
+    gameCode: { type: String },
     teamId: { type: String }
 })
 
 export const RevertMoveInputSchema = new SimpleSchema({
-    gameId: { type: String },
+    gameCode: { type: String },
     teamId: { type: String }
 })

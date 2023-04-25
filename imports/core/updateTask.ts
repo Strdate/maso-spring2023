@@ -1,11 +1,12 @@
 import SimpleSchema from 'simpl-schema'
 import { GameStatus, TaskStatus } from '/imports/core/enums';
 import { badRequest, notFound } from './utils/restErrors';
-import { Game, GameCollection } from '../api/collections/games';
+import { Game } from '../api/collections/games';
 import { isAuthorized } from './authorization';
 import { Team, TeamsCollection } from '../api/collections/teams';
 import { Task, TasksCollection } from '../api/collections/tasks';
 import { TaskInputWithUser, TaskActionsArr, TaskReturnData } from './interfaces';
+import { gameCache } from '../server/dbCache';
 
 const InputSchema = new SimpleSchema({
   gameCode: { type: String, min: 2, max: 32 },
@@ -23,7 +24,7 @@ export default function updateTask(data: TaskInputWithUser) {
   if (!validator.isValid()) {
     return badRequest(validator.validationErrors())
   }
-  const game = GameCollection.findOne({ code: data.gameCode });
+  const game = gameCache.find(data.gameCode)
   if (!game) {
     return notFound('Hra nebyla nalezena.')
   }

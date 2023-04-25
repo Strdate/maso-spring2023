@@ -3,7 +3,7 @@ import { ActivateBoostInputSchema } from '../../collections/interactions'
 import activateBoost from '/imports/core/activateBoost'
 
 interface ActivateBoostInput {
-    gameId: string
+    gameCode: string
     teamId: string
 }
 

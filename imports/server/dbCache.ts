@@ -23,6 +23,10 @@ abstract class DbCache<T> {
         this.#cache.del(id)
     }
 
+    set(id: string, obj: T) {
+        this.#cache.set(id, obj)
+    }
+
     abstract find(id: string): T | undefined
 }
 
@@ -33,7 +37,7 @@ class GameCache extends DbCache<Game> {
 
     find(id: string): Game | undefined {
         console.log('Retrieving Game from DB...')
-        return GameCollection.findOne(id)
+        return GameCollection.findOne({ code: id })
     }
 }
 

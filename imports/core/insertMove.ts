@@ -12,13 +12,17 @@ import { isTeamFrozen, isTeamHunting } from "./utils/misc";
 export default function insertMove({ gameId, teamId, newPos, userId, isSimulation }:
     MoveInput & MeteorMethodBase) {
 
+    const { gameCache, teamCache } = isSimulation ?
+        { gameCache: undefined, teamCache: undefined} : require('/imports/server/dbCache.ts')
+
     const now = new Date().getTime()
-    const game = checkGame(userId, gameId, isSimulation)
-    const team = getTeam(gameId, teamId)
+    const game = checkGame(userId, gameId, isSimulation, gameCache)
+    const team = getTeam(gameId, teamId, teamCache)
     checkTeamState(team)
     const facingDir = checkPosition(team, newPos)
     newPos = normalizePosition(newPos)
     const teamQB = new TeamQueryBuilder()
+    console.log(team.money)
     teamQB.qb.set({
         position: newPos,
         facingDir,
@@ -46,6 +50,7 @@ export default function insertMove({ gameId, teamId, newPos, userId, isSimulatio
         })
     }
     TeamsCollection.update(team._id, teamQB.combine())
+    teamQB.updateCache(team)
 }
 
 function checkPosition(team: Team, newPos: Pos): FacingDir {

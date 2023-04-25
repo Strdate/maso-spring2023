@@ -24,6 +24,24 @@ class QueryBuilder<T> {
 
         return combined
     }
+
+    updateCache = (obj: any) => {
+        if(!isObjEmpty(this.setObj)) {
+            Object.keys(this.setObj).forEach(key => {
+                obj[key] = this.setObj[key]
+            })
+        }
+        if(!isObjEmpty(this.pushObj)) {
+            Object.keys(this.pushObj).forEach(key => {
+                obj[key].push(this.pushObj[key])
+            })
+        }
+        if(!isObjEmpty(this.incObj)) {
+            Object.keys(this.incObj).forEach(key => {
+                obj[key] += this.incObj[key]
+            })
+        }
+    }
 }
 
 function isObjEmpty(obj: any) {

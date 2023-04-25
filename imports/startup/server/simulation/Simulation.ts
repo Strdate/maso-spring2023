@@ -8,6 +8,8 @@ import TeamQueryBuilder from "/imports/core/utils/teamQueryBuilder";
 import { ItemsData, entities, entityTypes, items, pacmanMap, spawnSpots } from "/imports/data/map";
 import { checkCollision } from "/imports/core/interaction";
 import { Random } from 'meteor/random'
+import { gameCache, teamCache } from "/imports/server/dbCache";
+import { Promise } from 'meteor/promise';
 
 const MONSTER_TICK_DIST = 20
 const ITEM_LIFESPAN = 8
@@ -35,6 +37,7 @@ export class Simulation {
     checkCollisions = (now: number) => {
         const teamBulk = TeamsCollection.rawCollection().initializeUnorderedBulkOp()
         const interactionsBulk = InteractionsCollection.rawCollection().initializeUnorderedBulkOp()
+        const invalidate: string[] = []
         this.teams.forEach((team) => {
             if(team.state !== 'PLAYING' && team.state !== 'HUNTING') {
                 return
@@ -54,12 +57,18 @@ export class Simulation {
                     collisions: collisions,
                     createdAt: new Date()
                 })
+                invalidate.push(team._id)
                 //console.log(`Collision with team ${team.number}, query: `,teamQB.combine())
             }
         })
         if(teamBulk.length > 0) {
-            teamBulk.execute()
-            interactionsBulk.execute()
+            Promise.await(Promise.all([
+                teamBulk.execute(),
+                interactionsBulk.execute()
+            ]))
+            invalidate.forEach((id) => {
+                teamCache.del(id)
+            })
         }
     }
 
@@ -126,6 +135,7 @@ export class Simulation {
         GameCollection.update(this.game._id, {
             $set: { entities: this.game.entities },
         })
+        gameCache.del(this.game._id)
     }
 
     getMapState = () => {

@@ -7,6 +7,7 @@ import { Simulation } from "../simulation/Simulation"
 import cacheResults from "./cacheResults"
 import {InteractionsCollection} from "/imports/api/collections/interactions";
 import {playerStartPos} from "/imports/data/map";
+import { gameCache } from "/imports/server/dbCache"
 
 function getRunningGames(now: Date) {
   return GameCollection.find({
@@ -96,6 +97,7 @@ function checkGameStatus(game: Game, now: Date)
       bulkTeams.execute();
       bulkInteractions.execute();
     }
+    gameCache.del(game._id)
     return true
   }
 

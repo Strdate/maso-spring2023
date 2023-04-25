@@ -8,6 +8,8 @@ import { checkCollision } from "./interaction";
 import TeamQueryBuilder from "./utils/teamQueryBuilder";
 import { checkGame, getTeam } from "./utils/moves";
 import { isTeamFrozen, isTeamHunting } from "./utils/misc";
+import { Promise } from 'meteor/promise';
+import { Random } from 'meteor/random'
 
 export default function insertMove({ gameId, teamId, newPos, userId, isSimulation }:
     MoveInput & MeteorMethodBase) {
@@ -22,7 +24,6 @@ export default function insertMove({ gameId, teamId, newPos, userId, isSimulatio
     const facingDir = checkPosition(team, newPos)
     newPos = normalizePosition(newPos)
     const teamQB = new TeamQueryBuilder()
-    console.log(team.money)
     teamQB.qb.set({
         position: newPos,
         facingDir,
@@ -37,7 +38,8 @@ export default function insertMove({ gameId, teamId, newPos, userId, isSimulatio
         teamQB.qb.inc({ 'boostData.movesLeft': -1 })
     }
     if(!isSimulation) {
-        InteractionsCollection.insert({
+        const p1 = InteractionsCollection.rawCollection().insertOne({
+            _id: Random.id(),
             gameId,
             teamId,
             newPos,
@@ -48,9 +50,13 @@ export default function insertMove({ gameId, teamId, newPos, userId, isSimulatio
             collisions: collisions,
             createdAt: new Date()
         })
+        // @ts-ignore
+        const p2 = TeamsCollection.rawCollection().updateOne({ _id: team._id }, teamQB.combine())
+        Promise.await(Promise.all([p1, p2]))
+        teamQB.updateCache(team)
+    } else {
+        TeamsCollection.update({ _id: team._id }, teamQB.combine())
     }
-    TeamsCollection.update(team._id, teamQB.combine())
-    teamQB.updateCache(team)
 }
 
 function checkPosition(team: Team, newPos: Pos): FacingDir {

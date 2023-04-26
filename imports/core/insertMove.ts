@@ -58,6 +58,7 @@ export default function insertMove({ gameCode, teamId, newPos, userId, isSimulat
         }, () => { })
     }
     TeamsCollection.update(team._id, teamQB.combine(), {}, () => { })
+    teamQB.applyUpdate(team)
     context.updateCache(team)
     console.log('Move finished')
 }

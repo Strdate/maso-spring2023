@@ -1,7 +1,7 @@
 import { doSimpleMove, graphSearch, monsterGraphSearch } from "./monsterUtils";
 import { Game, GameCollection } from "/imports/api/collections/games";
 import { InteractionsCollection } from "/imports/api/collections/interactions";
-import { TeamsCollection, Team } from "/imports/api/collections/teams";
+import { TeamsCollection, Team, TeamState } from "/imports/api/collections/teams";
 import { FacingDir, Pos } from "/imports/core/interfaces";
 import { facingDirToMove, normalizePosition, vectorSum } from "/imports/core/utils/geometry";
 import TeamQueryBuilder from "/imports/core/utils/teamQueryBuilder";
@@ -43,8 +43,8 @@ export class Simulation {
                 return
             }
             const teamQB = new TeamQueryBuilder()
-            const collisions = checkCollision(this.game, team, teamQB, now)
-            if(collisions.length > 0) {
+            const col = checkCollision(this.game, team, teamQB, now)
+            if(col.collisions.length > 0) {
                 teamBulk.find({ _id: team._id }).update(teamQB.combine())
                 interactionsBulk.insert({
                     _id: Random.id(),
@@ -53,8 +53,9 @@ export class Simulation {
                     newPos: team.position,
                     userId: 'robotworkeruserid',
                     teamNumber: team.number,
+                    teamState: (col.frozen ? 'FROZEN' : team.state) as TeamState,
                     moved: false,
-                    collisions: collisions,
+                    collisions: col.collisions,
                     createdAt: new Date()
                 })
                 invalidate.push(team._id)

@@ -1,4 +1,4 @@
-import { MoveInput, InteractionsCollection } from "../api/collections/interactions";
+import { InteractionsCollection, MoveInput } from "../api/collections/interactions";
 import { Meteor } from 'meteor/meteor'
 import { Team, TeamsCollection } from "../api/collections/teams";
 import { FacingDir, MeteorMethodBase, Pos } from "./interfaces";
@@ -6,58 +6,59 @@ import { moveToFacingDir, normalizePosition, vectorDiff } from "./utils/geometry
 import { checkWallCollision } from "./utils/checkWallCollision";
 import { checkCollision } from "./interaction";
 import TeamQueryBuilder from "./utils/teamQueryBuilder";
-import { checkGame, getTeam } from "./utils/moves";
 import { isTeamFrozen, isTeamHunting } from "./utils/misc";
-import { Promise } from 'meteor/promise';
-import { Random } from 'meteor/random'
+import { MoveContext } from "./utils/moveContext";
 
 export default function insertMove({ gameCode, teamId, newPos, userId, isSimulation }:
     MoveInput & MeteorMethodBase) {
 
-    const { gameCache, teamCache } = isSimulation ?
-        { gameCache: undefined, teamCache: undefined} : require('/imports/server/dbCache.ts')
+    const context = new MoveContext(userId, gameCode, teamId, isSimulation)
+    const team = context.team
+    const game = context.game
 
-    const now = new Date().getTime()
-    const game = checkGame(userId, gameCode, isSimulation, gameCache)
-    const team = getTeam(game._id, teamId, teamCache)
     checkTeamState(team)
     const facingDir = checkPosition(team, newPos)
     newPos = normalizePosition(newPos)
     team.position = newPos
+
     const teamQB = new TeamQueryBuilder()
     teamQB.qb.set({
         position: newPos,
-        facingDir,
-        // do not update if it didn't change
-        state: isTeamHunting(team, now) ? 'HUNTING' : 'PLAYING',
-        stateEndsAt: isTeamHunting(team, now) ? team.stateEndsAt : undefined
+        facingDir
     })
-    teamQB.qb.inc({ money: -1 })
-    const collisions = checkCollision(game, team, teamQB, now)
-    if(team.state === 'HUNTING') {
-        teamQB.qb.inc({ 'boostData.movesLeft': -1 })
+
+    const newState = isTeamHunting(team, context.now) ? 'HUNTING' : 'PLAYING'
+    if(newState !== team.state) {
+        teamQB.qb.set({
+            state: newState,
+            stateEndsAt: newState === 'HUNTING' ? team.stateEndsAt : undefined
+        })
     }
+    teamQB.qb.inc({ money: -1 })
+
+    const col = checkCollision(game, team, teamQB, context.now)
+    if(newState === 'HUNTING') {
+        teamQB.qb.inc({ 'boostData.movesLeft': -1 })
+        team.boostData.movesLeft += -1
+    }
+
     if(!isSimulation) {
-        const p1 = InteractionsCollection.rawCollection().insertOne({
-            _id: Random.id(),
+        InteractionsCollection.insert({
             gameId: game._id,
             gameCode: gameCode,
             teamId,
             newPos,
             userId: userId!,
             teamNumber: team.number,
+            teamState: col.frozen ? 'FROZEN' : newState,
             facingDir,
             moved: true,
-            collisions: collisions,
+            collisions: col.collisions,
             createdAt: new Date()
-        })
-        // @ts-ignore
-        const p2 = TeamsCollection.rawCollection().findOneAndUpdate({ _id: team._id }, teamQB.combine(), { returnDocument: 'after' })
-        const [p1ret, newTeam] = Promise.await(Promise.all([p1, p2]))
-        teamCache.set(team._id, newTeam.value)
-    } else {
-        TeamsCollection.update({ _id: team._id }, teamQB.combine())
+        }, () => { })
     }
+    TeamsCollection.update(team._id, teamQB.combine(), {}, () => { })
+    context.updateCache(team)
     console.log('Move finished')
 }
 

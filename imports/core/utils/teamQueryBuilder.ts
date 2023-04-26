@@ -27,7 +27,7 @@ class TeamQueryBuilder {
         return this.qb.build()
     }
 
-    /*updateCache = (team: Team) => {
+    applyUpdate = (team: Team) => {
         if(this.score > 0) {
             team.score.items = team.score.items + this.score - this.scoreGhosts
             team.score.ghosts = team.score.ghosts + this.scoreGhosts
@@ -40,8 +40,8 @@ class TeamQueryBuilder {
             team.boostData.eatenEnities.push(...this.eatenEnities)
         }
 
-        return this.qb.updateCache(team)
-    }*/
+        return this.qb.applyUpdate(team)
+    }
 }
 
 export default TeamQueryBuilder

@@ -1,6 +1,7 @@
 import { Mongo } from 'meteor/mongo';
 import SimpleSchema from 'simpl-schema';
 import { FacingDir, Pos } from '/imports/core/interfaces';
+import { TeamState } from './teams';
 
 
 export interface InteractionGameTeamInput {
@@ -17,11 +18,13 @@ export interface Interaction extends MoveInput {
     gameId: string
     userId: string
     teamNumber: string
+    teamState: TeamState
     facingDir?: FacingDir
     moved: boolean
     collisions: number[]
     createdAt: Date
     reverted?: boolean
+    revertedAt?: Date
 }
 
 export const InteractionsCollection = new Mongo.Collection<Interaction>('interactions');

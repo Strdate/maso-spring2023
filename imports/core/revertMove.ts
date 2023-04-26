@@ -7,60 +7,73 @@ import { Team, TeamsCollection } from "../api/collections/teams";
 import { MeteorMethodBase } from "./interfaces";
 import { checkCollision } from "./interaction";
 import TeamQueryBuilder from "./utils/teamQueryBuilder";
-import {checkGame, getLastInteractions, getTeam} from "./utils/moves";
 import { isTeamFrozen, isTeamHunting } from "./utils/misc";
+import { MoveContext } from "./utils/moveContext";
 
 
-const MAX_TIME_TO_REVERT = 60_000;  // ms
-export default function revertMove({ gameId, teamId, userId, isSimulation }:
+const MAX_TIME_TO_REVERT = 15_000;  // ms
+export default function revertMove({ gameCode, teamId, userId, isSimulation }:
                                      InteractionGameTeamInput & MeteorMethodBase) {
     // Has to be in isSimulation to only happen on the server.
     if(!isSimulation) {
         // Check
-        const now = new Date().getTime();
-        const game = checkGame(userId, gameId, isSimulation);
-        const team = getTeam(gameId, teamId);
-        checkTeamState(team);
+        const context = new MoveContext(userId, gameCode, teamId, isSimulation)
+        const team = context.team
+        const game = context.game
 
-        const [lastInteraction, lastMove, secondLastMove] = getLastInteractions(gameId, teamId);
+        checkTeamState(team)
+        const [lastInteraction, lastMove, secondLastMove] = getLastInteractions(game._id, teamId);
         if (lastInteraction === undefined || lastMove === undefined || secondLastMove === undefined) {
             // The first "move" is inserted when
             throw new Meteor.Error("moves.revert.noMoveToRevert", "Tým ještě neprovedl žádný tah.");
         }
-        checkIfLastInteractionIsRevertible(lastInteraction, now);
+        checkIfLastInteractionIsRevertible(lastInteraction, context.now);
 
         const teamQB = new TeamQueryBuilder();
         teamQB.qb.set({
             position: secondLastMove.newPos,
             facingDir: secondLastMove.facingDir,
-            // do not update if it didn't change
-            state: isTeamHunting(team, now) ? 'HUNTING' : 'PLAYING',
-            stateEndsAt: isTeamHunting(team, now) ? team.stateEndsAt : undefined,
         })
-        teamQB.qb.inc({ money: 1 });
+        const newState = isTeamHunting(team, context.now) ? 'HUNTING' : 'PLAYING'
+        if(newState !== team.state) {
+            teamQB.qb.set({
+                state: newState,
+                stateEndsAt: newState === 'HUNTING' ? team.stateEndsAt : undefined
+            })
+        }
+        teamQB.qb.inc({ money: 1 })
+        if(newState === 'HUNTING') {
+            teamQB.qb.inc({ 'boostData.movesLeft': -1 })
+        }
         team.position = secondLastMove.newPos;
-
         if(team.state === 'HUNTING') {
             teamQB.qb.inc({ 'boostData.movesLeft': 1 })
         }
-        const collisions = checkCollision(game, team, teamQB, now);
+        const col = checkCollision(game, team, teamQB, context.now)
+
         InteractionsCollection.update(lastMove._id, {
-            $set: { reverted: true },
+            $set: {
+                reverted: true,
+                revertedAt: new Date()
+            },
         })
-        if (collisions.length > 0) {
+        if (col.collisions.length > 0) {
             InteractionsCollection.insert({
-                gameId,
+                gameId: game._id,
+                gameCode: game.code,
                 teamId,
                 newPos: secondLastMove.newPos,
                 userId: userId!,
                 teamNumber: team.number,
+                teamState: col.frozen ? 'FROZEN' : newState,
                 facingDir: secondLastMove.facingDir,
                 moved: false,
-                collisions: collisions,
+                collisions: col.collisions,
                 createdAt: new Date()
             })
         }
         TeamsCollection.update(team._id, teamQB.combine())
+        context.delCache()
     }
 }
 
@@ -83,3 +96,11 @@ function checkIfLastInteractionIsRevertible(interaction: Interaction, nowTimesta
         throw new Meteor.Error("moves.revert.tooLate", "Tým již přesáhl maximální čas pro vrácení posledního tahu.")
     }
 }
+
+function getLastInteractions(gameId: string, teamId: string) {
+    const docs = InteractionsCollection.find({gameId, teamId, reverted: { $ne: true } },
+      { sort: { createdAt: -1 }, limit: 12 }).fetch()
+    const lastInteraction = docs[0]
+    const moves = docs.filter(d => d.moved).slice(0, 2)
+    return [lastInteraction, moves[0] || undefined, moves[1] || moves[0] || undefined];
+  }

@@ -9,7 +9,7 @@ import TeamQueryBuilder from "./utils/teamQueryBuilder";
 const EATEN_MONSTER_ENTITY = -1
 const EATEN_MONSTER_REWARD = 25
 
-function checkCollision(game: Game, team: Team, teamQB: TeamQueryBuilder, now: number): number[] {
+function checkCollision(game: Game, team: Team, teamQB: TeamQueryBuilder, now: number): {collisions: number[], frozen: boolean} {
     const collisions: number[] = []
     for(let i = 0; i < game.entities.length; i++) {
         const ent = game.entities[i]
@@ -18,17 +18,17 @@ function checkCollision(game: Game, team: Team, teamQB: TeamQueryBuilder, now: n
             const collision = collide(game, team, ent, teamQB, now)
             if(collision.collided) {
                 collisions.push(ent.id)
-                if(collision.cancelCollisions) {
-                    break
+                if(collision.frozen) {
+                    return {collisions, frozen: true}
                 }
             }
         }
     }
-    return collisions
+    return {collisions, frozen: false}
 }
 
 function collide(game: Game, team: Team, entity: EntityInstance, teamQB: TeamQueryBuilder, now: number): 
-    { collided: boolean, cancelCollisions: boolean } {
+    { collided: boolean, frozen: boolean } {
 
     if(entity.category === 'MONSTER') {
         if(isTeamHunting(team, now)) {
@@ -37,9 +37,9 @@ function collide(game: Game, team: Team, entity: EntityInstance, teamQB: TeamQue
                 teamQB.eatenEnities.push(entity.id)
                 teamQB.score += EATEN_MONSTER_REWARD
                 teamQB.scoreGhosts += EATEN_MONSTER_REWARD
-                return { collided: true, cancelCollisions: false }
+                return { collided: true, frozen: false }
             }
-            return { collided: false, cancelCollisions: false }
+            return { collided: false, frozen: false }
         }
         teamQB.qb.set({
             state: 'FROZEN',
@@ -47,7 +47,7 @@ function collide(game: Game, team: Team, entity: EntityInstance, teamQB: TeamQue
         })
         teamQB.pickedUpEntities.push(entity.id)
         teamQB.qb.inc({ ghostCollisions: 1 })
-        return { collided: true, cancelCollisions: true }
+        return { collided: true, frozen: true }
     }
     if(entity.category === 'ITEM' && !team.pickedUpEntities.includes(entity.id)) {
         const item = items.find(item => item.id === entity.id)!
@@ -58,9 +58,9 @@ function collide(game: Game, team: Team, entity: EntityInstance, teamQB: TeamQue
             // plz do not put more than one boost in single spot
             teamQB.qb.inc({ boostCount: 1 })
         }
-        return { collided: true, cancelCollisions: false }
+        return { collided: true, frozen: false }
     }
-    return { collided: false, cancelCollisions: false }
+    return { collided: false, frozen: false }
 }
 
 export { checkCollision }

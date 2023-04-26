@@ -25,7 +25,7 @@ class QueryBuilder<T> {
         return combined
     }
 
-    updateCache = (obj: any) => {
+    applyUpdate = (obj: any) => {
         if(!isObjEmpty(this.setObj)) {
             Object.keys(this.setObj).forEach(key => {
                 if(key.includes('.')) {
@@ -42,15 +42,16 @@ class QueryBuilder<T> {
                 console.log(`key ${key}`)
                 obj[key].push(this.pushObj[key])
             })
-        }
+        }*/
         if(!isObjEmpty(this.incObj)) {
             Object.keys(this.incObj).forEach(key => {
                 if(key.includes('.')) {
                     return
                 }
+                console.log(`Increasing obj.${key} by ${this.incObj[key]}`)
                 obj[key] += this.incObj[key]
             })
-        }*/
+        }
     }
 }
 

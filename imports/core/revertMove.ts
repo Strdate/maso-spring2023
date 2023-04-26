@@ -46,9 +46,7 @@ export default function revertMove({ gameCode, teamId, userId, isSimulation }:
             teamQB.qb.inc({ 'boostData.movesLeft': -1 })
         }
         team.position = secondLastMove.newPos;
-        if(team.state === 'HUNTING') {
-            teamQB.qb.inc({ 'boostData.movesLeft': 1 })
-        }
+
         const col = checkCollision(game, team, teamQB, context.now)
 
         InteractionsCollection.update(lastMove._id, {
@@ -56,7 +54,7 @@ export default function revertMove({ gameCode, teamId, userId, isSimulation }:
                 reverted: true,
                 revertedAt: new Date()
             },
-        })
+        }, {}, () => { })
         if (col.collisions.length > 0) {
             InteractionsCollection.insert({
                 gameId: game._id,
@@ -70,7 +68,7 @@ export default function revertMove({ gameCode, teamId, userId, isSimulation }:
                 moved: false,
                 collisions: col.collisions,
                 createdAt: new Date()
-            })
+            }, () => { })
         }
         TeamsCollection.update(team._id, teamQB.combine())
         context.delCache()

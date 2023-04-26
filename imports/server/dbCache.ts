@@ -1,7 +1,6 @@
 import NodeCache from 'node-cache'
 import { Game, GameCollection } from '/imports/api/collections/games'
 import { Team, TeamsCollection } from '/imports/api/collections/teams'
-import { Promise } from 'meteor/promise';
 
 abstract class DbCache<T> {
     #cache;

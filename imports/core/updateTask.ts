@@ -27,7 +27,7 @@ export default function updateTask(data: TaskInputWithUser) {
   }
 
   const context = new TaskContext(data.userId, data.gameCode, data.teamNumber.toString())
-
+  context.measurePerf('updateTask_afterContext')
   const task = context.tasks.find(task => task.number === data.taskNumber)
   if (!task) {
     return badRequest('Tým k příkladu zatím nemá přístup.')

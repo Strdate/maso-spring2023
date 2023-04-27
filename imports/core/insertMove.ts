@@ -57,9 +57,9 @@ export default function insertMove({ gameCode, teamNumber, newPos, userId, isSim
             createdAt: new Date()
         }, errorCallback)
     }
-    TeamsCollection.update(team._id, teamQB.combine(), {}, errorCallback)
     teamQB.applyUpdate(team)
     context.updateCache(team)
+    TeamsCollection.update(team._id, teamQB.combine(), {}/*, errorCallback*/)
     context.measurePerf('insertMove')
 }
 

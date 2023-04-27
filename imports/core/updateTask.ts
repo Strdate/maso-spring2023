@@ -7,6 +7,7 @@ import { Task, TasksCollection } from '../api/collections/tasks';
 import { TaskInputWithUser, TaskActionsArr, TaskReturnData } from './interfaces';
 import { TaskContext } from './utils/moveContext';
 import { Promise } from 'meteor/promise'
+import { errorCallback } from './utils/misc';
 
 const InputSchema = new SimpleSchema({
   gameCode: { type: String, min: 2, max: 32 },
@@ -127,7 +128,7 @@ function setTaskStatus(context: TaskContext, task: Task, statusId: TaskStatus) {
   return TasksCollection.update(task._id, {
     $set: { userId: context.userId, statusId, updatedAt: new Date() },
     $push: { changelog: { userId: context.userId, statusId, createdAt: new Date().toISOString() } }
-  }, {}, () => { })
+  }, {}, errorCallback)
 }
 
 function mayExchangeTask(context: TaskContext) {
@@ -159,7 +160,7 @@ function issueNewTask(context: TaskContext) {
     }],
     createdAt: new Date(),
     updatedAt: new Date(),
-  }, () => { })
+  }, errorCallback)
   return nextTaskNumber
 }
 
@@ -168,7 +169,7 @@ function revokeLastIssuedTask(context: TaskContext) {
   if (lastIssuedTasks.length > 0) {
     TasksCollection.update(lastIssuedTasks[0]._id, {
       $set: { userId: context.userId, isRevoked: true, updatedAt: new Date() }
-    }, {}, () => { })
+    }, {}, errorCallback)
   }
   return true
 }

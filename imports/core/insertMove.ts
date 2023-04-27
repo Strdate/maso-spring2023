@@ -6,7 +6,7 @@ import { moveToFacingDir, normalizePosition, vectorDiff } from "./utils/geometry
 import { checkWallCollision } from "./utils/checkWallCollision";
 import { checkCollision } from "./interaction";
 import TeamQueryBuilder from "./utils/teamQueryBuilder";
-import { isTeamFrozen, isTeamHunting } from "./utils/misc";
+import { errorCallback, isTeamFrozen, isTeamHunting } from "./utils/misc";
 import { MoveContext } from "./utils/moveContext";
 
 export default function insertMove({ gameCode, teamNumber, newPos, userId, isSimulation }:
@@ -55,9 +55,9 @@ export default function insertMove({ gameCode, teamNumber, newPos, userId, isSim
             moved: true,
             collisions: col.collisions,
             createdAt: new Date()
-        }, () => { })
+        }, errorCallback)
     }
-    TeamsCollection.update(team._id, teamQB.combine(), {}, () => { })
+    TeamsCollection.update(team._id, teamQB.combine(), {}, errorCallback)
     teamQB.applyUpdate(team)
     context.updateCache(team)
     console.log('Move finished')

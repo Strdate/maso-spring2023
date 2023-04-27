@@ -23,4 +23,11 @@ function isTeamFrozen(team?: Team, now?: number) {
         && (team.stateEndsAt.getTime() > now)
 }
 
-export { formatPath, isTeamHunting, isTeamFrozen }
+function errorCallback(error: any, id: string) {
+    if(error) {
+        console.log(`Error in DB callback function! ID: ${id}`)
+        console.log(error)
+    }
+}
+
+export { formatPath, isTeamHunting, isTeamFrozen, errorCallback }

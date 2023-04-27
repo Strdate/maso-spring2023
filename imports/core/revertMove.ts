@@ -7,7 +7,7 @@ import { Team, TeamsCollection } from "../api/collections/teams";
 import { MeteorMethodBase } from "./interfaces";
 import { checkCollision } from "./interaction";
 import TeamQueryBuilder from "./utils/teamQueryBuilder";
-import { isTeamFrozen, isTeamHunting } from "./utils/misc";
+import { errorCallback, isTeamFrozen, isTeamHunting } from "./utils/misc";
 import { MoveContext } from "./utils/moveContext";
 
 
@@ -54,7 +54,7 @@ export default function revertMove({ gameCode, teamNumber, userId, isSimulation 
                 reverted: true,
                 revertedAt: new Date()
             },
-        }, {}, () => { })
+        }, {}, errorCallback)
         if (col.collisions.length > 0) {
             InteractionsCollection.insert({
                 gameId: game._id,
@@ -68,7 +68,7 @@ export default function revertMove({ gameCode, teamNumber, userId, isSimulation 
                 moved: false,
                 collisions: col.collisions,
                 createdAt: new Date()
-            }, () => { })
+            }, errorCallback)
         }
         TeamsCollection.update(team._id, teamQB.combine())
         context.delCache()

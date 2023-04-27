@@ -5,7 +5,6 @@ import { Game } from '../api/collections/games';
 import { Team, TeamsCollection } from '../api/collections/teams';
 import { Task, TasksCollection } from '../api/collections/tasks';
 import { TaskInputWithUser, TaskActionsArr, TaskReturnData } from './interfaces';
-import { gameCache } from '../server/dbCache';
 import { TaskContext } from './utils/moveContext';
 import { Promise } from 'meteor/promise'
 

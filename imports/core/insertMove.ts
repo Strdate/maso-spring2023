@@ -60,7 +60,7 @@ export default function insertMove({ gameCode, teamNumber, newPos, userId, isSim
     TeamsCollection.update(team._id, teamQB.combine(), {}, errorCallback)
     teamQB.applyUpdate(team)
     context.updateCache(team)
-    console.log('Move finished')
+    context.measurePerf('insertMove')
 }
 
 function checkPosition(team: Team, newPos: Pos): FacingDir {

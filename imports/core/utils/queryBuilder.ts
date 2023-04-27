@@ -48,7 +48,7 @@ class QueryBuilder<T> {
                 if(key.includes('.')) {
                     return
                 }
-                console.log(`Increasing obj.${key} by ${this.incObj[key]}`)
+                //console.log(`Increasing obj.${key} by ${this.incObj[key]}`)
                 obj[key] += this.incObj[key]
             })
         }

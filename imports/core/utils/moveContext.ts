@@ -38,6 +38,10 @@ class MoveContext {
             this.teamCache.del(this.team.number, this.game._id)
         }
     }
+
+    measurePerf = (method: string) => {
+        console.log(`Method ${method}, team: ${this.team.number}, performance ${new Date().getTime() - this.now} ms`)
+    }
 }
 
 class TaskContext extends MoveContext {

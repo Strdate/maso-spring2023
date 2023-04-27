@@ -32,16 +32,22 @@ export default function updateTask(data: TaskInputWithUser) {
   if (!task) {
     return badRequest('Tým k příkladu zatím nemá přístup.')
   }
+  let retVal
   switch (data.action) {
     case 'solve':
-      return solve(context, task)
+      retVal = solve(context, task)
+      break
     case 'exchange':
-      return exchange(context, task)
+      retVal = exchange(context, task)
+      break
     case 'cancel':
-      return cancel(context, task)
+      retVal = cancel(context, task)
+      break
     default:
       return badRequest('Neplatná akce.')
   }
+  context.measurePerf('updateTask')
+  return retVal
 }
 
 function solve(context: TaskContext, task: Task) {

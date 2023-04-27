@@ -24,7 +24,7 @@ class DFS_2 {
         this.run({ start, excludeFirst })
         this.paths.sort((a, b) => a.monsterCount - b.monsterCount)
         const winner = this.paths[0]
-        this.paths.forEach(path => console.log(`Monsters: ${path.monsterCount}, path: ${formatPath(path.path)}`))
+        //this.paths.forEach(path => console.log(`Monsters: ${path.monsterCount}, path: ${formatPath(path.path)}`))
         console.log(`Winner: Monsters: ${winner.monsterCount}, path: ${formatPath(winner.path)}`)
         return winner.path[1]
     }

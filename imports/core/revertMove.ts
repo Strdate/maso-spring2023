@@ -72,6 +72,7 @@ export default function revertMove({ gameCode, teamNumber, userId, isSimulation 
         }
         TeamsCollection.update(team._id, teamQB.combine())
         context.delCache()
+        context.measurePerf('revertMove')
     }
 }
 

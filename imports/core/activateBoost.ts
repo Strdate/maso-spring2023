@@ -24,6 +24,7 @@ export default function activateBoost({ gameCode, teamNumber, isSimulation, user
         }
     })
     context.delCache()
+    context.measurePerf('activateBoost')
 }
 
 function checkTeamState(team: Team) {

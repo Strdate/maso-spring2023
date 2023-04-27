@@ -1,12 +1,13 @@
 import SimpleSchema from 'simpl-schema'
-import { GameStatus, TaskStatus } from '/imports/core/enums';
-import { badRequest, notFound } from './utils/restErrors';
+import { TaskStatus } from '/imports/core/enums';
+import { badRequest } from './utils/restErrors';
 import { Game } from '../api/collections/games';
-import { isAuthorized } from './authorization';
 import { Team, TeamsCollection } from '../api/collections/teams';
 import { Task, TasksCollection } from '../api/collections/tasks';
 import { TaskInputWithUser, TaskActionsArr, TaskReturnData } from './interfaces';
 import { gameCache } from '../server/dbCache';
+import { TaskContext } from './utils/moveContext';
+import { Promise } from 'meteor/promise'
 
 const InputSchema = new SimpleSchema({
   gameCode: { type: String, min: 2, max: 32 },
@@ -24,42 +25,33 @@ export default function updateTask(data: TaskInputWithUser) {
   if (!validator.isValid()) {
     return badRequest(validator.validationErrors())
   }
-  const game = gameCache.find(data.gameCode)
-  if (!game) {
-    return notFound('Hra nebyla nalezena.')
-  }
-  if ((game.statusId !== GameStatus.Running) && (game.statusId !== GameStatus.OutOfTime)) {
-    return badRequest('Hra ještě nezačala nebo už skončila.')
-  }
-  if (!isAuthorized(data.userId, game)) {
-    return badRequest('Nemáte dostatečná oprávnění.')
-  }
-  const team = TeamsCollection.findOne({ number: String(data.teamNumber), gameId: game._id })
-  if (!team) {
-    return notFound('Tým s tímto číslem nesoutěží.')
-  }
-  const task = TasksCollection.findOne({ number: data.taskNumber, gameId: game._id, teamId: team._id, isRevoked: false })
+
+  const context = new TaskContext(data.userId, data.gameCode, data.teamNumber.toString())
+
+  const task = context.tasks.find(task => task.number === data.taskNumber)
   if (!task) {
     return badRequest('Tým k příkladu zatím nemá přístup.')
   }
   switch (data.action) {
     case 'solve':
-      return solve(game, team, task, data.userId)
+      return solve(context, task)
     case 'exchange':
-      return exchange(game, team, task, data.userId)
+      return exchange(context, task)
     case 'cancel':
-      return cancel(game, team, task, data.userId)
+      return cancel(context, task)
     default:
       return badRequest('Neplatná akce.')
   }
 }
 
-function solve(game: Game, team: Team, task: Task, userId: string) {
+function solve(context: TaskContext, task: Task) {
+  const game = context.game
+  const team = context.team
   switch (task.statusId) {
     case TaskStatus.Issued:
-      setTaskStatus(task, TaskStatus.Solved, userId)
-      const nextTaskNumber = issueNewTask(game, team, userId)
-      TeamsCollection.update(team._id, {
+      setTaskStatus(context, task, TaskStatus.Solved)
+      const nextTaskNumber = issueNewTask(context)
+      updateAndCache(context, {
         $inc: {
           'score.tasks': game.experiencePerTask,
           'score.total': game.experiencePerTask,
@@ -77,20 +69,21 @@ function solve(game: Game, team: Team, task: Task, userId: string) {
   }
 }
 
-function exchange(game: Game, team: Team, task: Task, userId: string) {
+function exchange(context: TaskContext, task: Task) {
+  const team = context.team
   switch (task.statusId) {
     case TaskStatus.Issued:
-      const mayExchange = mayExchangeTask(game, team)
+      const mayExchange = mayExchangeTask(context)
       if (!mayExchange) {
         return badRequest('Tým už vyměnil maximum příkladů.')
       }
-      setTaskStatus(task, TaskStatus.Exchanged, userId)
-      TeamsCollection.update(team._id, {
+      setTaskStatus(context, task, TaskStatus.Exchanged)
+      const nextTaskNumber = issueNewTask(context)
+      updateAndCache(context, {
         $push: {
           changedTasks: task.number,
         }
       })
-      const nextTaskNumber = issueNewTask(game, team, userId)
       return returnData(team, { number: task.number, statusId: TaskStatus.Exchanged }, nextTaskNumber)
     case TaskStatus.Solved:
       return badRequest('Tým už příklad vyřešil.')
@@ -99,14 +92,16 @@ function exchange(game: Game, team: Team, task: Task, userId: string) {
   }
 }
 
-function cancel(game: Game, team: Team, task: Task, userId: string) {
+function cancel(context: TaskContext, task: Task) {
+  const game = context.game
+  const team = context.team
   switch (task.statusId) {
     case TaskStatus.Issued:
       return returnData(team, task, null)
     case TaskStatus.Solved:
-      revokeLastIssuedTask(game, team, userId)
-      setTaskStatus(task, TaskStatus.Issued, userId)
-      TeamsCollection.update(team._id, {
+      revokeLastIssuedTask(context)
+      setTaskStatus(context, task, TaskStatus.Issued)
+      updateAndCache(context,{
         $inc: {
           'score.tasks': -1 * game.experiencePerTask,
           'score.total': -1 * game.experiencePerTask,
@@ -118,9 +113,9 @@ function cancel(game: Game, team: Team, task: Task, userId: string) {
       })
       return returnData(team, { number: task.number, statusId: TaskStatus.Issued }, null)
     case TaskStatus.Exchanged:
-      revokeLastIssuedTask(game, team, userId)
-      setTaskStatus(task, TaskStatus.Issued, userId)
-      TeamsCollection.update(team._id, {
+      revokeLastIssuedTask(context)
+      setTaskStatus(context, task, TaskStatus.Issued)
+      updateAndCache(context, {
         $pull: {
           changedTasks: task.number,
         }
@@ -129,30 +124,23 @@ function cancel(game: Game, team: Team, task: Task, userId: string) {
   }
 }
 
-function setTaskStatus(task: Task, statusId: TaskStatus, userId: string) {
+function setTaskStatus(context: TaskContext, task: Task, statusId: TaskStatus) {
   return TasksCollection.update(task._id, {
-    $set: { userId, statusId, updatedAt: new Date() },
-    $push: { changelog: { userId, statusId, createdAt: new Date().toISOString() } }
-  })
+    $set: { userId: context.userId, statusId, updatedAt: new Date() },
+    $push: { changelog: { userId: context.userId, statusId, createdAt: new Date().toISOString() } }
+  }, {}, () => { })
 }
 
-function mayExchangeTask(game: Game, team: Team) {
-  const exchangedTasksCount = TasksCollection.find({
-    gameId: game._id,
-    teamId: team._id,
-    statusId: TaskStatus.Exchanged,
-    isRevoked: false,
-  }).count()
-  return exchangedTasksCount < game.totalExchangeableTasksCount
+function mayExchangeTask(context: TaskContext) {
+  const exchangedTasksCount = context.tasks.filter(
+    task => task.statusId === TaskStatus.Exchanged && !task.isRevoked).length
+  return exchangedTasksCount < context.game.totalExchangeableTasksCount
 }
 
-function issueNewTask(game: Game, team: Team, userId: string) {
-  const registeredTasks = TasksCollection.find({
-    gameId: game._id,
-    teamId: team._id,
-    isRevoked: false,
-  }, { sort: { number: 1 } }).fetch()
-  const registeredTasksNumbers = registeredTasks.map(task => task.number)
+function issueNewTask(context: TaskContext) {
+  const game = context.game
+  const team = context.team
+  const registeredTasksNumbers = context.tasks.map(task => task.number)
   const allTasksNumbers = getAllTaskNumbers(game)
   const availableTaskNumbers = allTasksNumbers.filter(t => !registeredTasksNumbers.includes(t))
   if (availableTaskNumbers.length === 0) {
@@ -166,27 +154,22 @@ function issueNewTask(game: Game, team: Team, userId: string) {
     statusId: TaskStatus.Issued,
     isRevoked: false,
     changeLog: [{
-      userId,
+      userId: context.userId!,
       statusId: TaskStatus.Issued,
       createdAt: new Date(),
     }],
     createdAt: new Date(),
     updatedAt: new Date(),
-  })
+  }, () => { })
   return nextTaskNumber
 }
 
-function revokeLastIssuedTask(game: Game, team: Team, userId: string) {
-  const lastIssuedTask = TasksCollection.findOne({
-    gameId: game._id,
-    teamId: team._id,
-    statusId: TaskStatus.Issued,
-    isRevoked: false,
-  }, { sort: { number: -1 }, limit: 1 })
-  if (lastIssuedTask) {
-    TasksCollection.update(lastIssuedTask._id, {
-      $set: { userId, isRevoked: true, updatedAt: new Date() }
-    })
+function revokeLastIssuedTask(context: TaskContext) {
+  const lastIssuedTasks = [...context.tasks].reverse().filter(task => task.statusId === TaskStatus.Issued)
+  if (lastIssuedTasks.length > 0) {
+    TasksCollection.update(lastIssuedTasks[0]._id, {
+      $set: { userId: context.userId, isRevoked: true, updatedAt: new Date() }
+    }, {}, () => { })
   }
   return true
 }
@@ -204,4 +187,11 @@ function returnData(team: Team, task: {number: number, statusId: TaskStatus}, ne
 
 function getAllTaskNumbers(game: Game) {
   return [...Array(game.totalTasksCount + 1).keys()].slice(1)
+}
+
+function updateAndCache(context: TaskContext, query: any) {
+  const team = context.team
+  const p = TeamsCollection.rawCollection().findOneAndUpdate({ _id: team._id }, query, { returnDocument: 'after' })
+  const updated = Promise.await(p).value
+  context.updateCache(updated)
 }

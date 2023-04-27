@@ -12,17 +12,17 @@ import { MoveContext } from "./utils/moveContext";
 
 
 const MAX_TIME_TO_REVERT = 15_000;  // ms
-export default function revertMove({ gameCode, teamId, userId, isSimulation }:
+export default function revertMove({ gameCode, teamNumber, userId, isSimulation }:
                                      InteractionGameTeamInput & MeteorMethodBase) {
     // Has to be in isSimulation to only happen on the server.
     if(!isSimulation) {
         // Check
-        const context = new MoveContext(userId, gameCode, teamId, isSimulation)
+        const context = new MoveContext(userId, gameCode, teamNumber, isSimulation)
         const team = context.team
         const game = context.game
 
         checkTeamState(team)
-        const [lastInteraction, lastMove, secondLastMove] = getLastInteractions(game._id, teamId);
+        const [lastInteraction, lastMove, secondLastMove] = getLastInteractions(game._id, team._id);
         if (lastInteraction === undefined || lastMove === undefined || secondLastMove === undefined) {
             // The first "move" is inserted when
             throw new Meteor.Error("moves.revert.noMoveToRevert", "Tým ještě neprovedl žádný tah.");
@@ -59,7 +59,7 @@ export default function revertMove({ gameCode, teamId, userId, isSimulation }:
             InteractionsCollection.insert({
                 gameId: game._id,
                 gameCode: game.code,
-                teamId,
+                teamId: team._id,
                 newPos: secondLastMove.newPos,
                 userId: userId!,
                 teamNumber: team.number,

@@ -1,10 +1,9 @@
 import { isAuthorized } from "../authorization"
 import { GameStatus } from "../enums"
 import { Game, GameCollection } from "/imports/api/collections/games"
-import { Interaction, InteractionsCollection } from "/imports/api/collections/interactions"
+import { Task, TasksCollection } from "/imports/api/collections/tasks"
 import { Team, TeamsCollection } from "/imports/api/collections/teams"
 import { GameCache, TeamCache } from "/imports/server/dbCache"
-import { Random } from "meteor/random"
 
 class MoveContext {
 
@@ -15,27 +14,41 @@ class MoveContext {
 
     game: Game
     team: Team
+    userId: string | null
 
-    constructor(userId: string | null, gameCode: string, teamId: string, isSimulation: boolean) {
+    constructor(userId: string | null, gameCode: string, teamNumber: string, isSimulation: boolean) {
         this.isSimulation = isSimulation
         this.now = new Date().getTime()
         const cache = requireCache(isSimulation)
         this.gameCache = cache.gameCache
         this.teamCache = cache.teamCache
         this.game = checkGame(userId, gameCode, isSimulation, this.gameCache)
-        this.team = getTeam(this.game._id, teamId, this.teamCache)
+        this.team = getTeam(this.game._id, teamNumber, this.teamCache)
+        this.userId = userId
     }
 
-    updateCache = (updatedTeam: Team) => {
-        if(this.teamCache) {
-            this.teamCache.set(updatedTeam._id, updatedTeam)
+    updateCache = (updatedTeam: Team | undefined) => {
+        if(this.teamCache && updatedTeam) {
+            this.teamCache.set(updatedTeam, this.game._id)
         }
     }
 
     delCache = () => {
         if(this.teamCache) {
-            this.teamCache.del(this.team._id)
+            this.teamCache.del(this.team.number, this.game._id)
         }
+    }
+}
+
+class TaskContext extends MoveContext {
+    tasks: Task[]
+    constructor(userId: string | null, gameCode: string, teamNumber: string) {
+        super(userId, gameCode, teamNumber, false)
+        this.tasks = TasksCollection.find({
+            gameId: this.game._id,
+            teamId: this.team._id,
+            isRevoked: false,
+        }, { sort: { number: 1 } }).fetch()
     }
 }
 
@@ -57,8 +70,8 @@ function checkGame(userId: string | null, gameCode: string, isSimulation: boolea
     return game
 }
 
-function getTeam(gameId: string, teamId: string, teamCache?: TeamCache) {
-    const team = teamCache ? teamCache.get(teamId) : TeamsCollection.findOne(teamId)
+function getTeam(gameId: string, teamNumber: string, teamCache?: TeamCache) {
+    const team = teamCache ? teamCache.get(teamNumber, gameId) : TeamsCollection.findOne({ number: teamNumber, gameId })
     if (!team || team.gameId !== gameId) {
         throw new Meteor.Error('moves.insert.noSuchTeam', 'Tým neexistuje.')
     }
@@ -70,4 +83,4 @@ function requireCache(isSimulation: boolean) {
         : require('/imports/server/dbCache.ts') as { gameCache: GameCache, teamCache: TeamCache }
 }
 
-export { MoveContext }
+export { MoveContext, TaskContext }

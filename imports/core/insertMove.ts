@@ -9,10 +9,10 @@ import TeamQueryBuilder from "./utils/teamQueryBuilder";
 import { isTeamFrozen, isTeamHunting } from "./utils/misc";
 import { MoveContext } from "./utils/moveContext";
 
-export default function insertMove({ gameCode, teamId, newPos, userId, isSimulation }:
+export default function insertMove({ gameCode, teamNumber, newPos, userId, isSimulation }:
     MoveInput & MeteorMethodBase) {
 
-    const context = new MoveContext(userId, gameCode, teamId, isSimulation)
+    const context = new MoveContext(userId, gameCode, teamNumber, isSimulation)
     const team = context.team
     const game = context.game
 
@@ -46,7 +46,7 @@ export default function insertMove({ gameCode, teamId, newPos, userId, isSimulat
         InteractionsCollection.insert({
             gameId: game._id,
             gameCode: gameCode,
-            teamId,
+            teamId: team._id,
             newPos,
             userId: userId!,
             teamNumber: team.number,

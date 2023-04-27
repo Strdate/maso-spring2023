@@ -6,7 +6,7 @@ import { TeamState } from './teams';
 
 export interface InteractionGameTeamInput {
     gameCode: string
-    teamId: string
+    teamNumber: string
 }
 
 export interface MoveInput extends InteractionGameTeamInput {
@@ -17,7 +17,7 @@ export interface Interaction extends MoveInput {
     _id: string
     gameId: string
     userId: string
-    teamNumber: string
+    teamId: string
     teamState: TeamState
     facingDir?: FacingDir
     moved: boolean
@@ -31,17 +31,17 @@ export const InteractionsCollection = new Mongo.Collection<Interaction>('interac
 
 export const MoveInputSchema = new SimpleSchema({
     gameCode: { type: String },
-    teamId: { type: String },
+    teamNumber: { type: String },
     newPos: { type: Array, defaultValue: new Array() },
     'newPos.$': { type: SimpleSchema.Integer }
   })
 
 export const ActivateBoostInputSchema = new SimpleSchema({
     gameCode: { type: String },
-    teamId: { type: String }
+    teamNumber: { type: String }
 })
 
 export const RevertMoveInputSchema = new SimpleSchema({
     gameCode: { type: String },
-    teamId: { type: String }
+    teamNumber: { type: String }
 })

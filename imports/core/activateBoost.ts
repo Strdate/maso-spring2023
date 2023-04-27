@@ -1,13 +1,13 @@
+import { InteractionGameTeamInput } from "../api/collections/interactions";
 import { Team, TeamsCollection } from "../api/collections/teams";
-import { ActivateBoostInput } from "../api/methods/moves/activateBoost";
 import { MeteorMethodBase } from "./interfaces";
 import { isTeamFrozen, isTeamHunting } from "./utils/misc";
 import { MoveContext } from "./utils/moveContext";
 
-export default function activateBoost({ gameCode, teamId, isSimulation, userId }:
-    ActivateBoostInput & MeteorMethodBase) {
+export default function activateBoost({ gameCode, teamNumber, isSimulation, userId }:
+    InteractionGameTeamInput & MeteorMethodBase) {
 
-    const context = new MoveContext(userId, gameCode, teamId, isSimulation)
+    const context = new MoveContext(userId, gameCode, teamNumber, isSimulation)
     const team = context.team
     const game = context.game
 

@@ -58,7 +58,7 @@ export class Simulation {
                     collisions: col.collisions,
                     createdAt: new Date()
                 })
-                invalidate.push(team._id)
+                invalidate.push(team.number)
                 //console.log(`Collision with team ${team.number}, query: `,teamQB.combine())
             }
         })
@@ -67,8 +67,8 @@ export class Simulation {
                 teamBulk.execute(),
                 interactionsBulk.execute()
             ]))
-            invalidate.forEach((id) => {
-                teamCache.del(id)
+            invalidate.forEach((number) => {
+                teamCache.del(number, this.game._id)
             })
         }
     }

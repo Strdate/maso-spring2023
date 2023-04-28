@@ -1,13 +1,13 @@
 import SimpleSchema from 'simpl-schema'
-import { TaskStatus } from '/imports/core/enums';
-import { badRequest } from './utils/restErrors';
-import { Game } from '../api/collections/games';
-import { Team, TeamsCollection } from '../api/collections/teams';
-import { Task, TasksCollection } from '../api/collections/tasks';
-import { TaskInputWithUser, TaskActionsArr, TaskReturnData } from './interfaces';
-import { TaskContext } from './utils/moveContext';
+import { TaskStatus } from '/imports/core/enums'
+import { badRequest } from './utils/restErrors'
+import { Game } from '../api/collections/games'
+import { Team, TeamsCollection } from '../api/collections/teams'
+import { Task, TasksCollection } from '../api/collections/tasks'
+import { TaskInputWithUser, TaskActionsArr, TaskReturnData } from './interfaces'
+import { TaskContext } from './utils/moveContext'
 import { Promise } from 'meteor/promise'
-import { errorCallback } from './utils/misc';
+import { errorCallback } from './utils/misc'
 
 const InputSchema = new SimpleSchema({
   gameCode: { type: String, min: 2, max: 32 },

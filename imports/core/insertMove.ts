@@ -8,6 +8,7 @@ import { checkCollision } from "./interaction";
 import TeamQueryBuilder from "./utils/teamQueryBuilder";
 import { errorCallback, isTeamFrozen, isTeamHunting } from "./utils/misc";
 import { MoveContext } from "./utils/moveContext";
+import modify from 'modifyjs'
 
 export default function insertMove({ gameCode, teamNumber, newPos, userId, isSimulation }:
     MoveInput & MeteorMethodBase) {
@@ -57,10 +58,13 @@ export default function insertMove({ gameCode, teamNumber, newPos, userId, isSim
             createdAt: new Date()
         }, errorCallback)
     }
-    teamQB.applyUpdate(team)
-    context.updateCache(team)
-    TeamsCollection.update(team._id, teamQB.combine(), {}/*, errorCallback*/)
-    context.measurePerf('insertMove')
+    const query = teamQB.combine()
+    TeamsCollection.update(team._id, query, {}, (error: any, id: any) => {
+        context.measurePerf('insertMove')
+        errorCallback(error, id)
+    })
+    const updated = modify(team, query)
+    context.updateCache(updated)
 }
 
 function checkPosition(team: Team, newPos: Pos): FacingDir {

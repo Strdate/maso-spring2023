@@ -22,6 +22,8 @@ type Props = {
     inputPage?: boolean
     movesLeft?: number
     setMovesLeft?: (moves: number) => void
+    isSuspended: boolean
+    setRevetingMove: (reverting: boolean) => void
 }
 
 const HUNTED_MONSTER_OFFSET: Pos = [0, 3]
@@ -69,6 +71,9 @@ export default function GameMap(props: Props) {
         if(document.getElementById('teamInput') === document.activeElement) {
             return false
         }
+        if(props.isSuspended) {
+            return false
+        }
         return true
     }
 
@@ -102,7 +107,8 @@ export default function GameMap(props: Props) {
                     gameCode: props.game.code,
                     teamNumber: props.team!.number
                 }
-                revertMove.call(input, revertCallback);
+                revertMove.call(input, revertCallback)
+                props.setRevetingMove(true)
             }
 
             event.preventDefault();
@@ -132,6 +138,7 @@ export default function GameMap(props: Props) {
     }
 
     const revertCallback = (error: any) => {
+        props.setRevetingMove(false)
         if (error) {
             console.log(error)
             if(error.reason) {

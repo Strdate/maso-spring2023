@@ -40,7 +40,6 @@ export default function insertMove({ gameCode, teamNumber, newPos, userId, isSim
     const col = checkCollision(game, team, teamQB, context.now)
     if(newState === 'HUNTING') {
         teamQB.qb.inc({ 'boostData.movesLeft': -1 })
-        team.boostData.movesLeft += -1
     }
 
     if(!isSimulation) {
@@ -65,6 +64,9 @@ export default function insertMove({ gameCode, teamNumber, newPos, userId, isSim
     }*/)
     const updated = modify(team, query)
     context.updateCache(updated)
+    if(isSimulation) {
+        console.log('Insert move finished on client')
+    }
 }
 
 function checkPosition(team: Team, newPos: Pos): FacingDir {

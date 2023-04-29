@@ -14,7 +14,11 @@ type Props = {
 }
 
 export default function GameDisplayBox(props: Props) {
-  const [offline, setOffline] = createSignal()
+  const [offline, setOffline] = createSignal(false)
+  const [revertingMove, setReveringMove] = createSignal(false)
+  const isSuspended = () => {
+    return offline() || revertingMove()
+  }
   const timer = setInterval(() => {
     setOffline(!Meteor.status().connected)
   }, 5000)
@@ -22,6 +26,9 @@ export default function GameDisplayBox(props: Props) {
   const overlayText = () => {
     if(offline()) {
       return 'Offline!'
+    }
+    if(revertingMove()) {
+      return 'Vracení tahu...'
     }
     if(props.loading) {
       return 'Loading...'
@@ -36,10 +43,12 @@ export default function GameDisplayBox(props: Props) {
             inputPage={props.inputPage}
             movesLeft={props.movesLeft}
             setMovesLeft={props.setMovesLeft}
+            isSuspended={isSuspended()}
+            setRevetingMove={setReveringMove}
           />
           <Show when={overlayText()}>
             <div class='game-overlay'>
-              <div class='white-box' style={{animation: 'fadein 0.4s'}}>{overlayText()}</div>
+              <div class='white-box' style={{animation: 'fadein 0.4s', border: '1px solid black'}}>{overlayText()}</div>
             </div>
           </Show>
         </div>

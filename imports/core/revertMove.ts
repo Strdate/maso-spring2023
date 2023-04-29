@@ -43,7 +43,7 @@ export default function revertMove({ gameCode, teamNumber, userId, isSimulation 
         }
         teamQB.qb.inc({ money: 1 })
         if(newState === 'HUNTING') {
-            teamQB.qb.inc({ 'boostData.movesLeft': -1 })
+            teamQB.qb.inc({ 'boostData.movesLeft': 1 })
         }
         team.position = secondLastMove.newPos;
 

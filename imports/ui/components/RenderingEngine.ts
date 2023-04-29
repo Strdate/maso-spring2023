@@ -52,12 +52,6 @@ class RenderingEngine
 
         this.drawGridLines()
 
-        if(this.isInput) {
-            spawnSpots.forEach(ss => {
-                this.drawText(ss.letter, ss.position[0], ss.position[1])
-            })
-        }
-
         // render house
         const houseSize = [640,621]
         this.ctx.drawImage(
@@ -86,6 +80,9 @@ class RenderingEngine
         })
 
         if(this.isInput) {
+            spawnSpots.forEach(ss => {
+                this.drawText(ss.letter, ss.position[0], ss.position[1])
+            })
             //this.drawText('Předměty:', 1, pacmanMap.length + 1)
             for(let i = 0; i < this.pickedUpItems.length; i++) {
                 const offset = this.pickedUpItems[i]

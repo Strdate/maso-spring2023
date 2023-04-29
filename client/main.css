@@ -77,7 +77,7 @@ div.stretched {
 
 div.teamtitle {
   font-family: publicPixel, Arial, sans-serif;
-  color: white;
+  color: #000000;
   font-size: 3vh;
 }
 
@@ -218,6 +218,11 @@ div.moves-infobox {
   width: 31vh;
   align-items: center;
   margin: 0.5vh 0px;
+}
+
+div.below-moves-infobox {
+  color: '#ffffff';
+  font-size: 2vh;
 }
 
 div.error-box {

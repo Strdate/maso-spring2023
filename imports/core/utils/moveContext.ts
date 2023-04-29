@@ -40,7 +40,7 @@ class MoveContext {
     }
 
     measurePerf = (method: string) => {
-        console.log(`Method ${method}, team: ${this.team.number}, performance ${new Date().getTime() - this.now} ms`)
+        //console.log(`Method ${method}, team: ${this.team.number}, performance ${new Date().getTime() - this.now} ms`)
     }
 }
 

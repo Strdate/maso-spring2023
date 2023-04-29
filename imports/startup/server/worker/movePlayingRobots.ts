@@ -44,8 +44,8 @@ function doRandomMoves(team: Team, game: Game, now: Date) {
         }
         try {
             insertMove({
-                gameId: game._id,
-                teamId: team._id,
+                gameCode: game.code,
+                teamNumber: team.number,
                 newPos: newPos,
                 isSimulation: false,
                 userId: ROBOT_WORKER_ID

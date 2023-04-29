@@ -96,9 +96,9 @@ export default function TeamControlsBox(props: Props) {
                     </Show>
                     
                 </div>
-                <div style={{ color: '#ffffff', "font-size": '2vh' }}>celkem{isFrozen() ? ' tahů' : ''}: {props.team?.money ?? '#'}</div>
+                <div class='below-moves-infobox'>celkem{isFrozen() ? ' tahů' : ''}: {props.team?.money ?? '#'}</div>
                 <Show when={props.team?.boostCount ?? 0 > 0}>
-                    <div style={{ color: '#ffffff', "font-size": '2vh' }}>maso: {props.team!.boostCount}</div>
+                    <div class='below-moves-infobox'>maso: {props.team!.boostCount}</div>
                 </Show>
             </div>
         </div>

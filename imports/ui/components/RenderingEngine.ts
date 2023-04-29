@@ -1,5 +1,5 @@
 import { EntityInstance, Pos } from "/imports/core/interfaces";
-import { pacmanMap, spawnSpots } from "/imports/data/map";
+import { pacmanMap, playerStartPos, spawnSpots } from "/imports/data/map";
 
 const SPRITE_SIZE = 16
 const HEALTH_INDICATOR_OFFSET: Pos = [4,3]
@@ -7,6 +7,7 @@ const HEALTH_INDICATOR_OFFSET: Pos = [4,3]
 class RenderingEngine
 {
     img: HTMLImageElement;
+    houseImg: HTMLImageElement;
     canvas: HTMLCanvasElement;
     ctx: CanvasRenderingContext2D;
     scale: number = 1
@@ -16,7 +17,8 @@ class RenderingEngine
     flash: boolean = false
 
     constructor(canvas: HTMLCanvasElement, isInput?: boolean) {
-        this.img = this.loadImage()
+        this.img = this.loadImage('sprites')
+        this.houseImg = this.loadImage('house')
         this.canvas = canvas
         this.ctx = canvas.getContext("2d")!
         this.isInput = Boolean(isInput)
@@ -48,6 +50,20 @@ class RenderingEngine
             }
         }
 
+        // render house
+        const houseSize = [640,621]
+        this.ctx.drawImage(
+            this.houseImg,
+            0,
+            0,
+            houseSize[0],
+            houseSize[1],
+            (playerStartPos[0] - 0.7) * SPRITE_SIZE * this.scale,
+            (playerStartPos[1] - 0.6) * SPRITE_SIZE * this.scale,
+            SPRITE_SIZE * this.scale * (0.4),
+            SPRITE_SIZE * this.scale * (0.4)
+        )
+
         // render entities
         this.data.sort(sortFunc).forEach(ent => {
             const offsetX = ent.spriteMapOffset[0] + RenderingEngine.facingDirToOffset(ent)
@@ -70,13 +86,13 @@ class RenderingEngine
         }
     }
 
-    loadImage = () => {
+    loadImage = (name: string) => {
         const img = new Image()
-        const src = '/images/sprites.png'
+        const src = `/images/${name}.png`
         img.src = src
         img.onload = () => this.render()
         img.onerror = () => setTimeout(() => {
-            console.log('Image error')
+            console.log(`Failed to load image ${name}.png`)
             img.src = src
         });
         return img
@@ -112,7 +128,8 @@ class RenderingEngine
     resize = () => {
         const rect = this.canvas.getBoundingClientRect()
         const prevScale = this.scale
-        const newScale = (window.innerHeight - rect.top) * 0.95 / SPRITE_SIZE / (pacmanMap.length + (this.isInput ? 1 : 0))
+        const rawScale = (window.innerHeight - rect.top) * 0.95 / SPRITE_SIZE / (pacmanMap.length + (this.isInput ? 1 : 0))
+        const newScale = Math.floor(rawScale * 8) / 8
         if(newScale !== prevScale) {
             //console.log('scale changed')
             this.scale = newScale

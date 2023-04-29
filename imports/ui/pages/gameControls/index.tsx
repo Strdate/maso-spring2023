@@ -121,10 +121,10 @@ export default function GameControls() {
           margin="dense"
           variant="filled"
           inputProps={{
-            style: { color: 'white' },
+            style: { color: 'black' },
             id: 'teamInput'
           }}
-          InputLabelProps={{ style: { color: 'white' } }}
+          InputLabelProps={{ style: { color: 'black' } }}
           style={{ 'margin-top': '2px', 'min-width': '100px', 'width': '140px' }}
           onKeyPress={(ev) => {
             if (ev.key === 'Enter') {

@@ -11,13 +11,18 @@ const SEED_PASSWORD = 'reznik';
 
 Meteor.startup(async () => {
 
-  createIndexes()
-  initWorker()
-
-  if (!Accounts.findUserByUsername(SEED_USERNAME)) {
+  if(Meteor.isDevelopment || process.env.SERVER_ROLE === 'PRIMARY') {
+    console.log("Server is assuming PRIMARY role")
+    createIndexes()
+    initWorker()
+  
+    if (!Accounts.findUserByUsername(SEED_USERNAME)) {
       Accounts.createUser({
         username: SEED_USERNAME,
         password: SEED_PASSWORD,
       });
     }
+  } else {
+    console.log("Server is assuming SECONDARY role")
+  }
 });

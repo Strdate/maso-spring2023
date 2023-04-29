@@ -50,6 +50,14 @@ class RenderingEngine
             }
         }
 
+        this.drawGridLines()
+
+        if(this.isInput) {
+            spawnSpots.forEach(ss => {
+                this.drawText(ss.letter, ss.position[0], ss.position[1])
+            })
+        }
+
         // render house
         const houseSize = [640,621]
         this.ctx.drawImage(
@@ -142,6 +150,36 @@ class RenderingEngine
                 tasksContainer.style.maxWidth = `${this.canvas.width}px`
             }
         }
+    }
+
+    drawGridLines = () => {
+        const w = this.canvas.width
+        const h = this.canvas.height
+        var imageData = this.ctx.getImageData(0, 0, w, h);
+        for (var i=0;i<imageData.data.length;i+=4)
+        {
+            //console.log(this.scale)
+            if(Math.abs((i / 4) % w % (this.scale * SPRITE_SIZE)) < 1
+             || Math.abs((i / 4) / w % (this.scale * SPRITE_SIZE)) < 1) {
+                imageData.data[i] = 0//220
+                imageData.data[i+1] = 0//220
+                imageData.data[i+2] = 0//220
+                //imageData.data[i+3] = 255
+            }
+        }
+        this.ctx.putImageData(imageData,0,0);
+    }
+
+    drawText = (text: string, left: number, top: number) => {
+        const scale = this.scale
+        this.ctx.font = `${7 * scale}px publicPixel`
+        this.ctx.fillStyle = '#000'
+        this.ctx.textBaseline = 'top'
+        this.ctx.fillText(
+            text,
+            (left - 0.7) * SPRITE_SIZE * scale,
+            (top - 0.75) * SPRITE_SIZE * scale
+        )
     }
 
     static facingDirToOffset = (ent: EntityInstance) => {

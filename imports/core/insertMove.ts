@@ -59,10 +59,10 @@ export default function insertMove({ gameCode, teamNumber, newPos, userId, isSim
         }, errorCallback)
     }
     const query = teamQB.combine()
-    TeamsCollection.update(team._id, query, {}, (error: any, id: any) => {
+    TeamsCollection.update(team._id, query/*, {},(error: any, id: any) => {
         context.measurePerf('insertMove')
         errorCallback(error, id)
-    })
+    }*/)
     const updated = modify(team, query)
     context.updateCache(updated)
 }

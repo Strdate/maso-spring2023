@@ -1,6 +1,7 @@
 // @ts-ignore
 import { Restivus } from 'meteor/nimble:restivus'
 import updateTask from '/imports/core/updateTask'
+import createAuthorizedUsers from './endpoints/createAuthorizedUsers';
 
 // Global API configuration
 const Api = new Restivus({
@@ -20,26 +21,17 @@ Api.addCollection(Meteor.users, {
   }
 })
 
-Api.addRoute('games/:gameCode/teams/:teamNumber/tasks', { authRequired: true }, {
-  put: function () {
-    console.log('PUT /api/games/:gameCode/teams/:teamNumber/tasks')
+Api.addRoute('games/:gameCode/authorized-users', { authRequired: true }, {
+  post: function () {
+    console.log('POST /api/games/:gameCode/authorized-users')
     const data = {
       userId: this.userId,
       gameCode: this.urlParams.gameCode,
-      teamNumber: parseInt(this.urlParams.teamNumber),
-      taskNumber: parseInt(this.bodyParams.taskNumber),
-      action: this.bodyParams.action,
+      users: this.bodyParams,
     }
-    console.log('Input:', data)
-    const response = updateTask(data)
+    //console.log('Input:', data)
+    const response = createAuthorizedUsers(data)
     console.log('Output: ', response)
-    /*if (response.print && response.teamNumber >= 300 && response.teamNumber <= 353 && this.urlParams.gameCode === 'maso26') {
-      const queue = getQueue(response)
-      channel.sendToQueue(queue, Buffer.from(JSON.stringify({
-        team: response.teamNumber,
-        problem: response.printNumber,
-      })))
-    }*/
     return response
   }
 })

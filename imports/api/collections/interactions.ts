@@ -25,6 +25,7 @@ export interface Interaction extends MoveInput {
     createdAt: Date
     reverted?: boolean
     revertedAt?: Date
+    revertedByUserId?: string
 }
 
 export const InteractionsCollection = new Mongo.Collection<Interaction>('interactions');

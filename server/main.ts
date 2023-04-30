@@ -25,4 +25,18 @@ Meteor.startup(async () => {
   } else {
     console.log("Server is assuming SECONDARY role")
   }
+
+  Accounts.onCreateUser((options, user) => {
+    // @ts-ignore
+    if (options.allowedServer) {
+      // @ts-ignore
+      user.allowedServer = options.allowedServer
+    }
+
+    if (options.profile) {
+      user.profile = options.profile;
+    }
+    console.log(`On create user. URL: ${process.env.ROOT_URL}`)
+    return user;
+  })
 });

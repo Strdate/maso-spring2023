@@ -32,7 +32,7 @@ export default function revertMove({ gameCode, teamNumber, userId, isSimulation 
         const teamQB = new TeamQueryBuilder();
         teamQB.qb.set({
             position: secondLastMove.newPos,
-            facingDir: secondLastMove.facingDir,
+            facingDir: secondLastMove.facingDir
         })
         const newState = isTeamHunting(team, context.now) ? 'HUNTING' : 'PLAYING'
         if(newState !== team.state) {
@@ -52,7 +52,8 @@ export default function revertMove({ gameCode, teamNumber, userId, isSimulation 
         InteractionsCollection.update(lastMove._id, {
             $set: {
                 reverted: true,
-                revertedAt: new Date()
+                revertedAt: new Date(),
+                revertedByUserId: context.userId!
             },
         }, {}, errorCallback)
         if (col.collisions.length > 0) {

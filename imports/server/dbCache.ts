@@ -27,6 +27,10 @@ abstract class DbCache<T> {
         this.#cache.set(id, obj)
     }
 
+    rawCache() {
+        return this.#cache
+    }
+
     abstract find(id: string): T | undefined
 }
 

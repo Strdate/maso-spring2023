@@ -5,6 +5,7 @@ import '../imports/startup/server/rest-api'
 import './publish'
 import { createIndexes } from  '../imports/server/dbIndexes'
 import { Accounts } from 'meteor/accounts-base';
+import { setupAccountRules } from '/imports/server/loginListeners';
 
 const SEED_USERNAME = 'reznik';
 const SEED_PASSWORD = 'reznik';
@@ -26,17 +27,5 @@ Meteor.startup(async () => {
     console.log("Server is assuming SECONDARY role")
   }
 
-  Accounts.onCreateUser((options, user) => {
-    // @ts-ignore
-    if (options.allowedServer) {
-      // @ts-ignore
-      user.allowedServer = options.allowedServer
-    }
-
-    if (options.profile) {
-      user.profile = options.profile;
-    }
-    console.log(`On create user. URL: ${process.env.ROOT_URL}`)
-    return user;
-  })
+  setupAccountRules()
 });

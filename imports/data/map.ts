@@ -209,12 +209,12 @@ const entities: EntityData[] = [{
 },{
     id: 5,
     type: 5,
-    startPos: [5, 6],
-    facingDir: 'RIGHT'
+    startPos: [5, 7],
+    facingDir: 'UP'
 },{
     id: 6,
     type: 6,
-    startPos: [6, 11],
+    startPos: [12, 6],
     facingDir: 'RIGHT'
 }]
 

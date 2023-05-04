@@ -2,17 +2,31 @@ import { Show } from 'solid-js';
 import { createFindOne } from 'solid-meteor-data';
 import FromBase from "../components/formBase"
 import useTitle from '../utils/useTitle';
+import { useNavigate } from '@solidjs/router';
 
 export default function LoginForm() {
   useTitle("Přihlášení | Maso 2023")
   const [loggedIn, user] = createFindOne(() => Meteor.user())
+  const navigate = useNavigate()
   return (
       <FromBase title="Přihlášení" showBackButton onConfirm={(res) => {
           Meteor.loginWithPassword(res.userName, res.accountPassword, (error) => {
             if(error) {
-              alert(error.message)
+              // @ts-ignore
+              if(error.error === 'user.logIn.incorrectServerRedir') {
+                if(confirm("Přihlašovací údaje jsou správné, ale nacházíš se na chybném serveru. Přesměrovat?")) {
+                  // @ts-ignore
+                  window.location.href = error.reason!
+                }
+              } else {
+                alert(error.message)
+              }
             } else {
-              //window.location.href='/podzim2022'
+              Meteor.call('server.config', {}, (err: any, res: string | undefined) => {
+                if(res) {
+                  navigate(`/${res}`)
+                }
+              })
             }
           })
       }}>

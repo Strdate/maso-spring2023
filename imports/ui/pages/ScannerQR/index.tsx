@@ -4,7 +4,7 @@ import { createSignal, Show } from "solid-js";
 import useClass from "../../utils/useClass";
 import useTitle from "../../utils/useTitle";
 import ManualForm from "./ManualForm";
-import CameraWidget from "/imports/ui/pages/ScannerQR/CameraWidget";
+import CameraWidget from "/imports/ui/pages/ScannerQR/cameraWidget";
 import { TaskBase, TaskInput, TaskActionString, TaskReturnData } from "/imports/core/interfaces";
 import alertify from "alertifyjs";
 import 'alertifyjs/build/css/alertify.css';

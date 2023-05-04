@@ -20,6 +20,10 @@ function setupAccountRules() {
         const cfg = getServerConfig()
         if(cfg.enforceLoginAffinity) {
             if(user.allowedServer && user && user.allowedServer !== cfg._self) {
+                const redir = cfg.servers.find(s => s.ident === user.allowedServer)
+                if(redir) {
+                    throw new Meteor.Error('user.logIn.incorrectServerRedir', `${redir.url}/login`)
+                }
                 throw new Meteor.Error('user.logIn.incorrectServer', 'Jsi na chybném serveru!')
             }
         }

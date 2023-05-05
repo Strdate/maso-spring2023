@@ -11,7 +11,9 @@ import { errorCallback, isTeamFrozen, isTeamHunting } from "./utils/misc";
 import { MoveContext } from "./utils/moveContext";
 
 
-const MAX_TIME_TO_REVERT = 15_000;  // ms
+const MAX_TIME_TO_REVERT = 20
+const HISTORY_CHECK_DEPTH = 15
+
 export default function revertMove({ gameCode, teamNumber, userId, isSimulation }:
                                      InteractionGameTeamInput & MeteorMethodBase) {
     // Has to be in isSimulation to only happen on the server.
@@ -92,14 +94,14 @@ function checkIfLastInteractionIsRevertible(interaction: Interaction, nowTimesta
         throw new Meteor.Error("moves.revert.lastInteractionNotMove", "Poslední interakce týmu s okolím nebyl pohyb. Tah nelze vrátit.");
     }
     nowTimestamp ??= new Date().getTime();
-    if (interaction.createdAt.getTime() + MAX_TIME_TO_REVERT < nowTimestamp) {
+    if (interaction.createdAt.getTime() + MAX_TIME_TO_REVERT * 1000 < nowTimestamp) {
         throw new Meteor.Error("moves.revert.tooLate", "Tým již přesáhl maximální čas pro vrácení posledního tahu.")
     }
 }
 
 function getLastInteractions(gameId: string, teamId: string) {
     const docs = InteractionsCollection.find({gameId, teamId, reverted: { $ne: true } },
-      { sort: { createdAt: -1 }, limit: 12 }).fetch()
+      { sort: { createdAt: -1 }, limit: HISTORY_CHECK_DEPTH }).fetch()
     const lastInteraction = docs[0]
     const moves = docs.filter(d => d.moved).slice(0, 2)
     return [lastInteraction, moves[0] || undefined, moves[1] || moves[0] || undefined];

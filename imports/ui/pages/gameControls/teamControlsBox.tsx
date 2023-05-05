@@ -74,6 +74,7 @@ export default function TeamControlsBox(props: Props) {
                         <div>Zbývá:</div>
                         <div style={{ "font-size": '5vh', "margin-top": '3vh' }}>{formattedMS(props.team!.stateEndsAt!.getTime() - curTime())}</div>
                         <div style={{"font-size": '2vh', "margin-top": '1vh'}}>Nebo {boostCount()} {boostCount() > 4 ? 'tahů' : (boostCount() > 1 ? 'tahy' : 'tah')}</div>
+                        <ProjectorTime game={props.game} team={props.team!} />
                     </div>
                 </Show>
                 <Show when={isInvincible()}>
@@ -89,12 +90,12 @@ export default function TeamControlsBox(props: Props) {
                         <div>zamrzlý!</div>
                         <div>Zbývá:</div>
                         <div style={{ "font-size": '5vh', "margin-top": '3vh' }}>{formattedMS(props.team!.stateEndsAt!.getTime() - curTime())}</div>
+                        <ProjectorTime game={props.game} team={props.team!} />
                     </Show>
                     <Show when={!isFrozen()}>
                         <div>Zbývá tahů</div>
                         <div style={{ "font-size": '5vh', "margin-top": '3vh' }}>{props.movesLeft}</div>
                     </Show>
-                    
                 </div>
                 <div class='below-moves-infobox'>celkem{isFrozen() ? ' tahů' : ''}: {props.team?.money ?? '#'}</div>
                 <Show when={props.team?.boostCount ?? 0 > 0}>
@@ -103,4 +104,15 @@ export default function TeamControlsBox(props: Props) {
             </div>
         </div>
     </div>
+}
+
+function ProjectorTime(props: {game: Game, team: Team}) {
+    return <>
+        <div style={{ "font-size": '2.2vh', "margin-top": '3vh' }}>Na projektoru:</div>
+        <div style={{"font-size": '3vh', "margin-top": '1vh'}}>{formattedWithZero(props.game.endAt.getTime() - props.team!.stateEndsAt!.getTime())}</div>
+    </>
+}
+
+function formattedWithZero(ms: number) {
+    return ms <= 0 ? '#:##' : formattedMS(ms)
 }

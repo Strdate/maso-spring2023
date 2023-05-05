@@ -5,7 +5,8 @@ const enum GameStatus {
     Created = 1,
     Running,
     OutOfTime,
-    Finished
+    Finished,
+    Published
 }
 
 // Todo! Změna indexů - hra skončila byl 5 atd.
@@ -13,7 +14,8 @@ const GameStatusLabels = {
     1: 'Hra čeká na zahájení.',
     2: 'Hra právě probíhá.',
     3: 'Herní čas skončil. Jakmile zadáte posledí tahy, ukončete ji prosím.',
-    4: 'Hra skončila.'
+    4: 'Hra skončila.',
+    5: 'Hra skončila a byla publikována.'
 }
 
 const enum TaskStatus {

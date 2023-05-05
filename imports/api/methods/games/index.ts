@@ -1,9 +1,9 @@
 import create from './create'
-import get from './get'
 import getConfig from './getConfig'
+import finish from './finish'
 
 export default {
   create,
-  get,
-  getConfig
+  getConfig,
+  finish
 }

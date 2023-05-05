@@ -104,6 +104,7 @@ function checkGameStatus(game: Game, now: Date)
   if (game.statusId === GameStatus.Running && game.endAt <= now) {
     console.log(`Game ${game.code}: Evaluation skipped, as the game is out of time`)
     GameCollection.update({ _id: game._id },{ $set: { statusId: GameStatus.OutOfTime } })
+    gameCache.del(game.code)
     return true
   }
 

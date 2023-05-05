@@ -1,8 +1,9 @@
 import schedule from 'node-schedule'
 import {updateRunningGames, moveMonsters} from './updateRunningGames'
 import movePlayingRobots from './movePlayingRobots'
+import { gameCache } from '/imports/server/dbCache'
 
-function init() {
+function initWorker() {
   const updateGames = async (invoked: Date) => {
     console.log(`Game evaluation started ${invoked}/${new Date()}`)
     try {
@@ -39,4 +40,15 @@ function init() {
   schedule.scheduleJob(`10 * * * * *`, moveRobots)
 }
 
-export default init
+function initPassiveWorker() {
+  schedule.scheduleJob(`2 * * * * *`, () => {
+    try {
+      gameCache.rawCache().flushAll()
+      console.log('Flushed game cache.')
+    } catch(err) {
+      console.log(err)
+    }
+  })
+}
+
+export { initWorker, initPassiveWorker }

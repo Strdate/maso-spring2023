@@ -19,10 +19,9 @@ export default function GameOverview() {
 
     const [loggedIn, userFound] = createFindOne(() => Meteor.user())
     const user = userFound as Meteor.User
-    const isUserAuthorized = createMemo(() => loggedIn() && isAuthorized(user,game))
+    const isUserAuthorized = createMemo(() => loggedIn())
     const isUserOwner = createMemo(() => isGameOwner(user,game))
-    
-    // const authorizedUsers = createFind(() => loading() ? null : Meteor.users.find(params.code))
+    const showResultsLink = () => isUserAuthorized() || game.statusId === 5
 
     createEffect(() => {
         console.log(`Loading: ${loading()}, found: ${found()}, code: ${params.code}`)
@@ -37,7 +36,7 @@ export default function GameOverview() {
                     </Typography>
                 </Grid>
                 <Grid item xs={11} sm={6}>
-                    <GameInfo game={game} user={user} />
+                    <GameInfo game={game} isOwner={isUserOwner()} />
                     <Paper>
                         <List component="nav" aria-label="Device settings">
                         <SectionLink
@@ -45,7 +44,7 @@ export default function GameOverview() {
                             content="Aktuální stav hry pro zobrazení na dataprojektoru"
                             link={`/${game.code}/projektor`}
                         />
-                        {/*<Show when={isUserAuthorized()}>*/}
+                        <Show when={isUserAuthorized()}>
                             <SectionLink
                                 header="Zadávátko"
                                 content="Aplikace na zadávání tahů hrajících týmů"
@@ -56,26 +55,20 @@ export default function GameOverview() {
                                 content="Potvrzování příkladů mobilním telefonem"
                                 link={`/${game.code}/scanner`}
                              />
+                        </Show>
+                        <Show when={showResultsLink()}>
                              <SectionLink
                                 header="Výsledky"
                                 content="Aktuální živé výsledky"
                                 link={`/${game.code}/vysledky`}
                              />
-                        {/*</Show>*/}
-                        {/*isOwner && <SectionLink
-                            header="Výsledky"
-                            content="Aktuální živé výsledky"
-                            link={`/${game.code}/vysledky`}
-                        />*/}
+                        </Show>
                         </List>
                     </Paper>
-                        {/*isOwner && (<UserList userId={user._id} game={game} gameAuthorizedUsers={gameAuthorizedUsers} />)}*/}
                 </Grid>
                 <Show when={isUserOwner()}>
                     <TeamList game={game} />
                 </Show>
-                {/*<GlobalStyle />
-                </Grid>*/}
             </Grid>
         </ManagedSuspense>
     )

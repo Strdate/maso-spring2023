@@ -1,10 +1,10 @@
 import { Avatar, Button, List, ListItem, ListItemAvatar, ListItemText, Paper } from '@suid/material'
 import { Game } from '/imports/api/collections/games'
-import { isGameOwner } from '/imports/core/authorization'
 import StopIcon from '@suid/icons-material/Stop'
 import AccessTimeIcon from '@suid/icons-material/AccessTime'
 import StatusIcon from '@suid/icons-material/Flag'
-import { GameStatusLabels } from '/imports/core/enums'
+import { GameStatus, GameStatusLabels } from '/imports/core/enums'
+import { Show } from 'solid-js'
 
 function getRunTime(game: Game) {
   return `${game.startAt.toLocaleTimeString()} - ${game.endAt.toLocaleTimeString()} ${game.startAt.toDateString()}`
@@ -16,28 +16,27 @@ function getGameState(game: Game) {
 
 interface Props {
     game: Game,
-    user: Meteor.User | {}
+    isOwner: boolean
 }
 
 function GameInfo(props: Props) {
-  /*const isOwner = props.user && isGameOwner(props.user._id, props.game)
-  const showFinishButton = game.statusId === enums.GAME_STATUS.OUT_OF_TIME.id*/
+  const showFinishButton = () => props.game.statusId === GameStatus.OutOfTime && props.isOwner
   return (
     <Paper style={{ "margin-bottom": '8px' }}>
       <List>
-        {/*isOwner &&
+      <Show when={showFinishButton()}>
         <ListItem>
-          {showFinishButton &&
             <Button
               variant="contained"
               color="primary"
               size="large"
-              onClick={() => FinishGame.call({ gameId: game._id }, alertError)}
+              onClick={() => Meteor.call('games.finish',{ gameId: props.game._id }, alertError)}
               startIcon={<StopIcon />}
             >
-              Vyhodnotit poslední hod a ukončit hru
-            </Button>}
-          </ListItem>*/}
+              Ukončit hru
+            </Button>
+          </ListItem>
+        </Show>
         <ListItem>
           <ListItemAvatar>
             <Avatar>
@@ -55,6 +54,12 @@ function GameInfo(props: Props) {
       </List>
     </Paper>
   )
+}
+
+function alertError(err: any) {
+  if (err) {
+    alert(err.message)
+  }
 }
 
 export default GameInfo

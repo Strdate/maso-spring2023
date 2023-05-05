@@ -1,5 +1,5 @@
 import { Meteor } from 'meteor/meteor';
-import initWorker from '../imports/startup/server/worker'
+import { initWorker, initPassiveWorker } from '../imports/startup/server/worker'
 import '../imports/api/methods'
 import '../imports/startup/server/rest-api'
 import './publish'
@@ -25,6 +25,7 @@ Meteor.startup(async () => {
     }
   } else {
     console.log("Server is assuming SECONDARY role")
+    initPassiveWorker()
   }
 
   setupAccountRules()

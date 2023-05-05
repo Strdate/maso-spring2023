@@ -27,7 +27,7 @@ const defaultCfg: ServerConfigDB = {
 const ConfigCollection = new Mongo.Collection<ServerConfigDB>('serverConfig');
 
 function getServerConfig(): ServerConfig {
-    let config: ServerConfig = gameCache.rawCache().get('cfg')
+    let config: ServerConfig | undefined = gameCache.rawCache().get('cfg')
     if(!config) {
         let cfgDB: ServerConfigDB | undefined = ConfigCollection.findOne()
         console.log('Found cfg: ', cfgDB)

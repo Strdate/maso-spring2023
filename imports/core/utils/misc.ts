@@ -1,4 +1,5 @@
 import { Pos } from "../interfaces";
+import { Game } from "/imports/api/collections/games";
 import { Team } from "/imports/api/collections/teams";
 
 function formatPath(path: Pos[]) {
@@ -15,12 +16,13 @@ function isTeamHunting(team?: Team, now?: number) {
         && team.boostData.movesLeft > 0
 }
 
-function isTeamFrozen(team?: Team, now?: number) {
+function isTeamFrozen(game: Game, team?: Team, now?: number) {
     now ??= new Date().getTime()
     return team
         && team.state === 'FROZEN'
         && team.stateEndsAt
-        && (team.stateEndsAt.getTime() > now)
+        && ((team.stateEndsAt.getTime() > now)
+        || team.stateEndsAt.getTime() > game.endAt.getTime())
 }
 
 function errorCallback(error: any, id: string) {

@@ -9,6 +9,7 @@ import TeamQueryBuilder from "./utils/teamQueryBuilder";
 import { errorCallback, isTeamFrozen, isTeamHunting } from "./utils/misc";
 import { MoveContext } from "./utils/moveContext";
 import modify from 'modifyjs'
+import { Game } from "../api/collections/games";
 
 export default function insertMove({ gameCode, teamNumber, newPos, userId, isSimulation }:
     MoveInput & MeteorMethodBase) {
@@ -17,7 +18,7 @@ export default function insertMove({ gameCode, teamNumber, newPos, userId, isSim
     const team = context.team
     const game = context.game
 
-    checkTeamState(team)
+    checkTeamState(game, team)
     const facingDir = checkPosition(team, newPos)
     newPos = normalizePosition(newPos)
     team.position = newPos
@@ -80,8 +81,8 @@ function checkPosition(team: Team, newPos: Pos): FacingDir {
     return facingDir
 }
 
-function checkTeamState(team: Team) {
-    if(isTeamFrozen(team)) {
+function checkTeamState(game: Game, team: Team) {
+    if(isTeamFrozen(game, team)) {
         throw new Meteor.Error('moves.insert.teamFrozen', 'Tým je momentálně zamrzlý.')
     }
     if(team.money <= 0) {

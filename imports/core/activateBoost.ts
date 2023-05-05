@@ -11,7 +11,7 @@ export default function activateBoost({ gameCode, teamNumber, isSimulation, user
     const team = context.team
     const game = context.game
 
-    checkTeamState(team)
+    checkTeamState(game, team)
     TeamsCollection.update(team._id,{
         $set: {
             'boostData.movesLeft': game.boostMaxMoves,
@@ -27,8 +27,8 @@ export default function activateBoost({ gameCode, teamNumber, isSimulation, user
     context.measurePerf('activateBoost')
 }
 
-function checkTeamState(team: Team) {
-    if(isTeamFrozen(team)) {
+function checkTeamState(game: Game, team: Team) {
+    if(isTeamFrozen(game, team)) {
         throw new Meteor.Error('moves.insert.teamFrozen', 'Tým je momentálně zamrzlý.')
     }
     if(isTeamHunting(team)) {

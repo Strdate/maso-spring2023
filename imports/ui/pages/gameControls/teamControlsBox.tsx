@@ -30,7 +30,7 @@ export default function TeamControlsBox(props: Props) {
 
 
     const isFrozen = createMemo(() =>
-        isTeamFrozen(props.team, curTime())
+        isTeamFrozen(props.game, props.team, curTime())
     )
     const isInvincible = createMemo(() =>
         props.team
@@ -72,7 +72,7 @@ export default function TeamControlsBox(props: Props) {
                         <div>Tým loví</div>
                         <div>duchy!</div>
                         <div>Zbývá:</div>
-                        <div style={{ "font-size": '5vh', "margin-top": '3vh' }}>{formattedMS(props.team!.stateEndsAt!.getTime() - curTime())}</div>
+                        <div style={{ "font-size": '5vh', "margin-top": '3vh' }}>{formattedWithZero(props.team!.stateEndsAt!.getTime() - curTime())}</div>
                         <div style={{"font-size": '2vh', "margin-top": '1vh'}}>Nebo {boostCount()} {boostCount() > 4 ? 'tahů' : (boostCount() > 1 ? 'tahy' : 'tah')}</div>
                         <ProjectorTime game={props.game} team={props.team!} />
                     </div>
@@ -89,7 +89,7 @@ export default function TeamControlsBox(props: Props) {
                         <div>Tým je</div>
                         <div>zamrzlý!</div>
                         <div>Zbývá:</div>
-                        <div style={{ "font-size": '5vh', "margin-top": '3vh' }}>{formattedMS(props.team!.stateEndsAt!.getTime() - curTime())}</div>
+                        <div style={{ "font-size": '5vh', "margin-top": '3vh' }}>{formattedWithZero(props.team!.stateEndsAt!.getTime() - curTime())}</div>
                         <ProjectorTime game={props.game} team={props.team!} />
                     </Show>
                     <Show when={!isFrozen()}>

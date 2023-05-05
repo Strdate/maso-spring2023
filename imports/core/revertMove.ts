@@ -23,7 +23,7 @@ export default function revertMove({ gameCode, teamNumber, userId, isSimulation 
         const team = context.team
         const game = context.game
 
-        checkTeamState(team)
+        checkTeamState(game, team)
         const [lastInteraction, lastMove, secondLastMove] = getLastInteractions(game._id, team._id);
         if (lastInteraction === undefined || lastMove === undefined || secondLastMove === undefined) {
             // The first "move" is inserted when
@@ -79,8 +79,8 @@ export default function revertMove({ gameCode, teamNumber, userId, isSimulation 
     }
 }
 
-function checkTeamState(team: Team) {
-    if(isTeamFrozen(team)) {
+function checkTeamState(game: Game, team: Team) {
+    if(isTeamFrozen(game, team)) {
         throw new Meteor.Error('moves.revert.teamFrozen', 'Tým je momentálně zamrzlý.');
     }
 }

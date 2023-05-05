@@ -22,5 +22,5 @@ export default function CameraWidget(props: {onSuccess: (decodedText: string) =>
     qrCodeScanner.destroy();
   })
 
-  return <video id={qrcodeRegionId} style={{ width: '100%' }} />
+  return <video id={qrcodeRegionId} class='scanner' style={{ width: '100%' }} />
 }

@@ -29,6 +29,10 @@ body.input-page {
   overflow-y: hidden;
 }
 
+body.body-red {
+  background-color: red;
+}
+
 h1 {
   font-size: 1.6rem;
   font-weight: 400;

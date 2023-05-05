@@ -1,10 +1,10 @@
 import { useParams, useSearchParams } from "@solidjs/router";
 import { Button, ToggleButton, ToggleButtonGroup } from "@suid/material";
-import { createSignal, Show } from "solid-js";
+import { createEffect, createSignal, Show } from "solid-js";
 import useClass from "../../utils/useClass";
 import useTitle from "../../utils/useTitle";
 import ManualForm from "./ManualForm";
-import CameraWidget from "/imports/ui/pages/ScannerQR/cameraWidget";
+import CameraWidget from "/imports/ui/pages/ScannerQR/CameraWidget";
 import { TaskBase, TaskInput, TaskActionString, TaskReturnData } from "/imports/core/interfaces";
 import alertify from "alertifyjs";
 import 'alertifyjs/build/css/alertify.css';
@@ -21,6 +21,13 @@ export default function ScannerQR() {
     
     const [taskMode, setTaskMode] = createSignal<TaskActionString>('solve');
     const [waitingForResponse, setWaitingForResponse] = createSignal<boolean>(false);
+    createEffect(() => {
+      switch(taskMode()) {
+        case 'exchange':
+        case 'cancel':
+          useClass('body-red')
+      }
+    })
     let prevTask: TaskBase = {
         teamNumber: -1,
         taskNumber: -1,

@@ -1,5 +1,6 @@
 import { Game, GameCollection } from "/imports/api/collections/games";
 import { Team, TeamsCollection } from "/imports/api/collections/teams";
+import activateBoost from "/imports/core/activateBoost";
 import { ROBOT_WORKER_ID } from "/imports/core/enums";
 import insertMove from "/imports/core/insertMove";
 import { FacingDir, Pos } from "/imports/core/interfaces";
@@ -29,17 +30,26 @@ export default async function movePlayingRobots() {
 }
 
 function doRandomMoves(team: Team, game: Game, now: Date) {
-    if(team.state !== 'PLAYING' && team.stateEndsAt!.getTime() > now.getTime()) {
+    if(!['PLAYING','HUNTING'].includes(team.state) && team.stateEndsAt!.getTime() > now.getTime()) {
         return
     }
     let previousMove: FacingDir | undefined
     const moves: Pos[] = []
     moves.push(team.position)
+    if(team.boostCount > 0 && team.state === 'PLAYING' && Math.random() > 0.5) {
+        activateBoost({
+            gameCode: game.code,
+            teamNumber: team.number,
+            isSimulation: false,
+            userId: ROBOT_WORKER_ID
+        })
+        team = TeamsCollection.findOne(team._id)!
+    }
     for(let i = 0; i < Math.min(6, team.money); i++) {
         const facingDir = pickRandom(filterMoveByFacingDir(getAllowedMoves(team.position),previousMove))
         const newPos = vectorSum(facingDirToMove(facingDir), team.position)
         const normalizedPos = normalizePosition(newPos)
-        if(checkForMonsters(normalizedPos, game)) {
+        if(team.state === 'PLAYING' && checkForMonsters(normalizedPos, game)) {
             break
         }
         try {

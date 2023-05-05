@@ -1,7 +1,7 @@
 // @ts-ignore
 import { Restivus } from 'meteor/nimble:restivus'
-import updateTask from '/imports/core/updateTask'
 import createAuthorizedUsers from './endpoints/createAuthorizedUsers';
+import getGameResults from './endpoints/getGameResults';
 
 // Global API configuration
 const Api = new Restivus({
@@ -32,6 +32,15 @@ Api.addRoute('games/:gameCode/authorized-users', { authRequired: true }, {
     //console.log('Input:', data)
     const response = createAuthorizedUsers(data)
     console.log('Output: ', response)
+    return response
+  }
+})
+
+Api.addRoute('games/:gameCode/results', { authRequired: true }, {
+  get: function () {
+    console.info('GET /api/games/:gameCode/results')
+    const data = { gameCode: this.urlParams.gameCode }
+    const response = getGameResults(data)
     return response
   }
 })

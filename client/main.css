@@ -211,7 +211,7 @@ div.task-box.solved {
 
 div.task-box.exchanged {
   color: #ffffff;
-  background-color: #a0045b;
+  background-color: red;
 }
 
 div.moves-infobox {

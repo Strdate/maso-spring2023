@@ -36,7 +36,7 @@ export default function TeamControlsBox(props: Props) {
         props.team
         && props.team.stateEndsAt
         && props.team.state === 'FROZEN'
-        && (props.team.stateEndsAt.getTime() <= curTime())
+        && !isFrozen()
     )
     const isHunting = createMemo(() => 
         isTeamHunting(props.team, curTime())

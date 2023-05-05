@@ -1,3 +1,4 @@
+import { Game } from "../api/collections/games";
 import { InteractionGameTeamInput } from "../api/collections/interactions";
 import { Team, TeamsCollection } from "../api/collections/teams";
 import { MeteorMethodBase } from "./interfaces";

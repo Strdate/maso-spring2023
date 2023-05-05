@@ -156,7 +156,8 @@ export class Simulation {
 }
 
 function isItemVisible(item: ItemsData, game: Game, minute: number) {
-    return item.spawnTime <= minute && minute - item.spawnTime < ITEM_LIFESPAN
+    return item.spawnTime <= minute && ((minute - item.spawnTime < ITEM_LIFESPAN)
+        || (item.spawnTime + ITEM_LIFESPAN >= (game.endAt.getTime() - game.startAt.getTime()) / (1000 * 60)))
 }
 
 function getHelathState(spawnTime: number, minute: number) {

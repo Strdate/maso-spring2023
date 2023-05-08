@@ -43,6 +43,18 @@ class GameCache extends DbCache<Game> {
         console.log('Retrieving Game from DB...')
         return GameCollection.findOne({ code: id })
     }
+
+    beginObserving() {
+        GameCollection.find({}).observe({
+            changed(game) {
+                console.log(`Observed change of ${game.code}.`)
+                gameCache.set(game.code, game)
+            },
+            removed(game) {
+                gameCache.del(game.code)
+            }
+        })
+    }
 }
 
 class TeamCache {

@@ -9,6 +9,7 @@ import { checkCollision } from "./interaction";
 import TeamQueryBuilder from "./utils/teamQueryBuilder";
 import { errorCallback, isTeamFrozen, isTeamHunting } from "./utils/misc";
 import { MoveContext } from "./utils/moveContext";
+import { Game } from "../api/collections/games";
 
 
 const MAX_TIME_TO_REVERT = 20

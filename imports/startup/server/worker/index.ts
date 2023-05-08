@@ -40,15 +40,4 @@ function initWorker() {
   schedule.scheduleJob(`10 * * * * *`, moveRobots)
 }
 
-function initPassiveWorker() {
-  schedule.scheduleJob(`2 * * * * *`, () => {
-    try {
-      gameCache.rawCache().flushAll()
-      console.log('Flushed game cache.')
-    } catch(err) {
-      console.log(err)
-    }
-  })
-}
-
-export { initWorker, initPassiveWorker }
+export { initWorker }

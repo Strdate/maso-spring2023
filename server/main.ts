@@ -1,11 +1,12 @@
 import { Meteor } from 'meteor/meteor';
-import { initWorker, initPassiveWorker } from '../imports/startup/server/worker'
+import { initWorker } from '../imports/startup/server/worker'
 import '../imports/api/methods'
 import '../imports/startup/server/rest-api'
 import './publish'
 import { createIndexes } from  '../imports/server/dbIndexes'
 import { Accounts } from 'meteor/accounts-base';
 import { setupAccountRules } from '/imports/server/loginListeners';
+import { gameCache } from '/imports/server/dbCache';
 
 const SEED_USERNAME = 'reznik';
 const SEED_PASSWORD = 'reznik';
@@ -25,7 +26,7 @@ Meteor.startup(async () => {
     }
   } else {
     console.log("Server is assuming SECONDARY role")
-    initPassiveWorker()
+    gameCache.beginObserving()
   }
 
   setupAccountRules()

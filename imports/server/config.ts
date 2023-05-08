@@ -7,7 +7,8 @@ interface ServerConfigDB {
 }
 
 interface ServerConfig extends ServerConfigDB {
-    _self: string
+    _self: string,
+    _role: string
 }
 
 interface ServerConfigList {
@@ -37,7 +38,8 @@ function getServerConfig(): ServerConfig {
         }
         config = {
             ...cfgDB!,
-            _self: process.env.SERVER_IDENT ?? ""
+            _self: process.env.SERVER_IDENT ?? "",
+            _role: process.env.SERVER_ROLE ?? ""
         }
         cacheCfg(config)
     }

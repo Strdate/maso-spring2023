@@ -24,7 +24,7 @@ body.projector {
 }
 
 body.input-page {
-  background-color: #7DDFF4;
+  background-color: #0c7e97;
   margin: 0px;
   overflow-y: hidden;
 }
@@ -272,4 +272,8 @@ div.error-box {
 
 .results-div .standard-row:hover {
   background: #F5F4F4;
+}
+
+div.input-page-text {
+  color: white;
 }

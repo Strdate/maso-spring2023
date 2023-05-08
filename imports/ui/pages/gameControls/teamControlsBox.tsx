@@ -45,7 +45,7 @@ export default function TeamControlsBox(props: Props) {
 
     return <div class='team-controls-box'>
         <div class='teamcontrols' style={{display: "flex", "flex-direction": 'column', width: 'fit-content'}}>
-            <div class='teamtitle' style={{display: 'flex', "justify-content": 'space-between', padding: '8px'}}>
+            <div class='teamtitle input-page-text' style={{display: 'flex', "justify-content": 'space-between', padding: '8px'}}>
                 <span>{props.team?.number ?? '###'} - {props.team?.name?.substring(0,18)}</span>
                 <span>skóre: {props.team?.score?.total ?? 0}</span>
             </div>
@@ -97,9 +97,9 @@ export default function TeamControlsBox(props: Props) {
                         <div style={{ "font-size": '5vh', "margin-top": '3vh' }}>{props.movesLeft}</div>
                     </Show>
                 </div>
-                <div class='below-moves-infobox'>celkem{isFrozen() ? ' tahů' : ''}: {props.team?.money ?? '#'}</div>
+                <div class='below-moves-infobox input-page-text'>celkem{isFrozen() ? ' tahů' : ''}: {props.team?.money ?? '#'}</div>
                 <Show when={props.team?.boostCount ?? 0 > 0}>
-                    <div class='below-moves-infobox'>maso: {props.team!.boostCount}</div>
+                    <div class='below-moves-infobox input-page-text'>maso: {props.team!.boostCount}</div>
                 </Show>
             </div>
         </div>

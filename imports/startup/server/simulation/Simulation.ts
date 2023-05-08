@@ -79,37 +79,42 @@ export class Simulation {
         if(tick < 0) {
             return false
         }
-        this.game.entities = this.game.entities.map(ent => {
-            if(ent.category !== 'MONSTER') {
-                return ent
-            }
-            const data = entities.find(entData => entData.id === ent.id)!
-            if(data.program) {
-                const facingDir = data.program[(tick + 1) % data.program.length]
-                const position = normalizePosition(vectorSum(aggregatePosition(data.program, tick), data.startPos))
-                return {
-                    ...ent,
-                    position,
-                    facingDir: facingDir
+        try {
+            this.game.entities = this.game.entities.map(ent => {
+                if(ent.category !== 'MONSTER') {
+                    return ent
                 }
-            } else if(ent.id === 5 || ent.id === 6) {
-                const move = doSimpleMove(ent)
-                if(!move.newFacingDir) {
-                    if(ent.id === 5) {
-                        move.newFacingDir = graphSearch(this.getMapState(), move.newPos, ent.position)
-                    } else {
-                        move.newFacingDir = monsterGraphSearch(aggregateMonsterMapState(this.game), move.newPos, ent.position)
+                const data = entities.find(entData => entData.id === ent.id)!
+                if(data.program) {
+                    const facingDir = data.program[(tick + 1) % data.program.length]
+                    const position = normalizePosition(vectorSum(aggregatePosition(data.program, tick), data.startPos))
+                    return {
+                        ...ent,
+                        position,
+                        facingDir: facingDir
+                    }
+                } else if(ent.id === 5 || ent.id === 6) {
+                    const move = doSimpleMove(ent)
+                    if(!move.newFacingDir) {
+                        if(ent.id === 5) {
+                            move.newFacingDir = graphSearch(this.getMapState(), move.newPos, ent.position)
+                        } else {
+                            move.newFacingDir = monsterGraphSearch(aggregateMonsterMapState(this.game), move.newPos, ent.position)
+                        }
+                    }
+                    console.log('Moving to: ',move.newFacingDir,move.newPos)
+                    return {
+                        ...ent,
+                        position: move.newPos,
+                        facingDir: move.newFacingDir ?? 'RIGHT'
                     }
                 }
-                console.log('Moving to: ',move.newFacingDir,move.newPos)
-                return {
-                    ...ent,
-                    position: move.newPos,
-                    facingDir: move.newFacingDir ?? 'RIGHT'
-                }
-            }
-            return ent
-        })
+                return ent
+            })
+        } catch(e) {
+            console.log('Fatal error during moveMonsters!!')
+            console.log(e)
+        }        
         return true
     }
 

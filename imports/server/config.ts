@@ -3,6 +3,8 @@ import { gameCache } from "./dbCache";
 interface ServerConfigDB {
     defaultGame: string
     enforceLoginAffinity: boolean
+    disableTeamCache: boolean
+    disableGameCache: boolean
     servers: ServerConfigList[]
 }
 
@@ -19,6 +21,8 @@ interface ServerConfigList {
 const defaultCfg: ServerConfigDB = {
     defaultGame: '',
     enforceLoginAffinity: false,
+    disableTeamCache: false,
+    disableGameCache: false,
     servers: [{
         ident: "SERVER1",
         url: ""
@@ -47,7 +51,7 @@ function getServerConfig(): ServerConfig {
 }
 
 function cacheCfg(cfg: ServerConfigDB) {
-    gameCache.rawCache().set('cfg', cfg, 15)
+    gameCache.rawCache().set('cfg', cfg, 25)
 }
 
 export { getServerConfig }

@@ -1,6 +1,7 @@
 import NodeCache from 'node-cache'
 import { Game, GameCollection } from '/imports/api/collections/games'
 import { Team, TeamsCollection } from '/imports/api/collections/teams'
+import { getServerConfig } from './config';
 
 abstract class DbCache<T> {
     #cache;
@@ -39,6 +40,13 @@ class GameCache extends DbCache<Game> {
         super({ stdTTL: 10, useClones: false })
     }
 
+    get(id: string) {
+        if(getServerConfig().disableGameCache) {
+            return GameCollection.findOne({ code: id })
+        }
+        return super.get(id)
+    }
+
     find(id: string): Game | undefined {
         console.log('Retrieving Game from DB...')
         return GameCollection.findOne({ code: id })
@@ -64,6 +72,9 @@ class TeamCache {
     }
 
     get(teamNumber: string, gameId: string) {
+        if(getServerConfig().disableTeamCache) {
+            return TeamsCollection.findOne({ number: teamNumber, gameId })
+        }
         const cacheKey = `_${teamNumber}_${gameId}`
         let result: Team | undefined = this.#cache.get(cacheKey)
         if(!result) {

@@ -47,7 +47,7 @@ class GameCache extends DbCache<Game> {
     beginObserving() {
         GameCollection.find({}).observe({
             changed(game) {
-                console.log(`Observed change of ${game.code}.`)
+                console.log(`Observed change of game '${game.code}'`)
                 gameCache.set(game.code, game)
             },
             removed(game) {

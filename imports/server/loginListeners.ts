@@ -19,7 +19,7 @@ function setupAccountRules() {
         const user = details.user as {username: string, allowedServer?: string}
         const cfg = getServerConfig()
         if(cfg.enforceLoginAffinity) {
-            if(user.allowedServer && user && user.allowedServer !== cfg._self) {
+            if(user && user.allowedServer && user.allowedServer !== cfg._self) {
                 const redir = cfg.servers.find(s => s.ident === user.allowedServer)
                 if(redir) {
                     throw new Meteor.Error('user.logIn.incorrectServerRedir', `${redir.url}/login`)

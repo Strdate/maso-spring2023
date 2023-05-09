@@ -42,7 +42,6 @@ export default new ValidatedMethod({
         solvedTasks: [],
         changedTasks: []
       })
-      // TODO cache results
     }
   }
 })

@@ -9,7 +9,7 @@ import { setupAccountRules } from '/imports/server/loginListeners';
 import { gameCache } from '/imports/server/dbCache';
 
 const SEED_USERNAME = 'reznik';
-const SEED_PASSWORD = 'reznik';
+const SEED_PASSWORD = 'naBenz4inceJsouDraheHotdogy:((';
 
 Meteor.startup(async () => {
 

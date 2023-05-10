@@ -21,7 +21,7 @@ export default function GameOverview() {
     const user = userFound as Meteor.User
     const isUserAuthorized = createMemo(() => loggedIn())
     const isUserOwner = createMemo(() => isGameOwner(user,game))
-    const showResultsLink = () => isUserAuthorized() || game.statusId === 5
+    const showResultsLink = () => isGameOwner(user,game) || game.statusId === 5
 
     createEffect(() => {
         console.log(`Loading: ${loading()}, found: ${found()}, code: ${params.code}`)

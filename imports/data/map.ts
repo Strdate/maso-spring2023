@@ -125,7 +125,7 @@ const entityTypes: EntityType[] = [{
 },{
     typeId: 4,
     category: 'MONSTER',
-    spriteMapOffset: [12, 1]
+    spriteMapOffset: [8, 2]
 },{
     typeId: 5,
     category: 'MONSTER',
@@ -133,7 +133,7 @@ const entityTypes: EntityType[] = [{
 },{
     typeId: 6,
     category: 'MONSTER',
-    spriteMapOffset: [8, 2]
+    spriteMapOffset: [12, 1]
 },{
     typeId: 7,
     category: 'ITEM',

@@ -13,18 +13,22 @@ export default new ValidatedMethod({
   run(game: GameInput) {
     if(Meteor.isServer)
     {
+      console.log(game.startAt.toUTCString())
+      const { gameTime, ...input } = game
       const user = Meteor.user()
       if (user?.username !== 'reznik') {
         throw new Meteor.Error('games.create.notLoggedIn', 'Jen vrchní řezník smí vytvářet nové hry!')
       }
-      if (GameCollection.find({ code: game.code }).count()) {
+      if (GameCollection.find({ code: input.code }).count()) {
         throw new Meteor.Error('games.create.codeAlreadyTaken', 'Kód již používá někdo jiný.')
       }
+      const defaultUser = Accounts.findUserByUsername('pomocnik')!
       const _id = GameCollection.insert({
-        ...game,
+        ...input,
+        endAt: new Date(input.startAt.getTime() + gameTime * 60 * 1000),
         statusId: GameStatus.Created,
         userId: this.userId!,
-        authorizedUsers: [this.userId!, ROBOT_WORKER_ID, INITIAL_SETUP_USER_ID],
+        authorizedUsers: [this.userId!, ROBOT_WORKER_ID, INITIAL_SETUP_USER_ID, defaultUser._id],
         createdAt: new Date(),
         updatedAt: new Date(),
         revenuePerTask: 6,

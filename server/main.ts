@@ -9,7 +9,10 @@ import { setupAccountRules } from '/imports/server/loginListeners';
 import { gameCache } from '/imports/server/dbCache';
 
 const SEED_USERNAME = 'reznik';
-const SEED_PASSWORD = 'naBenz4inceJsouDraheHotdogy:((';
+const SEED_PASSWORD = 'hotdog4admins';
+
+const USER_USERNAME = 'pomocnik'
+const USER_PASSWORD = 'tatarak'
 
 Meteor.startup(async () => {
 
@@ -22,6 +25,13 @@ Meteor.startup(async () => {
       Accounts.createUser({
         username: SEED_USERNAME,
         password: SEED_PASSWORD,
+      });
+    }
+
+    if (!Accounts.findUserByUsername(USER_USERNAME)) {
+      Accounts.createUser({
+        username: USER_USERNAME,
+        password: USER_PASSWORD,
       });
     }
   } else {

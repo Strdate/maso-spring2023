@@ -3,17 +3,21 @@ import SimpleSchema from 'simpl-schema';
 import { GameStatus } from '/imports/core/enums';
 import { EntityInstance } from '/imports/core/interfaces';
 
-interface GameInput {
+interface GameBase {
   name: string
   code: string
   startAt: Date
-  endAt: Date
   freezeTimeMins: number
   monsterPanaltySecs: number
 }
 
-interface Game extends GameInput {
+interface GameInput extends GameBase {
+  gameTime: number
+}
+
+interface Game extends GameBase {
   _id: string
+  endAt: Date
   revenuePerTask: number
   experiencePerTask: number
   initiallyIssuedTasks: number
@@ -35,7 +39,7 @@ const GameInputSchema = new SimpleSchema({
   name: { type: String, min: 2, max: 50 },
   code: { type: String, min: 4, max: 16 },
   startAt: { type: Date },
-  endAt: { type: Date },
+  gameTime: { type: SimpleSchema.Integer, min: 1 },
   freezeTimeMins: { type: SimpleSchema.Integer, min: 1, defaultValue: 10 },
   monsterPanaltySecs: { type: SimpleSchema.Integer, min: 1, defaultValue: 480 }
 })

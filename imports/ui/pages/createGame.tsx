@@ -7,10 +7,9 @@ export default function CreateGame() {
     useTitle('Vytvořit hru | MaSo 2023')
     const navigate = useNavigate()
     const defStartDate = () => {
-        return convertUTCDateToLocalDate(new Date((new Date()).setSeconds(0,0) + 120000)).toISOString().slice(0, -1)
-    }
-    const defEndDate = () => {
-        return convertUTCDateToLocalDate(new Date((new Date()).setSeconds(0,0) + 62*60*1000)).toISOString().slice(0, -1)
+      const d = convertUTCDateToLocalDate(new Date((new Date()).setSeconds(0,0) + 120000)).toISOString().slice(0, -1)
+      console.log(d)
+      return d
     }
     return (
         <FromBase title="Vytvořit hru" showBackButton onConfirm={(res) => {
@@ -18,7 +17,7 @@ export default function CreateGame() {
                 name: res.gameName,
                 code: res.gameCode,
                 startAt: new Date(res.startAt),
-                endAt: new Date(res.endAt),
+                gameTime: Number(res.gameTime),
                 freezeTimeMins: Number(res.freezetime),
                 monsterPanaltySecs: Number(res.monsterPenalty)
             }
@@ -36,8 +35,8 @@ export default function CreateGame() {
             <input type="text" id="gameCode" name="gameCode" value="test" />
             <label for="startAt">Začátek</label>
             <input type="datetime-local" id="startAt" name="startAt" value={defStartDate()} />
-            <label for="endAt">Konec</label>
-            <input type="datetime-local" id="endAt" name="endAt" value={defEndDate()} />
+            <label for="gameTime">Doba soutěže</label>
+            <input type="number" id="gameTime" name="gameTime" value={90} />
             <label for="freezetime">Freezetime</label>
             <input type="number" id="freezetime" name="freezetime" value={2} />
             <label for="monsterPenalty">Trestný čas</label>
@@ -49,12 +48,7 @@ export default function CreateGame() {
 }
 
 function convertUTCDateToLocalDate(date: Date) {
-  var newDate = new Date(date.getTime()+date.getTimezoneOffset()*60*1000);
-
-  var offset = date.getTimezoneOffset() / 60;
-  var hours = date.getHours();
-
-  newDate.setHours(hours - offset);
-
+  const newDate = new Date(date.getTime() - date.getTimezoneOffset()*60*1000);
+  console.log(newDate.toUTCString())
   return newDate;   
 }

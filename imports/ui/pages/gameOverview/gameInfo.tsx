@@ -5,9 +5,10 @@ import AccessTimeIcon from '@suid/icons-material/AccessTime'
 import StatusIcon from '@suid/icons-material/Flag'
 import { GameStatus, GameStatusLabels } from '/imports/core/enums'
 import { Show } from 'solid-js'
+import { A } from '@solidjs/router'
 
 function getRunTime(game: Game) {
-  return `${game.startAt.toLocaleTimeString()} - ${game.endAt.toLocaleTimeString()} ${game.startAt.toDateString()}`
+  return `${game.startAt.toLocaleTimeString('cs-CZ')} - ${game.endAt.toLocaleTimeString('cs-CZ')} ${game.startAt.toDateString()}`
 }
 
 function getGameState(game: Game) {
@@ -49,7 +50,14 @@ function GameInfo(props: Props) {
           <ListItemAvatar>
               <AccessTimeIcon />
           </ListItemAvatar>
-          <ListItemText primary="Čas konání" secondary={getRunTime(props.game)} />
+          <ListItemText primary="Čas konání" secondary={(
+            <>
+              {getRunTime(props.game)}
+              <Show when={props.game.statusId === GameStatus.Created && props.isOwner}>
+                &nbsp;<A href='upravit'>Upravit</A>
+              </Show>
+            </>
+          )} />
         </ListItem>
       </List>
     </Paper>

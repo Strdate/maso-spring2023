@@ -13,9 +13,10 @@ export const App = () => {
   return (
     <CurTimeProvider>
       <Routes>
-        <Route path="/create" component={CreateGame} />
+        <Route path="/create" component={() => CreateGame({ editing: false })} />
         <Route path="/login" component={LoginForm} />
         <Route path="/:code" component={GameOverview} />
+        <Route path="/:code/upravit" component={() => CreateGame({ editing: true })} />
         <Route path="/:code/projektor" component={Projector} />
         <Route path="/:code/input" component={GameControls} />
         <Route path="/:code/scanner" component={ScannerQR} />

@@ -13,7 +13,6 @@ export default new ValidatedMethod({
   run(game: GameInput) {
     if(Meteor.isServer)
     {
-      console.log(game.startAt.toUTCString())
       const { gameTime, ...input } = game
       const user = Meteor.user()
       if (user?.username !== 'reznik') {

@@ -6,6 +6,7 @@ interface Props {
     children: JSX.Element | JSX.Element[],
     onConfirm(data: any): void
     showBackButton?: boolean
+    backButtonLink?: string
 }
 
 // TODO Add clear form option to FromBase (eg. for adding teams)
@@ -40,7 +41,7 @@ export default function FromBase(props: Props) {
                 class='formbase'>
                 <h1>{props.title}</h1>
                 {props.children}
-                {props.showBackButton ? <input type="button" value="Zpět" onClick={() => navigate('/')}></input> : null}
+                {props.showBackButton ? <input type="button" value="Zpět" onClick={() => navigate(props.backButtonLink ?? '/')}></input> : null}
             </div>
         </form>
     </div>)

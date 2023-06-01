@@ -10,8 +10,6 @@ export default function CreateGame({ editing }: { editing: boolean }) {
     const params = useParams()
     const editModeText = editing ? 'Upravit hru' : 'Vytvořit hru'
     useTitle(`${editModeText} | MaSo 2023`)
-
-    useTitle(`${params.code} | MaSo 2023`)
     let game: Game | undefined
     if(editing) {
       const loading = createSubscribe('game', () => params.code)
@@ -49,12 +47,12 @@ export default function CreateGame({ editing }: { editing: boolean }) {
             <input type="text" id="gameCode" name="gameCode" value={game?.code ?? "test"} disabled={editing}/>
             <label for="startAt">Začátek</label>
             <input type="datetime-local" id="startAt" name="startAt" value={defStartDate()} />
-            <label for="gameTime">Doba soutěže</label>
+            <label for="gameTime">Doba soutěže (min)</label>
             <input type="number" id="gameTime" name="gameTime" value={game?.startAt ? 
               (game.endAt.getTime() - game.startAt.getTime()) / 60 / 1000 : 90} />
-            <label for="freezetime">Freezetime</label>
-            <input type="number" id="freezetime" name="freezetime" value={game?.freezeTimeMins ?? 2} />
-            <label for="monsterPenalty">Trestný čas</label>
+            <label for="freezetime">Freezetime (min)</label>
+            <input type="number" id="freezetime" name="freezetime" value={game?.freezeTimeMins ?? 10} />
+            <label for="monsterPenalty">Trestný čas (sec)</label>
             <input type="number" id="monsterPenalty" name="monsterPenalty" value={game?.monsterPanaltySecs ?? 480} />
             <input type="submit" value={editing ? 'Upravit' : 'Vytvořit'} />
         </FromBase>

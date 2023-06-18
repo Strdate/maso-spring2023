@@ -1,4 +1,4 @@
-# Maso 2022
+# MaSo 2023
 
 Game available at <https://maso2023.herokuapp.com/> (czech only).
 
